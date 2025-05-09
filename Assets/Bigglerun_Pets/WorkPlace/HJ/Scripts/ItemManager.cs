@@ -138,7 +138,7 @@ public class ItemManager : MonoBehaviour
         return decoItemList.Find(d => d.itemId == itemId);
     }
 
-    //골드 가격 가져오기(상점, UI에서 사용)
+    //가격 가져오기(상점, UI에서 사용)
     public int GetGoldPrice(string itemId)
     {
         var item = usableItemList.Find(i => i.itemId == itemId);
@@ -154,7 +154,7 @@ public class ItemManager : MonoBehaviour
         return item?.cashPrice ?? deco?.cashPrice ?? -1;
     }
 
-    //캐쉬 아이템 필터링(상점? 쓸지 안쓸지 모름)
+    //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
     public bool IsCashItem(string itemId)
     {
         return GetCashPrice(itemId) > 0;
