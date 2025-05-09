@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 8217351652481764177}
   - component: {fileID: 5324329249864414766}
   - component: {fileID: 1906051834906082302}
-  - component: {fileID: 779778945790889583}
+  - component: {fileID: 4456341354879702407}
   m_Layer: 5
   m_Name: LoadingPanel
   m_TagString: Untagged
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &779778945790889583
+--- !u!114 &4456341354879702407
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,10 +162,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3638644499075756249}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 425f422d2dced944480122c83e487553, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d6c5d6ca69246546a5dd7e4fc9d8c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spinner: {fileID: 0}
+  spinner: {fileID: 2731364348042187320}
   rotateSpeed: 120
 --- !u!1 &9130493711614584520
 GameObject:
@@ -245,4 +245,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB85C\uB529 \uC911..."
+  m_Text: 로딩 중... 
