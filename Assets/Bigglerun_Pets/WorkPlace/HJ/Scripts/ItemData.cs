@@ -4,10 +4,10 @@ public class ItemData
 {
     public string itemId;
     public string itemName;
-    public ItemUseTiming uesTiming;
-    public EffectType effectType;
+    public ItemUseTiming useTiming;
+    public ItemEffectType effectType;
     public Sprite icon;
-    public bool CanBying;
+    public bool showInShop = true;
 
     public int goldPrice;
     public int cashPrice;
@@ -15,12 +15,12 @@ public class ItemData
 
 public class DecorationItemData
 {
-    public string id;
-    public string name;
+    public string itemId;
+    public string itemName;
     public string icon;
     public GameObject prefab;   //캐릭터에 장착되는 모델
     public DecorationType type;
-    public bool isUnlocked = false;
+    public bool showInShop = true;
 
     public int goldPrice;
     public int cashPrice;
@@ -32,7 +32,7 @@ public enum ItemUseTiming
     InGame
 }
 
-public enum EffectType
+public enum ItemEffectType
 {
     Booster,    //초반 부스터
     SkillUp,    //스킬횟수 추가
@@ -44,5 +44,5 @@ public enum DecorationType
 {
     Hat,
     Body,
-    Accessory
+    Shoes
 }
