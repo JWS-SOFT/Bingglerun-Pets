@@ -279,4 +279,47 @@ public class FirebaseManager : MonoBehaviour
         return true;
 #endif
     }
+    
+    /// <summary>
+    /// 현재 사용자 계정 삭제
+    /// </summary>
+    public async Task<bool> DeleteUserAccountAsync()
+    {
+#if FIREBASE_AUTH
+        try
+        {
+            Debug.Log("[FirebaseManager] 계정 삭제 시도 중...");
+            
+            if (currentUser == null)
+            {
+                Debug.LogError("[FirebaseManager] 로그인되지 않은 상태에서 계정 삭제 시도");
+                return false;
+            }
+            
+            await currentUser.DeleteAsync();
+            
+            // 사용자 정보 초기화
+            UpdateUserInfo(null);
+            Debug.Log("[FirebaseManager] 계정 삭제 성공");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseManager] 계정 삭제 실패: {e.Message}");
+            return false;
+        }
+#else
+        // 파이어베이스 SDK가 없을 때 테스트용 계정 삭제
+        Debug.Log("[FirebaseManager] 테스트 계정 삭제 완료");
+        
+        // 로그아웃과 동일한 처리
+        IsAuthenticated = false;
+        UserId = null;
+        CurrentLoginType = LoginType.None;
+        
+        OnLoginStateChanged?.Invoke(false);
+        
+        return true;
+#endif
+    }
 }

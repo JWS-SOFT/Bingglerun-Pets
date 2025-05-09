@@ -16,6 +16,7 @@ public class TitleUIController : MonoBehaviour
     [SerializeField] private GameObject loginSuccessPanel;
     [SerializeField] private Button startGameButton;
     [SerializeField] private Text userIdText;
+    [SerializeField] private Button deleteAccountButton;
 
     private void Start()
     {
@@ -28,6 +29,10 @@ public class TitleUIController : MonoBehaviour
             
         if (startGameButton != null)
             startGameButton.onClick.AddListener(OnClickStartGame);
+            
+        // 계정 삭제 버튼 이벤트 설정
+        if (deleteAccountButton != null)
+            deleteAccountButton.onClick.AddListener(OnClickDeleteAccount);
             
         // UI 초기화
         ShowLoginButtons(true);
@@ -118,6 +123,53 @@ public class TitleUIController : MonoBehaviour
 
         // 상태 전환은 씬 로딩 이후 Start 등에서 처리하거나, 여기서 즉시
         GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+    }
+    
+    /// <summary>
+    /// 계정 삭제 버튼 클릭
+    /// </summary>
+    private async void OnClickDeleteAccount()
+    {
+        // 확인 메시지 표시 (실제 UI는 구현 필요)
+        if (!Confirm("정말 계정을 삭제하시겠습니까?"))
+            return;
+        
+        // 로딩 UI 표시
+        ShowLoginSuccessUI(false);
+        ShowLoadingUI(true, "계정 삭제 중...");
+        
+        var firebase = FirebaseManager.Instance;
+        bool success = await firebase.DeleteUserAccountAsync();
+        
+        if (success)
+        {
+            Debug.Log("[TitleUI] 계정 삭제 성공");
+            ShowLoadingUI(false);
+            ShowLoginButtons(true);
+        }
+        else
+        {
+            // 삭제 실패 처리
+            Debug.LogWarning("[TitleUI] 계정 삭제 실패");
+            ShowLoadingUI(false);
+            ShowLoginSuccessUI(true);
+        }
+    }
+    
+    /// <summary>
+    /// 확인 대화상자 표시 (임시 구현)
+    /// </summary>
+    private bool Confirm(string message)
+    {
+        // 실제로는 UI 대화상자를 표시해야 하지만,
+        // 임시로 에디터용 대화상자 사용
+#if UNITY_EDITOR
+        return UnityEditor.EditorUtility.DisplayDialog("확인", message, "예", "아니오");
+#else
+        // 실제 게임에서는 항상 true 반환 (UI는 별도 구현 필요)
+        Debug.Log($"[TitleUI] 확인 대화상자: {message}");
+        return true;
+#endif
     }
     
     /// <summary>
