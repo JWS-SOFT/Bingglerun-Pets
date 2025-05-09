@@ -29,9 +29,9 @@ public class ItemManager : MonoBehaviour
     }
 
     //아이템 추가(상점에서 아이템 구매, 아이템 습득시 호출)
-    public void AddItems(string itemId, int amount = 1)
+    public void AddUsableItems(string itemId, int amount = 1)
     {
-        ItemData item = GetItemById(itemId);
+        ItemData item = GetUsableItemById(itemId);
 
         if (item == null) return;
 
@@ -46,7 +46,7 @@ public class ItemManager : MonoBehaviour
     {
         if (!ownedUsableItems.TryGetValue(itemId, out int count) || count <= 0) return;
 
-        ItemData item = GetItemById(itemId);
+        ItemData item = GetUsableItemById(itemId);
         if (item == null || item.useTiming != ItemUseTiming.PreGame) return;
 
         if (SelectedPreGameItem?.itemId == itemId)
@@ -66,12 +66,18 @@ public class ItemManager : MonoBehaviour
     //아이템 사용(인게임 아이템 습득시 호출할 함수, 게임 스타트시 호출됨)
     public void UseUsableItem(string itemId)
     {
-        ItemData item = GetItemById(itemId);
+        ItemData item = GetUsableItemById(itemId);
         if(item == null) return;
 
         if(item.useTiming == ItemUseTiming.PreGame) ownedUsableItems[itemId]--;
 
         ApplyItemEffect(item);
+    }
+
+    //아이템 아이디로 찾기
+    public ItemData GetUsableItemById(string itemId)
+    {
+        return usableItemList.Find(i => i.itemId == itemId);
     }
 
     //아이템 갯수(인벤토리 UI에서 호출)
@@ -80,7 +86,7 @@ public class ItemManager : MonoBehaviour
         return ownedUsableItems.TryGetValue(itemId, out int count) ? count : 0;
     }
 
-    //소모용 아이템 필터링(UI, 상점에서 이용)
+    //소모용 아이템 필터링(인벤토리UI, 상점에서 이용)
     public List<ItemData> GetFilteredUsableItems(bool inventoryOnly = false, ItemUseTiming ? timing = null, bool showInShopOnly = false)
     {
         var items = usableItemList;
@@ -97,7 +103,7 @@ public class ItemManager : MonoBehaviour
         return items;
     }
 
-    //데코 아이템 필터링(UI, 상점에서 이용)
+    //데코 아이템 필터링(인벤토리UI, 상점에서 이용)
     public List<DecorationItemData> GetFilteredDecorationItems(bool inventoryOnly = false, DecorationType? type = null, bool showInShopOnly = false)
     {
         var items = decoItemList;
@@ -154,9 +160,6 @@ public class ItemManager : MonoBehaviour
         return GetCashPrice(itemId) > 0;
     }
 
-    //가격에 따른 필터링.. 따로 뺄지 필터링에 추가할지 고민
-
-
     //아이템 효과 적용
     private void ApplyItemEffect(ItemData item)
     {
@@ -176,12 +179,4 @@ public class ItemManager : MonoBehaviour
                 break;
         }
     }
-
-    //아이템 아이디로 찾기
-    private ItemData GetItemById(string itemId)
-    {
-        return usableItemList.Find(i => i.itemId == itemId);
-    }
-
-
 }
