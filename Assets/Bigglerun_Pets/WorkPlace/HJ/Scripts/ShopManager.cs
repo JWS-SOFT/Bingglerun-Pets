@@ -7,6 +7,8 @@ public class ShopManager : MonoBehaviour
     public int playerGold = 1000;   //테스트용 임시변수
     public int playerCash = 50;     //테스트용 임시변수
 
+    //싱글톤 추가 예정
+
     //아이템 구매(상점 UI에서 적용)
     public bool TryBuyItem(string itemId, bool useCash = false, int amount = 1)
     {
