@@ -5,45 +5,45 @@ using System.Threading.Tasks;
 public class TitleUIController : MonoBehaviour
 {
     [Header("로그인 UI")]
-    [SerializeField] private Button guestLoginButton;
-    [SerializeField] private Button googleLoginButton;
-    [SerializeField] private Button emailLoginButton; // 이메일 로그인 버튼
+    public Button guestLoginButton;
+    public Button googleLoginButton;
+    public Button emailLoginButton; // 이메일 로그인 버튼
     
     [Header("로딩 UI")]
-    [SerializeField] private GameObject loadingPanel;
-    [SerializeField] private Text loadingText;
+    public GameObject loadingPanel;
+    public Text loadingText;
     
     [Header("로그인 성공 UI")]
-    [SerializeField] private GameObject loginSuccessPanel;
-    [SerializeField] private Button startGameButton;
-    [SerializeField] private Text userIdText;
-    [SerializeField] private Button deleteAccountButton;
+    public GameObject loginSuccessPanel;
+    public Button startGameButton;
+    public Text userIdText;
+    public Button deleteAccountButton;
     
     [Header("이메일 로그인 UI")]
-    [SerializeField] private GameObject emailLoginPanel;
-    [SerializeField] private InputField emailInputField;
-    [SerializeField] private InputField passwordInputField;
-    [SerializeField] private Button loginButton;
-    [SerializeField] private Button backToMainButton;
-    [SerializeField] private Button goToRegisterButton;
-    [SerializeField] private Button forgotPasswordButton;
-    [SerializeField] private Text errorMessageText;
+    public GameObject emailLoginPanel;
+    public InputField emailInputField;
+    public InputField passwordInputField;
+    public Button loginButton;
+    public Button backToMainButton;
+    public Button goToRegisterButton;
+    public Button forgotPasswordButton;
+    public Text errorMessageText;
     
     [Header("이메일 회원가입 UI")]
-    [SerializeField] private GameObject emailRegisterPanel;
-    [SerializeField] private InputField registerEmailInputField;
-    [SerializeField] private InputField registerPasswordInputField;
-    [SerializeField] private InputField confirmPasswordInputField;
-    [SerializeField] private Button registerButton;
-    [SerializeField] private Button backToLoginButton;
-    [SerializeField] private Text registerErrorMessageText;
+    public GameObject emailRegisterPanel;
+    public InputField registerEmailInputField;
+    public InputField registerPasswordInputField;
+    public InputField confirmPasswordInputField;
+    public Button registerButton;
+    public Button backToLoginButton;
+    public Text registerErrorMessageText;
     
     [Header("비밀번호 재설정 UI")]
-    [SerializeField] private GameObject resetPasswordPanel;
-    [SerializeField] private InputField resetEmailInputField;
-    [SerializeField] private Button sendResetEmailButton;
-    [SerializeField] private Button backToLoginFromResetButton;
-    [SerializeField] private Text resetErrorMessageText;
+    public GameObject resetPasswordPanel;
+    public InputField resetEmailInputField;
+    public Button sendResetEmailButton;
+    public Button backToLoginFromResetButton;
+    public Text resetErrorMessageText;
 
     private void Start()
     {
