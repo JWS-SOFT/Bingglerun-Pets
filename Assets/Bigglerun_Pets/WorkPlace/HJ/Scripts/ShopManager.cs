@@ -7,7 +7,15 @@ public class ShopManager : MonoBehaviour
     public int playerGold = 1000;   //테스트용 임시변수
     public int playerCash = 50;     //테스트용 임시변수
 
-    //싱글톤 추가 예정
+    public static ShopManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     //아이템 구매(상점 UI에서 적용)
     public bool TryBuyItem(string itemId, bool useCash = false, int amount = 1)
@@ -29,7 +37,7 @@ public class ShopManager : MonoBehaviour
         {
             int goldPrice = ItemManager.Instance.GetGoldPrice(itemId);
 
-            if(goldPrice > 0 && playerCash >= goldPrice)
+            if(goldPrice > 0 && playerGold >= goldPrice)
             {
                 playerGold -= goldPrice;
                 GiveItem(itemId);
@@ -85,11 +93,11 @@ public class ShopManager : MonoBehaviour
     //아이템 주기
     private void GiveItem(string itemId, int amount = 1)
     {
-        if(ItemManager.Instance.GetUsableItemById(itemId) != null)
+        if(ItemManager.Instance.IsUsableItem(itemId))
         {
             ItemManager.Instance.AddUsableItems(itemId, amount);
         }
-        else if(ItemManager.Instance.GetDecorationById(itemId) != null)
+        else if(ItemManager.Instance.IsDecorationItem(itemId))
         {
             ItemManager.Instance.UnlockDecoration(itemId);
         }

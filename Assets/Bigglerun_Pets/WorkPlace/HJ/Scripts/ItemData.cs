@@ -1,24 +1,27 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class ItemData
 {
     public string itemId;
     public string itemName;
     public ItemUseTiming useTiming;
     public ItemEffectType effectType;
-    public Sprite icon;
+    public string iconPath;
     public bool showInShop = true;
 
     public int goldPrice;
     public int cashPrice;
 }
 
+[Serializable]
 public class DecorationItemData
 {
     public string itemId;
     public string itemName;
-    public string icon;
-    public GameObject prefab;   //캐릭터에 장착되는 모델
+    public string iconPath;
+    public string prefabPath;   //캐릭터에 장착되는 모델
     public DecorationType type;
     public bool showInShop = true;
 
