@@ -8,8 +8,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Transform canvas;
-    [SerializeField] private Transform hud;
-    [SerializeField] private Transform popup;
+    [SerializeField] public Transform hud;
+    [SerializeField] public Transform popup;
 
     [SerializeField] private SceneFader fader;
 
