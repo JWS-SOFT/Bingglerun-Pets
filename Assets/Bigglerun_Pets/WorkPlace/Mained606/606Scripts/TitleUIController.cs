@@ -110,22 +110,30 @@ public class TitleUIController : MonoBehaviour
             resetErrorMessageText.text = "";
         
         // 이미 로그인되어 있는지 확인
-        CheckExistingLogin();
+        CheckExistingLoginWithoutAutoCreate();
     }
     
     /// <summary>
-    /// 이미 로그인된 세션이 있는지 확인
+    /// 이미 로그인된 세션이 있는지 확인 (게스트 계정 자동 생성 없이)
     /// </summary>
-    private async void CheckExistingLogin()
+    private async void CheckExistingLoginWithoutAutoCreate()
     {
         var firebase = FirebaseManager.Instance;
         
-        // 이미 인증된 상태라면 로그인 성공 UI 표시
-        if (firebase.IsAuthenticated)
+        // FirebaseManager에 추가된 메서드 호출
+        // 게스트 계정 자동 생성 없이 기존 로그인 상태만 확인
+        bool isAuthenticated = firebase.CheckAuthenticationWithoutAutoLogin();
+        
+        if (isAuthenticated)
         {
             Debug.Log("[TitleUI] 기존 로그인 세션 발견");
             ShowLoginSuccessUI(true);
             UpdateUserInfo();
+        }
+        else
+        {
+            // 기존 계정이 없으면 로그인 선택 화면 표시
+            ShowLoginButtons(true);
         }
     }
     

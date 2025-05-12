@@ -48,7 +48,7 @@ public class FirebaseManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Firebase를 초기화하고 게스트 로그인 시도
+    /// Firebase를 초기화하고 기존 로그인 확인 (자동 게스트 로그인 없음)
     /// </summary>
     public async Task<bool> InitializeAndLoginAsync()
     {
@@ -77,8 +77,9 @@ public class FirebaseManager : MonoBehaviour
                     return true;
                 }
                 
-                // 기본적으로 게스트 로그인 시도
-                return await SignInAnonymouslyAsync();
+                // 더 이상 자동으로 게스트 로그인을 시도하지 않음
+                Debug.Log("[FirebaseManager] 기존 로그인 정보 없음");
+                return false;
             }
             else
             {
@@ -92,19 +93,18 @@ public class FirebaseManager : MonoBehaviour
             return false;
         }
 #else
-        // 파이어베이스 SDK가 없을 때 테스트용 가짜 로그인
-        Debug.LogWarning("[FirebaseManager] Firebase SDK가 없습니다. 가짜 로그인을 수행합니다.");
-        await Task.Delay(1000); // 가짜 딜레이 처리
+        // 파이어베이스 SDK가 없을 때 테스트용 초기화 (자동 로그인 없음)
+        Debug.LogWarning("[FirebaseManager] Firebase SDK가 없습니다. 초기화만 수행합니다.");
+        await Task.Delay(500); // 가짜 딜레이 처리
         
         IsInitialized = true;
-        IsAuthenticated = true;
-        UserId = "test_user_" + UnityEngine.Random.Range(1000, 9999);
-        CurrentLoginType = LoginType.Guest;
+        // 더 이상 자동으로 인증 상태를 true로 설정하지 않음
+        IsAuthenticated = false;
+        CurrentLoginType = LoginType.None;
         
-        Debug.Log($"[FirebaseManager] 테스트 로그인 완료: {UserId}");
-        OnLoginStateChanged?.Invoke(true);
+        Debug.Log("[FirebaseManager] 테스트 초기화 완료 (자동 로그인 없음)");
         
-        return true;
+        return false;
 #endif
     }
 
@@ -556,6 +556,41 @@ public class FirebaseManager : MonoBehaviour
         OnLoginStateChanged?.Invoke(false);
         
         return true;
+#endif
+    }
+
+    /// <summary>
+    /// 자동 게스트 계정 생성 없이 인증 상태만 확인
+    /// </summary>
+    /// <returns>인증된 상태이면 true, 아니면 false</returns>
+    public bool CheckAuthenticationWithoutAutoLogin()
+    {
+        Debug.Log("[FirebaseManager] 기존 로그인 상태 확인(자동 생성 없이)");
+        
+#if FIREBASE_AUTH
+        // Firebase 초기화가 안 되었으면 false 반환
+        if (!IsInitialized || auth == null)
+        {
+            Debug.Log("[FirebaseManager] Firebase가 초기화되지 않았습니다.");
+            return false;
+        }
+        
+        // 현재 사용자 정보 확인 (새 계정 생성하지 않음)
+        var user = auth.CurrentUser;
+        if (user != null)
+        {
+            // 이미 로그인된 사용자가 있으면 정보 업데이트
+            UpdateUserInfo(user);
+            return true;
+        }
+        
+        Debug.Log("[FirebaseManager] 기존 로그인된 계정이 없습니다.");
+        return false;
+#else
+        // 테스트 환경에서는 IsAuthenticated 값만 확인
+        // 이미 SignInAnonymouslyAsync()가 호출된 경우에만 true
+        Debug.Log($"[FirebaseManager] 테스트 환경에서 로그인 상태 확인: {IsAuthenticated}");
+        return IsAuthenticated;
 #endif
     }
 }

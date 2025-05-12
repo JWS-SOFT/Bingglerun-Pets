@@ -62,6 +62,6 @@ public class GameManager : MonoBehaviour
         if (success)
             StateMachine.ChangeState(GameState.Title);
         else
-            Debug.LogError("[GameManager] Firebase 로그인 실패");
+            Debug.LogError("[GameManager] Firebase 로그인 실패 계정 정보 없음");
     }
 }
