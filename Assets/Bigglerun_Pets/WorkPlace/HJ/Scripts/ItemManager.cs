@@ -15,7 +15,9 @@ public class ItemManager : MonoBehaviour
     private ItemData selectedPreGameItem = null;
     public ItemData SelectedPreGameItem => selectedPreGameItem;
 
-    //외부에서 호출할 읽기 전용 변수 추가 예정
+    //읽기전용 변수
+    public static IReadOnlyList<ItemData> AllUsableItems => Instance.usableItemList;
+    public static IReadOnlyList<DecorationItemData> AllDecorationItems => Instance.decoItemList;
 
 
     public static ItemManager Instance;
@@ -23,10 +25,17 @@ public class ItemManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            InitializeItems();
+        }
         else
             Destroy(gameObject);
     }
+
+    //아이템 유효성 검사
+    public bool IsUsableItem(string itemId) => GetUsableItemById(itemId) != null;
+    public bool IsDecorationItem(string itemId) => GetDecorationById(itemId) != null;
 
     //아이템 추가(상점에서 아이템 구매, 아이템 습득시 호출)
     public void AddUsableItems(string itemId, int amount = 1)
@@ -72,12 +81,6 @@ public class ItemManager : MonoBehaviour
         if(item.useTiming == ItemUseTiming.PreGame) ownedUsableItems[itemId]--;
 
         ApplyItemEffect(item);
-    }
-
-    //아이템 아이디로 찾기
-    public ItemData GetUsableItemById(string itemId)
-    {
-        return usableItemList.Find(i => i.itemId == itemId);
     }
 
     //아이템 갯수(인벤토리 UI에서 호출)
@@ -130,34 +133,40 @@ public class ItemManager : MonoBehaviour
     public bool IsUnlockedDecoration(string itemId)
     {
         return unlockedDecorationIds.Contains(itemId);
-    }
-
-    //id로 데코레이션 데이터 반환(UI에서 사용)
-    public DecorationItemData GetDecorationById(string itemId)
-    {
-        return decoItemList.Find(d => d.itemId == itemId);
-    }
+    }    
 
     //가격 가져오기(상점, UI에서 사용)
     public int GetGoldPrice(string itemId)
     {
-        var item = usableItemList.Find(i => i.itemId == itemId);
-        var deco = decoItemList.Find(i => i.itemId == itemId);
+        var item = GetUsableItemById(itemId);
+        var deco = GetDecorationById(itemId);
         return item?.goldPrice ?? deco?.goldPrice ?? -1;
     }
 
     //캐쉬 가격 가져오기(상점, UI에서 사용)
     public int GetCashPrice(string itemId)
     {
-        var item = usableItemList.Find(i => i.itemId == itemId);
-        var deco = decoItemList.Find(i => i.itemId == itemId);
+        var item = GetUsableItemById(itemId);
+        var deco = GetDecorationById(itemId);
         return item?.cashPrice ?? deco?.cashPrice ?? -1;
     }
 
     //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
-    public bool IsCashItem(string itemId)
+    public bool IsCashItem(string itemId) => GetCashPrice(itemId) > 0;
+
+    
+
+
+    //아이템 아이디로 찾기
+    private ItemData GetUsableItemById(string itemId)
     {
-        return GetCashPrice(itemId) > 0;
+        return usableItemList.Find(i => i.itemId == itemId);
+    }
+
+    //데코 아이템 아이디로 찾기
+    private DecorationItemData GetDecorationById(string itemId)
+    {
+        return decoItemList.Find(d => d.itemId == itemId);
     }
 
     //아이템 효과 적용
@@ -178,5 +187,11 @@ public class ItemManager : MonoBehaviour
                 Debug.Log("무적");
                 break;
         }
+    }
+
+    private void InitializeItems()
+    {
+        usableItemList = ItemLoader.LoadUsableItemData();
+        decoItemList = ItemLoader.LoadDecorationItemData();
     }
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "itemId": "hat001",
+    "itemName": "Red Hat",
+    "iconPath": "Icons/hat_red",
+    "prefabPath": "Prefabs/Hats/hat_red",
+    "type": "Hat",
+    "showInShop": "True",
+    "goldPrice": "1000",
+    "cashPrice": "0"
+  },
+  {
+    "itemId": "body001",
+    "itemName": "Blue Body",
+    "iconPath": "Icons/body_blue",
+    "prefabPath": "Prefabs/Bodies/body_blue",
+    "type": "Body",
+    "showInShop": "True",
+    "goldPrice": "0",
+    "cashPrice": "15"
+  },
+  {
+    "itemId": "shoes001",
+    "itemName": "Green Shoes",
+    "iconPath": "Icons/shoes_green",
+    "prefabPath": "Prefabs/shoes/shoes_green",
+    "type": "Shoes",
+    "showInShop": "True",
+    "goldPrice": "800",
+    "cashPrice": "5"
+  }
+]
