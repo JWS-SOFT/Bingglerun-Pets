@@ -7,6 +7,12 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
+    [SerializeField] private Transform canvas;
+    [SerializeField] private Transform hud;
+    [SerializeField] private Transform popup;
+
+    [SerializeField] private SceneFader fader;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -19,10 +25,53 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        canvas = FindAnyObjectByType<Canvas>().transform;
+        if(canvas != null)
+        {
+            hud = canvas.transform.GetChild(0);
+            popup = canvas.transform.GetChild(1);
+        }
+
+        fader = FindAnyObjectByType<SceneFader>();
+    }
+
+    public void SceneChange()
+    {
+        canvas = FindAnyObjectByType<Canvas>().transform;
+        if (canvas != null)
+        {
+            hud = canvas.transform.GetChild(0);
+            popup = canvas.transform.GetChild(1);
+        }
+    }
+
     public void ShowTitleUI()
     {
         Debug.Log("타이틀 UI 표시");
         // 로그인 버튼 → GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+    }
+
+    public void TogglePopupUI(string uiName)
+    {
+        Transform ui = FindDirectChildByName(uiName);
+
+        if(ui != null)
+        {
+            ui.gameObject.SetActive(!ui.gameObject.activeSelf);
+        }
+    }
+
+    private Transform FindDirectChildByName(string uiName)
+    {
+        foreach (Transform child in popup)
+        {
+            if (child.name == uiName)
+                return child;
+        }
+        Debug.Log($"{uiName} 라는 이름을 가진 UI가 존재하지 않습니다.");
+        return null;
     }
 
     public void ShowLobbyUI()
