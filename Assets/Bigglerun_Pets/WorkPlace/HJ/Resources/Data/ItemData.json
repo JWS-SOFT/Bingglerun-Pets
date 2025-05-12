@@ -1,0 +1,52 @@
+[
+  {
+    "itemId": "item001",
+    "itemName": "Booster",
+    "useTiming": "PreGame",
+    "effectType": "Booster",
+    "iconPath": "Icons/booster",
+    "showInShop": "True",
+    "goldPrice": "500",
+    "cashPrice": "0"
+  },
+  {
+    "itemId": "item002",
+    "itemName": "Heart",
+    "useTiming": "PreGame",
+    "effectType": "Heart",
+    "iconPath": "Icons/heart",
+    "showInShop": "True",
+    "goldPrice": "0",
+    "cashPrice": "10"
+  },
+  {
+    "itemId": "item003",
+    "itemName": "SkillUp",
+    "useTiming": "PreGame",
+    "effectType": "SkillUp",
+    "iconPath": "Icons/skillup",
+    "showInShop": "True",
+    "goldPrice": "800",
+    "cashPrice": "0"
+  },
+  {
+    "itemId": "item004",
+    "itemName": "Invincible",
+    "useTiming": "InGame",
+    "effectType": "Invincible",
+    "iconPath": "Icons/invincible",
+    "showInShop": "False",
+    "goldPrice": "0",
+    "cashPrice": "0"
+  },
+  {
+    "itemId": "item005",
+    "itemName": "Debug Only",
+    "useTiming": "PreGame",
+    "effectType": "SkillUp",
+    "iconPath": "Icons/skillup",
+    "showInShop": "False",
+    "goldPrice": "0",
+    "cashPrice": "0"
+  }
+]
