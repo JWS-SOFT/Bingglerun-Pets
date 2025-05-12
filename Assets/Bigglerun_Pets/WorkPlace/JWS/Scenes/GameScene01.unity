@@ -135,6 +135,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5903079175310295873, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6509873653763732206, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -248,7 +252,8 @@ MonoBehaviour:
   stairPrefab: {fileID: 2684492153823160394, guid: 260d3307814b748498edf812112760d5, type: 3}
   stairTotalCount: 100
   stairWidth: 2
-  stairHeight: 1.5
+  stairHeight: 1.75
+  SpawnItemPercent: 30
 --- !u!4 &487118650
 Transform:
   m_ObjectHideFlags: 0
