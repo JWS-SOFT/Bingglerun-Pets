@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform canvas;
     [SerializeField] public Transform hud;
     [SerializeField] public Transform popup;
+    [SerializeField] private List<Transform> popupGroup = new List<Transform>();
 
     [SerializeField] private SceneFader fader;
 
@@ -27,24 +29,40 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        canvas = FindAnyObjectByType<Canvas>().transform;
-        if(canvas != null)
-        {
-            hud = canvas.transform.GetChild(0);
-            popup = canvas.transform.GetChild(1);
-        }
-
         fader = FindAnyObjectByType<SceneFader>();
+
+        UIInitialize();
     }
 
-    public void SceneChange()
+    private void UIInitialize()
     {
         canvas = FindAnyObjectByType<Canvas>().transform;
         if (canvas != null)
         {
             hud = canvas.transform.GetChild(0);
-            popup = canvas.transform.GetChild(1);
+            popup = FindAnyObjectByType<CanvasGroup>().transform;
         }
+
+
+        if (popup != null)
+        {
+            PopupGroupInit();
+        }
+    }
+
+    private void PopupGroupInit()
+    {
+        popupGroup.Clear();
+
+        for(int i = 0; i < popup.childCount; i++)
+        {
+            popupGroup.Add(popup.GetChild(i));
+        }
+    }
+
+    public void SceneChange()
+    {
+        UIInitialize();
     }
 
     public void ShowTitleUI()
