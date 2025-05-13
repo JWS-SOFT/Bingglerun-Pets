@@ -10,7 +10,14 @@ public class PlayerManager : MonoBehaviour
     public static Transform Player_Transform;
     public float timeAction = 10f;  // 리미티드 시간설정 
     public float timeBonus = 0.25f;  // 보너스 시간설정 
-
+    public static bool PlayMode
+    {
+        get { return Instance.play_Mode; }
+        set { Instance.play_Mode = value; }
+    }
+    [SerializeField] private bool play_Mode = true;
+    [SerializeField] private StairManager StairManager;
+    [SerializeField] private TerrainScrollManager terrainScrollManager;
     private int currentPlayerCoin = 0;
     private int currentPlayerFloor = 0;
     private BasicTimer actionTimer;
@@ -34,6 +41,16 @@ public class PlayerManager : MonoBehaviour
             Destroy(gameObject);
         }
         actionTimer = new BasicTimer(timeAction);
+        if (play_Mode)
+        {
+            StairManager.enabled = false;
+            terrainScrollManager.enabled = true;
+        }
+        else
+        {
+            StairManager.enabled = true;
+            terrainScrollManager.enabled = false;
+        }
     }
 
     private void Start()

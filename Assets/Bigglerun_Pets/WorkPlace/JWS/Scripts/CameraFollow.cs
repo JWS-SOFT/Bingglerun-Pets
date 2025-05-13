@@ -4,13 +4,25 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform player;
     public float followSpeed = 2f;
+    public float fixedY = 1.5f; // 횡모드에서 고정할 Y값
 
     private void LateUpdate()
     {
-        if (player != null)
+        if (player == null) return;
+
+        Vector3 targetPos;
+
+        if (PlayerManager.PlayMode)
         {
-            Vector3 targetPos = new Vector3(player.position.x, player.position.y + 3f, -10f);
-            transform.position = Vector3.Lerp(transform.position, targetPos, followSpeed * Time.deltaTime);
+            // ➤ 횡스크롤 모드 (y는 고정, x만 따라감)
+            targetPos = new Vector3(player.position.x, 3.5f, -10f);
         }
+        else
+        {
+            // ➤ 계단 모드 (y도 따라감, 살짝 위를 보게)
+            targetPos = new Vector3(player.position.x, player.position.y + 1f, -10f);
+        }
+
+        transform.position = Vector3.Lerp(transform.position, targetPos, followSpeed * Time.deltaTime);
     }
 }
