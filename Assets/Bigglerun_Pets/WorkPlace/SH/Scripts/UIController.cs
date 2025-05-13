@@ -12,4 +12,9 @@ public class UIController : MonoBehaviour
     {
         UIManager.Instance.ExitPopup();
     }
+
+    public void MoveScene(string sceneName)
+    {
+        GameManager.Instance.SceneFader.LoadScene(sceneName);
+    }
 }
