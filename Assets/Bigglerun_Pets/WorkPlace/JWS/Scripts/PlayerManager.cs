@@ -8,7 +8,8 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
     public static Transform Player_Transform;
-    public float timeAction = 2f;
+    public float timeAction = 10f;  // 리미티드 시간설정 
+    public float timeBonus = 0.25f;  // 보너스 시간설정 
 
     private int currentPlayerCoin = 0;
     private int currentPlayerFloor = 0;
@@ -74,5 +75,15 @@ public class PlayerManager : MonoBehaviour
     {
         TimerManager.Instance.StopTimer(Instance.actionTimer);
         TimerManager.Instance.StartTimer(Instance.actionTimer);
+    }
+
+    public static void ActionTImeSuccess()
+    {
+        Instance.actionTimer.AddTime(-Instance.timeBonus);
+    }
+
+    public static void ActionTImeStop()
+    {
+        TimerManager.Instance.StopTimer(Instance.actionTimer);
     }
 }

@@ -1877,7 +1877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609a2334875097c4fa416620ab58a47c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeAction: 2
+  timeAction: 10
+  timeBonus: 0.25
   floorText: {fileID: 1910438448}
   coinText: {fileID: 1066797039}
   timerText: {fileID: 460670761}

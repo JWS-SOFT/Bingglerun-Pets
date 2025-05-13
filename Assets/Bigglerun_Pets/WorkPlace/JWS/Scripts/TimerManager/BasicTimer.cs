@@ -55,10 +55,16 @@ public class BasicTimer : ITimer
         if (IsRunning && !IsPaused && !IsCompleted)
         {
             ElapsedTime += deltaTime;
+
+            // 음수 방지
+            if (ElapsedTime < 0f) ElapsedTime = 0f;
+
+            // 완료 처리
             if (ElapsedTime >= Duration)
             {
-                IsRunning = false; // 타이머가 완료되면 Running은 멈추지만, 완료된 상태는 IsCompleted에서 관리
+                IsRunning = false;
             }
         }
     }
+
 }
