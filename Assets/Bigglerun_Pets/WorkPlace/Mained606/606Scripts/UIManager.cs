@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform canvas;
     [SerializeField] public Transform hud;
     [SerializeField] public Transform popup;
+    [SerializeField] private List<Transform> popupGroup = new List<Transform>();
+    [SerializeField] private Stack<Transform> openedPopups = new Stack<Transform>();
+    [SerializeField] private string lastOpenedPopup = "";
 
     [SerializeField] private SceneFader fader;
 
@@ -27,24 +31,40 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        canvas = FindAnyObjectByType<Canvas>().transform;
-        if(canvas != null)
-        {
-            hud = canvas.transform.GetChild(0);
-            popup = canvas.transform.GetChild(1);
-        }
-
         fader = FindAnyObjectByType<SceneFader>();
+
+        UIInitialize();
     }
 
-    public void SceneChange()
+    private void UIInitialize()
     {
         canvas = FindAnyObjectByType<Canvas>().transform;
         if (canvas != null)
         {
             hud = canvas.transform.GetChild(0);
-            popup = canvas.transform.GetChild(1);
+            popup = FindAnyObjectByType<CanvasGroup>().transform;
         }
+
+
+        if (popup != null)
+        {
+            PopupGroupInit();
+        }
+    }
+
+    private void PopupGroupInit()
+    {
+        popupGroup.Clear();
+
+        for(int i = 0; i < popup.childCount; i++)
+        {
+            popupGroup.Add(popup.GetChild(i));
+        }
+    }
+
+    public void SceneChange()
+    {
+        UIInitialize();
     }
 
     public void ShowTitleUI()
@@ -55,23 +75,75 @@ public class UIManager : MonoBehaviour
 
     public void TogglePopupUI(string uiName)
     {
-        Transform ui = FindDirectChildByName(uiName);
-
-        if(ui != null)
+        Transform target = null;
+        target = FindDirectChildByName(uiName);
+        
+        if(target == this.transform)
         {
-            ui.gameObject.SetActive(!ui.gameObject.activeSelf);
+            Debug.Log($"{uiName}에 해당하는 UI가 없습니다.");
+            return;
+        }
+
+        if (target != null)
+        {
+            if (!target.gameObject.activeSelf)
+            {
+                openedPopups.Push(target);
+                lastOpenedPopup = target.name;
+                Debug.Log($"{target.name} 오픈");
+            }
+            else
+            {
+                if(openedPopups.Count> 0)
+                    lastOpenedPopup = openedPopups.Pop().name;
+            }
+            target.gameObject.SetActive(!target.gameObject.activeSelf);
+        }
+        else    // ExitButton
+        {
+            if(openedPopups.Count > 0)
+            {
+                lastOpenedPopup = openedPopups.Pop().name;
+            }
+
+            target = FindDirectChildByName(lastOpenedPopup);
+
+            if (target != null)
+            {
+                target.gameObject.SetActive(false);
+                lastOpenedPopup = null;
+            }
         }
     }
 
     private Transform FindDirectChildByName(string uiName)
     {
-        foreach (Transform child in popup)
+        if (uiName == "")
         {
-            if (child.name == uiName)
-                return child;
+            return null;
         }
-        Debug.Log($"{uiName} 라는 이름을 가진 UI가 존재하지 않습니다.");
-        return null;
+
+        foreach (Transform target in popupGroup)
+        {
+            if (target.name == uiName)
+                return target;
+        }
+
+
+
+        return this.transform;
+    }
+
+    public void ExitPopup()
+    {
+        Transform target;
+        target = FindDirectChildByName(lastOpenedPopup);
+
+        if(target != null)
+        {
+            target.gameObject.SetActive(false);
+            lastOpenedPopup = null;
+        }
     }
 
     public void ShowLobbyUI()
