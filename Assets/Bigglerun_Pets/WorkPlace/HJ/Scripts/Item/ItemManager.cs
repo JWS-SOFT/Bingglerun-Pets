@@ -27,6 +27,7 @@ public class ItemManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
             InitializeItems();
         }
         else
