@@ -19,7 +19,7 @@ public class ItemManager : MonoBehaviour
     public static IReadOnlyList<ItemData> AllUsableItems => Instance.usableItemList;
     public static IReadOnlyList<DecorationItemData> AllDecorationItems => Instance.decoItemList;
 
-
+    #region Singleton
     public static ItemManager Instance;
 
     private void Awake()
@@ -32,6 +32,7 @@ public class ItemManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
+    #endregion
 
     //아이템 유효성 검사
     public bool IsUsableItem(string itemId) => GetUsableItemById(itemId) != null;
