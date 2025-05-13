@@ -10,12 +10,13 @@ public class StairManager : MonoBehaviour
     // public int stairWidthCount = 5;
     public float stairWidth = 2f;
     public float stairHeight = 2f;
+    public int SpawnItemPercent = 20;
 
     private Vector2 currentPos = Vector2.zero;
     private List<Stair> stairs = new List<Stair>();
     private int currentIndex = -1;
 
-    void Start()
+    private void Start()
     {
         GenerateInitialStairs();
         SetPlayerOnFirstStair();
@@ -23,7 +24,7 @@ public class StairManager : MonoBehaviour
 
     int xIndex = 0; // -2 ~ 2 사이 유지 (현재 x 위치를 인덱스로 관리)
 
-    void GenerateInitialStairs()
+    private void GenerateInitialStairs()
     {
         for (int i = 0; i < stairTotalCount; i++)
         {
@@ -42,13 +43,18 @@ public class StairManager : MonoBehaviour
             if (stairScript != null)
             {
                 stairScript.index = i;
+                if (i > 0 && Random.Range (0, 100) < SpawnItemPercent)
+                {
+                    stairScript.SetItemPrefab("Coin");
+                }
+
                 stairs.Add(stairScript);
             }
         }
     }
 
 
-    void SetPlayerOnFirstStair()
+    private void SetPlayerOnFirstStair()
     {
         if (stairs.Count == 0) return;
 
@@ -70,14 +76,14 @@ public class StairManager : MonoBehaviour
     }
 
 
-    void Update()
+    private void Update()
     {
         UpdateCurrentStairIndex();
         // UpdateStairColliders();
         // RecycleStairs();
     }
 
-    void UpdateCurrentStairIndex()
+    private void UpdateCurrentStairIndex()
     {
         float playerY = player.transform.position.y;
         float closestDist = float.MaxValue;
@@ -95,7 +101,7 @@ public class StairManager : MonoBehaviour
         }
     }
 
-    void UpdateStairColliders()
+    private void UpdateStairColliders()
     {
         foreach (var stair in stairs)
         {
@@ -106,7 +112,7 @@ public class StairManager : MonoBehaviour
         }
     }
 
-    void RecycleStairs()
+    private void RecycleStairs()
     {
         // 플레이어가 5칸 이상 올라갔을 때만 실행
         if (currentIndex >= 5)
