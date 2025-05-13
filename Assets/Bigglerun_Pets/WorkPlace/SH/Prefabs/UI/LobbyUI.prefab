@@ -549,9 +549,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -682,9 +682,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -815,9 +815,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -978,6 +978,7 @@ GameObject:
   - component: {fileID: 5288802142438236064}
   - component: {fileID: 6993377949407764651}
   - component: {fileID: 2536626426119341458}
+  - component: {fileID: 2172845059379276663}
   m_Layer: 5
   m_Name: LobbyUI
   m_TagString: Untagged
@@ -1076,9 +1077,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3141958958882788330}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34fee115c2c53a0459cdcfc40e002ac3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2172845059379276663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3141958958882788330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2570b8c14f587b46bb875e839a93009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3407413721488832158
@@ -1553,9 +1566,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1761,9 +1774,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1784,7 +1797,7 @@ GameObject:
   - component: {fileID: 8908131430682682421}
   - component: {fileID: 7530647401003418307}
   m_Layer: 5
-  m_Name: PopupUI
+  m_Name: LobbyPopupUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2085,9 +2098,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2291,7 +2304,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: LobbyScene
+          m_StringArgument: TestStageSelect
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &7918607279454440912
@@ -2415,9 +2428,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2899,9 +2912,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536626426119341458}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+      - m_Target: {fileID: 2172845059379276663}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] public Transform hud;
     [SerializeField] public Transform popup;
     [SerializeField] private List<Transform> popupGroup = new List<Transform>();
+    [SerializeField] private string currentOpenedPopup = "";
 
     [SerializeField] private SceneFader fader;
 
@@ -73,23 +74,30 @@ public class UIManager : MonoBehaviour
 
     public void TogglePopupUI(string uiName)
     {
-        Transform ui = FindDirectChildByName(uiName);
+        Transform target = null;
+        target = FindDirectChildByName(uiName);
+        
 
-        if(ui != null)
+        if (target != null)
         {
-            ui.gameObject.SetActive(!ui.gameObject.activeSelf);
+            target.gameObject.SetActive(!target.gameObject.activeSelf);
         }
     }
 
     private Transform FindDirectChildByName(string uiName)
     {
-        foreach (Transform child in popup)
+        foreach (Transform target in popupGroup)
         {
-            if (child.name == uiName)
-                return child;
+            if (target.name == uiName)
+                return target;
         }
         Debug.Log($"{uiName} 라는 이름을 가진 UI가 존재하지 않습니다.");
         return null;
+    }
+
+    public void ExitPopup()
+    {
+
     }
 
     public void ShowLobbyUI()
