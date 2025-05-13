@@ -15,7 +15,7 @@ public class TerrainScrollManager : MonoBehaviour
     public List<GameObject> obstaclePrefabs;
     [Range(0.1f, 1f)]
     public float obstacleSpawnWidthRatio = 0.6f; // 가로 길이 비율로 스폰
-    public float obstacleHeightOffset = 0.5f; // 지면 위로 얼마나 띄울지
+    public float obstacleHeightOffset = 1.45f; // 지면 위로 얼마나 띄울지
     public float obstacleSpace = 4f; // 장애물 간격 얼마나 띄울지
 
     private float terrainWidth;

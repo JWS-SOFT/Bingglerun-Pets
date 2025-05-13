@@ -992,7 +992,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1079569710}
   - {fileID: 1529350864}
   - {fileID: 1292006597}
   m_Father: {fileID: 0}
@@ -1192,9 +1191,9 @@ MonoBehaviour:
   playerInstance: {fileID: 290448704}
   obstaclePrefabs:
   - {fileID: 7979775121601685149, guid: c1ee48e16c5b33447ac952b25d7b6a91, type: 3}
-  obstacleSpawnWidthRatio: 1
+  obstacleSpawnWidthRatio: 0.75
   obstacleHeightOffset: 1.45
-  obstacleSpace: 4
+  obstacleSpace: 5
 --- !u!1 &1079569709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1225,11 +1224,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 977117876}
+  m_Father: {fileID: 1292006597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 1, y: 4.3675537}
+  m_AnchoredPosition: {x: -139.99998, y: 60.367615}
   m_SizeDelta: {x: 2028.8999, y: 180}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1079569711
@@ -1602,6 +1601,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1079569710}
   - {fileID: 1066797041}
   - {fileID: 1910438446}
   - {fileID: 1706090877}
@@ -1937,7 +1937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeAction: 10
   timeBonus: 0.25
-  play_Mode: 0
+  play_Mode: 1
   StairManager: {fileID: 487118649}
   terrainScrollManager: {fileID: 1073473418}
   floorText: {fileID: 1910438448}
