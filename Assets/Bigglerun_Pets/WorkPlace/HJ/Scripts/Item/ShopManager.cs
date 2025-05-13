@@ -7,15 +7,20 @@ public class ShopManager : MonoBehaviour
     public int playerGold = 1000;   //테스트용 임시변수
     public int playerCash = 50;     //테스트용 임시변수
 
+    #region Singleton
     public static ShopManager Instance { get; private set; }
 
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }            
         else
             Destroy(gameObject);
     }
+    #endregion
 
     //아이템 구매(상점 UI에서 적용)
     public bool TryBuyItem(string itemId, bool useCash = false, int amount = 1)
