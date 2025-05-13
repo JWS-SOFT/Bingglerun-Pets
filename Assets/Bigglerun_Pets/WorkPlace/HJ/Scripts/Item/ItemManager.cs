@@ -12,6 +12,7 @@ public class ItemManager : MonoBehaviour
     [SerializeField] private List<DecorationItemData> decoItemList; //데이터 베이스에 따라 추후 수정
     private HashSet<string> unlockedDecorationIds = new HashSet<string>();
 
+    //선택된 스타트 아이템
     private ItemData selectedPreGameItem = null;
     public ItemData SelectedPreGameItem => selectedPreGameItem;
 
@@ -156,9 +157,7 @@ public class ItemManager : MonoBehaviour
     //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
     public bool IsCashItem(string itemId) => GetCashPrice(itemId) > 0;
 
-    
-
-
+    #region Private Method
     //아이템 아이디로 찾기
     private ItemData GetUsableItemById(string itemId)
     {
@@ -196,4 +195,6 @@ public class ItemManager : MonoBehaviour
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
     }
+
+    #endregion
 }

@@ -45,7 +45,6 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<BGMType, AudioClip> bgmClipMap;
     private Dictionary<SFXType, List<AudioClip>> sfxClipMap;
-    private int sfxIndex = 0;
 
     [Header("볼륨 셋팅")]
     [Range(0f, 1f)] public float masterVolume = 1f;
@@ -96,32 +95,34 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    //전체 음소거 (옵션 UI에서 호출)
+    //전체 음소거(옵션 UI에서 호출)
     public void Mute(bool isMute)
     {
         audioMixer.SetFloat(masterVolumeParam, isMute ? -80f : ToDecibels(masterVolume));
     }
 
-    //전체 볼륨 제어 (옵션 UI에서 호출)
+    //전체 볼륨 제어(옵션 UI에서 호출)
     public void SetMasterVolume(float volume)
     {
         masterVolume = Mathf.Clamp01(volume);
         audioMixer.SetFloat(masterVolumeParam, ToDecibels(masterVolume));
     }
 
-    //BGM 볼륨 제어 (옵션 UI에서 호출)
+    //BGM 볼륨 제어(옵션 UI에서 호출)
     public void SetBGMVolume(float volume)
     {
-
+        bgmVolume = Mathf.Clamp01(volume);
+        audioMixer.SetFloat(bgmVolumeParam, ToDecibels(bgmVolume));
     }
 
-    //SFX 볼륨 제어 (옵션 UI에서 호출)
+    //SFX 볼륨 제어(옵션 UI에서 호출)
     public void SetSFXVolume(float volume)
     {
-
+        sfxVolume = Mathf.Clamp01(volume);
+        audioMixer.SetFloat(sfxVolumeParam, ToDecibels(sfxVolume));
     }
 
-
+    #region Private Method
     //오디오클립 매핑 초기화
     private void InitBGMClipMap()
     {
@@ -147,17 +148,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    //볼륨을 데시벨로 변환 (오디오믹서에서 이용)
+    //볼륨을 데시벨로 변환(오디오믹서에서 이용)
     private float ToDecibels(float volume)
     {
         return Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20f;
     }
 
-    //볼륨 적용 (초기화)
+    //볼륨 적용(초기화)
     private void ApplyVolume()
     {
         SetMasterVolume(masterVolume);
         SetBGMVolume(bgmVolume);
         SetSFXVolume(sfxVolume);
     }
+    #endregion
 }
