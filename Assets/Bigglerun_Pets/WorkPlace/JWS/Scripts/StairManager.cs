@@ -3,18 +3,23 @@ using UnityEngine;
 
 public class StairManager : MonoBehaviour
 {
-    public GameObject player;
-    public GameObject stairPrefab;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject stairPrefab;
 
-    public int stairTotalCount = 20;
-    // public int stairWidthCount = 5;
+    [SerializeField] private int stairTotalCount = 20;
+    // [SerializeField] private  int stairWidthCount = 5;
     public float stairWidth = 2f;
     public float stairHeight = 2f;
-    public int SpawnItemPercent = 20;
+    [SerializeField] private int SpawnItemPercent = 20;
+    [Header ("🔐 난이도 조정")]
+    [Range(0f, 1f)]
+    [SerializeField] private float changeDirectionChance = 0.3f; // 방향 바꿀 확률 (난이도용)
 
+    private int lastDirection = 1; // 시작 방향
     private Vector2 currentPos = Vector2.zero;
     private List<Stair> stairs = new List<Stair>();
     private int currentIndex = -1;
+    private int xIndex = 0; // -2 ~ 2 사이 유지 (현재 x 위치를 인덱스로 관리)
 
     private void Start()
     {
@@ -22,19 +27,23 @@ public class StairManager : MonoBehaviour
         SetPlayerOnFirstStair();
     }
 
-    int xIndex = 0; // -2 ~ 2 사이 유지 (현재 x 위치를 인덱스로 관리)
-
     private void GenerateInitialStairs()
     {
         for (int i = 0; i < stairTotalCount; i++)
         {
-            int direction = Random.Range(0, 2) == 0 ? -1 : 1;
+            // 일정 확률로 방향 전환
+            if (Random.value < changeDirectionChance)
+            {
+                lastDirection = -lastDirection;
+            }
 
             // 범위 초과 방지
-            if (xIndex + direction < -2 || xIndex + direction > 2)
-                direction = -direction; // 반대로 고정
+            if (xIndex + lastDirection < -2 || xIndex + lastDirection > 2)
+            {
+                lastDirection = -lastDirection;
+            }
 
-            xIndex += direction;
+            xIndex += lastDirection;
             currentPos.x = xIndex * stairWidth;
             currentPos.y += stairHeight;
 
@@ -43,20 +52,26 @@ public class StairManager : MonoBehaviour
             if (stairScript != null)
             {
                 stairScript.index = i;
-                if (i > 0 && Random.Range (0, 100) < SpawnItemPercent)
+                if (i > 0 && Random.Range(0, 100) < SpawnItemPercent)
                 {
                     stairScript.SetItemPrefab("Coin");
                 }
-
                 stairs.Add(stairScript);
             }
         }
     }
 
-
     private void SetPlayerOnFirstStair()
     {
         if (stairs.Count == 0) return;
+        if (PlayerManager.IsSettingPlayer())
+        {
+            PlayerManager.Player_Transform.gameObject.SetActive(true);
+        }
+        else
+        {
+            return;
+        }
 
         Vector3 firstStairPos = stairs[0].transform.position;
 
@@ -101,16 +116,16 @@ public class StairManager : MonoBehaviour
         }
     }
 
-    private void UpdateStairColliders()
-    {
-        foreach (var stair in stairs)
-        {
-            if (stair.index <= currentIndex || stair.index == currentIndex + 1)
-                stair.SetCollider(true);
-            else
-                stair.SetCollider(false);
-        }
-    }
+    //private void UpdateStairColliders()
+    //{
+    //    foreach (var stair in stairs)
+    //    {
+    //        if (stair.index <= currentIndex || stair.index == currentIndex + 1)
+    //            stair.SetCollider(true);
+    //        else
+    //            stair.SetCollider(false);
+    //    }
+    //}
 
     private void RecycleStairs()
     {
