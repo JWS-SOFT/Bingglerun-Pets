@@ -110,10 +110,12 @@ public class PlayerController : MonoBehaviour
             targetPos = new Vector2(nextStairPos.x, correctedY);
             currentStairIndex = nextIndex;
             PlayerManager.ChangeFloor(currentStairIndex);
-            PlayerManager.ActionTImeStart();
+            if (currentStairIndex > 1) PlayerManager.ActionTImeSuccess();
+            else PlayerManager.ActionTImeStart();
         }
         else
         {
+            Debug.Log("다음 계단 없음 → 게임 오버");
             TriggerGameOver();
         }
     }
@@ -122,7 +124,7 @@ public class PlayerController : MonoBehaviour
     {
         moving = false;
         enabled = false;
-        Debug.Log("다음 계단 없음 → 게임 오버");
+        PlayerManager.ActionTImeStop();
         Debug.Log("Game Over!");
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
     }
