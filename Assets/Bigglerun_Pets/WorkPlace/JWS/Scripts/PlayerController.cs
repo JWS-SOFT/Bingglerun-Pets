@@ -24,6 +24,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (moving) return;
+        else
+        {
+            if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
+            {
+                TriggerGameOver();
+                return;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -64,6 +72,11 @@ public class PlayerController : MonoBehaviour
     public void JumpButtonClick()
     {
         if (moving) return; // 중복 방지
+        if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
+        {
+            TriggerGameOver();
+            return;
+        }
 
         moving = true;              // 🔐 입력 즉시 잠금
         jumpTimer = 0f;             // 점프 시간 초기화
@@ -97,10 +110,10 @@ public class PlayerController : MonoBehaviour
             targetPos = new Vector2(nextStairPos.x, correctedY);
             currentStairIndex = nextIndex;
             PlayerManager.ChangeFloor(currentStairIndex);
+            PlayerManager.ActionTImeStart();
         }
         else
         {
-            Debug.Log("다음 계단 없음 → 게임 오버");
             TriggerGameOver();
         }
     }
@@ -109,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         moving = false;
         enabled = false;
-
+        Debug.Log("다음 계단 없음 → 게임 오버");
         Debug.Log("Game Over!");
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
     }
