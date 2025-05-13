@@ -40,7 +40,9 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
         actionTimer = new BasicTimer(timeAction);
+
         if (play_Mode)
         {
             StairManager.enabled = false;
@@ -55,16 +57,25 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        floorText.text = "Floor\n" + currentPlayerFloor;
-        coinText.text = "Coin\n" + currentPlayerCoin;
-        timerSlider.maxValue = timeAction;
-        timerSlider.value = actionTimer.RemainingTime;
-        timerText.text = actionTimer.RemainingTime.ToString("N1");
+        if (!play_Mode)
+        {
+            floorText.text = "Floor\n" + currentPlayerFloor;
+            coinText.text = "Coin\n" + currentPlayerCoin;
+            timerSlider.maxValue = timeAction;
+            timerSlider.value = actionTimer.RemainingTime;
+            timerText.text = actionTimer.RemainingTime.ToString("N1");
+        }
+        else
+        {
+            floorText.text = "";
+            coinText.text = "Coin\n" + currentPlayerCoin;
+            timerText.text = "";
+        }
     }
 
     private void Update()
     {
-        if (actionTimer.IsRunning)
+        if (!play_Mode && actionTimer.IsRunning)
         {
             timerSlider.value = actionTimer.RemainingTime;
             timerText.text = actionTimer.RemainingTime.ToString("N1");

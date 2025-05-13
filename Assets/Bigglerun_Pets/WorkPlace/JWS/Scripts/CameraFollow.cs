@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour
         if (PlayerManager.PlayMode)
         {
             // ➤ 횡스크롤 모드 (y는 고정, x만 따라감)
-            targetPos = new Vector3(player.position.x, 3.5f, -10f);
+            targetPos = new Vector3(player.position.x + 1.5f , 3.5f, -10f);
         }
         else
         {
