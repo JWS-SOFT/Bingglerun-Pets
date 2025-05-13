@@ -465,11 +465,12 @@ public class TitleUIController : MonoBehaviour
     /// </summary>
     private void OnClickStartGame()
     {
-        // 씬 전환 → 로비로
-        GameManager.Instance.SceneFader.LoadScene("LobbyScene");
-
-        // 상태 전환은 씬 로딩 이후 Start 등에서 처리하거나, 여기서 즉시
+        // 먼저, 상태 전환을 실행
+        // GameState.Lobby로 변경하면 GameStateMachine에서 자동으로 씬 로드 처리
         GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+        
+        // 참고: 이제 씬 전환은 GameStateMachine.EnterState에서 처리됨
+        // GameManager.Instance.SceneFader.LoadScene("LobbyScene") 호출 필요 없음
     }
     
     /// <summary>
