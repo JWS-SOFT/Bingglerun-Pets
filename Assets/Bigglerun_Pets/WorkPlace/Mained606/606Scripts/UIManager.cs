@@ -12,7 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] public Transform hud;
     [SerializeField] public Transform popup;
     [SerializeField] private List<Transform> popupGroup = new List<Transform>();
-    [SerializeField] private string currentOpenedPopup = "";
+    [SerializeField] private Stack<Transform> openedPopups = new Stack<Transform>();
+    [SerializeField] private string lastOpenedPopup = "";
 
     [SerializeField] private SceneFader fader;
 
@@ -77,27 +78,72 @@ public class UIManager : MonoBehaviour
         Transform target = null;
         target = FindDirectChildByName(uiName);
         
+        if(target == this.transform)
+        {
+            Debug.Log($"{uiName}에 해당하는 UI가 없습니다.");
+            return;
+        }
 
         if (target != null)
         {
+            if (!target.gameObject.activeSelf)
+            {
+                openedPopups.Push(target);
+                lastOpenedPopup = target.name;
+                Debug.Log($"{target.name} 오픈");
+            }
+            else
+            {
+                if(openedPopups.Count> 0)
+                    lastOpenedPopup = openedPopups.Pop().name;
+            }
             target.gameObject.SetActive(!target.gameObject.activeSelf);
+        }
+        else    // ExitButton
+        {
+            if(openedPopups.Count > 0)
+            {
+                lastOpenedPopup = openedPopups.Pop().name;
+            }
+
+            target = FindDirectChildByName(lastOpenedPopup);
+
+            if (target != null)
+            {
+                target.gameObject.SetActive(false);
+                lastOpenedPopup = null;
+            }
         }
     }
 
     private Transform FindDirectChildByName(string uiName)
     {
+        if (uiName == "")
+        {
+            return null;
+        }
+
         foreach (Transform target in popupGroup)
         {
             if (target.name == uiName)
                 return target;
         }
-        Debug.Log($"{uiName} 라는 이름을 가진 UI가 존재하지 않습니다.");
-        return null;
+
+
+
+        return this.transform;
     }
 
     public void ExitPopup()
     {
+        Transform target;
+        target = FindDirectChildByName(lastOpenedPopup);
 
+        if(target != null)
+        {
+            target.gameObject.SetActive(false);
+            lastOpenedPopup = null;
+        }
     }
 
     public void ShowLobbyUI()

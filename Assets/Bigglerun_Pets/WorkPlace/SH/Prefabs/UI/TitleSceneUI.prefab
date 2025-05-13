@@ -308,7 +308,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7653625751957185178}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1150699718493930055}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SignIn
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1061694868681770249
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,6 +2431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8317111325819444571}
+  - component: {fileID: 5782016257784784957}
   m_Layer: 5
   m_Name: Popup
   m_TagString: Untagged
@@ -2446,6 +2459,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &5782016257784784957
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5971600158570688073}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6442076335909811942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,6 +2860,7 @@ GameObject:
   - component: {fileID: 1716801187497535826}
   - component: {fileID: 1168749079327118992}
   - component: {fileID: 7307585158267321597}
+  - component: {fileID: 1150699718493930055}
   m_Layer: 5
   m_Name: TitleSceneUI
   m_TagString: Untagged
@@ -2926,6 +2952,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1150699718493930055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7546350055743310351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2570b8c14f587b46bb875e839a93009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8206802433412182912
 GameObject:
   m_ObjectHideFlags: 0
@@ -3409,6 +3447,34 @@ PrefabInstance:
     - target: {fileID: 190837449866837459, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_Name
       value: ExitButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1150699718493930055}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5715662654482375027, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_Pivot.x

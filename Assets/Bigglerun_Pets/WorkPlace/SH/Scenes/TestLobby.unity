@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 819291236048537327, guid: 75e59feb5a5d78f49a3834db0a95cc84, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3245313162493396601, guid: 75e59feb5a5d78f49a3834db0a95cc84, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -400,30 +404,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3764916912059208104}
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ExitButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: NoticeUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 312253981081935449, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Transform, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 495036044481804487, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -536,26 +516,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4675567275853960999, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675567275853960999, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3764916912059208104}
-    - target: {fileID: 4675567275853960999, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ExitButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675567275853960999, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675567275853960999, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: OptionUI
-      objectReference: {fileID: 0}
     - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -576,38 +536,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3764916912059208104}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TogglePopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: LeaderboardUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 6255154565247172565, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 6684107831542490621, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -623,26 +551,6 @@ PrefabInstance:
     - target: {fileID: 6684107831542490621, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7074288731700354303, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7074288731700354303, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3764916912059208104}
-    - target: {fileID: 7074288731700354303, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TogglePopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 7074288731700354303, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7074288731700354303, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: ShopUI
       objectReference: {fileID: 0}
     - target: {fileID: 7782491933196421580, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchorMax.y
@@ -667,26 +575,6 @@ PrefabInstance:
     - target: {fileID: 7782491933196421580, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7939213559382604970, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7939213559382604970, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3764916912059208104}
-    - target: {fileID: 7939213559382604970, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TogglePopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 7939213559382604970, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7939213559382604970, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: ReadyUI
       objectReference: {fileID: 0}
     - target: {fileID: 8211177051056068322, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_AnchorMax.y
@@ -785,22 +673,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 2564871284536454403, guid: aa083a308e8365547b643522996e9177, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa083a308e8365547b643522996e9177, type: 3}
---- !u!114 &3764916912059208104 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2172845059379276663, guid: aa083a308e8365547b643522996e9177, type: 3}
-  m_PrefabInstance: {fileID: 3764916912059208103}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2570b8c14f587b46bb875e839a93009, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
