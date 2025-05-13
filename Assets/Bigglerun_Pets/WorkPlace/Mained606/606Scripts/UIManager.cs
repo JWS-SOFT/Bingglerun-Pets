@@ -27,85 +27,24 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        FindAndBindCanvas();
+        canvas = FindAnyObjectByType<Canvas>().transform;
+        if(canvas != null)
+        {
+            hud = canvas.transform.GetChild(0);
+            popup = canvas.transform.GetChild(1);
+        }
+
         fader = FindAnyObjectByType<SceneFader>();
-    }
-
-    /// <summary>
-    /// 게임 상태 변경 시 호출되는 메서드
-    /// </summary>
-    public void HandleGameStateChange(GameState state)
-    {
-        // 캔버스와 UI 요소들을 찾아서 바인딩
-        FindAndBindCanvas();
-        
-        // 상태에 따른 UI 표시
-        switch (state)
-        {
-            case GameState.Title:
-                ShowTitleUI();
-                break;
-                
-            case GameState.Lobby:
-                ShowLobbyUI();
-                break;
-                
-            case GameState.ModeSelect:
-                ShowModeSelectUI();
-                break;
-                
-            case GameState.StoryStageSelect:
-                ShowStoryStageSelectUI();
-                break;
-                
-            case GameState.CompetitiveSetup:
-                ShowCompetitiveSetupUI();
-                break;
-                
-            case GameState.Result:
-                ShowResultUI();
-                break;
-                
-            case GameState.Pause:
-                ShowPauseMenu();
-                break;
-                
-            case GameState.InGame:
-                HideAll();
-                break;
-        }
-    }
-
-    // 캔버스와 UI 요소들을 찾아서 바인딩
-    private void FindAndBindCanvas()
-    {
-        canvas = FindAnyObjectByType<Canvas>()?.transform;
-        if (canvas != null)
-        {
-            Debug.Log($"[UIManager] 캔버스 찾음: {canvas.name}");
-            
-            // 캔버스 하위에 HUD와 Popup이 있는지 확인
-            if (canvas.childCount >= 2)
-            {
-                hud = canvas.GetChild(0);
-                popup = canvas.GetChild(1);
-                Debug.Log($"[UIManager] UI 바인딩 완료 - HUD: {hud.name}, Popup: {popup.name}");
-            }
-            else
-            {
-                Debug.LogWarning("[UIManager] 캔버스에 필요한 하위 UI 요소가 없습니다.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("[UIManager] 씬에 캔버스가 없습니다.");
-        }
     }
 
     public void SceneChange()
     {
-        // 캔버스 바인딩만 실행
-        FindAndBindCanvas();
+        canvas = FindAnyObjectByType<Canvas>().transform;
+        if (canvas != null)
+        {
+            hud = canvas.transform.GetChild(0);
+            popup = canvas.transform.GetChild(1);
+        }
     }
 
     public void ShowTitleUI()
