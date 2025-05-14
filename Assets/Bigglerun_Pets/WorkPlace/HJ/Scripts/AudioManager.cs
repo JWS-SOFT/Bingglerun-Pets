@@ -1,6 +1,27 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+
+public static class SoundEvents
+{
+    public static Action<BGMType> OnPlayBGM;
+    public static Action OnStopBGM;
+    public static Action<SFXType> OnPlaySFX;
+
+    //public static Action OnJump;
+    //public static Action OnLand;
+    //public static Action OnItem;
+    //public static Action OnClickUI;
+    //public static Action OnFailStairs;
+    //public static Action OnFailRun;
+    //public static Action OnSkillDog;
+    //public static Action OnSkillCat;
+    //public static Action OnSkillHamster;
+    //public static Action OnTakeDamage;
+    //public static Action OnGameOver;
+    //public static Action OnStageClear;
+}
 
 public enum BGMType
 {
@@ -57,13 +78,14 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if(Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
             Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         InitBGMClipMap();
         InitSFXClipMap();
@@ -71,39 +93,47 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
-    //BGM 재생
-    public void PlayBGM(BGMType type, bool loop = true)
+    #region Events
+    private void OnEnable()
     {
-        if (!bgmClipMap.ContainsKey(type)) return;
+        SoundEvents.OnPlayBGM += (type) => PlayBGM(type);
+        SoundEvents.OnStopBGM += StopBGM;
+        SoundEvents.OnPlaySFX += PlaySFX;
 
-        AudioClip clip = bgmClipMap[type];
-        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
-
-        bgmSource.clip = clip;
-        bgmSource.loop = loop;
-        bgmSource.Play();
+        //SoundEvents.OnJump += () => PlaySFX(SFXType.Jump);
+        //SoundEvents.OnLand += () => PlaySFX(SFXType.Land);
+        //SoundEvents.OnItem += () => PlaySFX(SFXType.Item);
+        //SoundEvents.OnClickUI += () => PlaySFX(SFXType.Click);
+        //SoundEvents.OnFailStairs += () => PlaySFX(SFXType.Fail_Stairs);
+        //SoundEvents.OnFailRun += () => PlaySFX(SFXType.Fail_Run);
+        //SoundEvents.OnSkillDog += () => PlaySFX(SFXType.Skill_Dog);
+        //SoundEvents.OnSkillCat += () => PlaySFX(SFXType.Skill_Cat);
+        //SoundEvents.OnSkillHamster += () => PlaySFX(SFXType.Skill_Hamster);
+        //SoundEvents.OnTakeDamage += () => PlaySFX(SFXType.HPDamage);
+        //SoundEvents.OnGameOver += () => PlaySFX(SFXType.GameOver);
+        //SoundEvents.OnStageClear += () => PlaySFX(SFXType.StageClear);
     }
 
-    //BGM 정지
-    public void StopBGM()
+    private void OnDisable()
     {
-        bgmSource.Stop();
+        SoundEvents.OnPlayBGM -= (type) => PlayBGM(type);
+        SoundEvents.OnStopBGM -= StopBGM;
+        SoundEvents.OnPlaySFX -= PlaySFX;
+
+        //SoundEvents.OnJump -= () => PlaySFX(SFXType.Jump);
+        //SoundEvents.OnLand -= () => PlaySFX(SFXType.Land);
+        //SoundEvents.OnItem -= () => PlaySFX(SFXType.Item);
+        //SoundEvents.OnClickUI -= () => PlaySFX(SFXType.Click);
+        //SoundEvents.OnFailStairs -= () => PlaySFX(SFXType.Fail_Stairs);
+        //SoundEvents.OnFailRun -= () => PlaySFX(SFXType.Fail_Run);
+        //SoundEvents.OnSkillDog -= () => PlaySFX(SFXType.Skill_Dog);
+        //SoundEvents.OnSkillCat -= () => PlaySFX(SFXType.Skill_Cat);
+        //SoundEvents.OnSkillHamster -= () => PlaySFX(SFXType.Skill_Hamster);
+        //SoundEvents.OnTakeDamage -= () => PlaySFX(SFXType.HPDamage);
+        //SoundEvents.OnGameOver -= () => PlaySFX(SFXType.GameOver);
+        //SoundEvents.OnStageClear -= () => PlaySFX(SFXType.StageClear);
     }
-
-    //SFX 재생
-    public void PlaySFX(SFXType type)
-    {
-        if(!sfxClipMap.ContainsKey(type) || sfxClipMap[type].Count == 0) return;
-
-        var clipList = sfxClipMap[type];
-        var clip = clipList[Random.Range(0, clipList.Count)];
-
-        var source = sfxSources[sfxIndex];
-        source.clip = clip;
-        source.Play();
-
-        sfxIndex = (sfxIndex + 1) % sfxSources.Length;
-    }
+    #endregion
 
     //전체 음소거(옵션 UI에서 호출)
     public void Mute(bool isMute)
@@ -132,6 +162,49 @@ public class AudioManager : MonoBehaviour
         audioMixer.SetFloat(sfxVolumeParam, ToDecibels(sfxVolume));
     }
 
+    //BGM 재생
+    public void PlayBGM(BGMType type, bool loop = true)
+    {
+        if (!bgmClipMap.ContainsKey(type))
+        {
+            Debug.LogWarning($"AudioManager 재생할 BGM 클립이 없음: {type}");
+            return;
+        }
+
+        AudioClip clip = bgmClipMap[type];
+        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
+
+        bgmSource.clip = clip;
+        bgmSource.loop = loop;
+        bgmSource.Play();
+    }
+
+    //BGM 정지
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+        bgmSource.clip = null;
+    }
+
+    //SFX 재생
+    public void PlaySFX(SFXType type)
+    {
+        if (!sfxClipMap.ContainsKey(type) || sfxClipMap[type].Count == 0)
+        {
+            Debug.LogWarning($"AudioManager 재생할 SFX 클립이 없음: {type}");
+            return;
+        }
+
+        var clipList = sfxClipMap[type];
+        var clip = clipList[UnityEngine.Random.Range(0, clipList.Count)];
+
+        var source = sfxSources[sfxIndex];
+        source.clip = clip;
+        source.Play();
+
+        sfxIndex = (sfxIndex + 1) % sfxSources.Length;
+    }
+
     //오디오클립 매핑 초기화
     private void InitBGMClipMap()
     {
@@ -155,7 +228,7 @@ public class AudioManager : MonoBehaviour
 
             sfxClipMap[sfxClipKeys[i]].Add(sfxClips[i]);
         }
-    }
+    } 
 
     //볼륨을 데시벨로 변환(오디오믹서에서 이용)
     private float ToDecibels(float volume)
