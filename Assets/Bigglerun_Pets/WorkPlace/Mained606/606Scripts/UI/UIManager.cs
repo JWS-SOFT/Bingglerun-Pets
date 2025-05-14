@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform canvas;
     [SerializeField] public Transform hud;
     [SerializeField] public Transform popup;
+    public UIController uiController;
     [SerializeField] private List<Transform> popupGroup = new List<Transform>();
     [SerializeField] private Stack<Transform> openedPopups = new Stack<Transform>();
     [SerializeField] private string lastOpenedPopup = "";
@@ -56,6 +57,7 @@ public class UIManager : MonoBehaviour
             if (canvas.childCount > 0)
             {
                 hud = canvas.GetChild(0);
+                uiController = canvas.GetComponent<UIController>();
             }
             
             // CanvasGroup 컴포넌트 찾기 (null 체크 추가)

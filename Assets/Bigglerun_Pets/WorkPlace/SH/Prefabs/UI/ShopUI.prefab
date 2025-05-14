@@ -3379,6 +3379,7 @@ GameObject:
   - component: {fileID: 134162900249467579}
   - component: {fileID: 6537242730199693730}
   - component: {fileID: 8977189071251230414}
+  - component: {fileID: 1941205118752221375}
   m_Layer: 5
   m_Name: ShopUI
   m_TagString: Untagged
@@ -3448,6 +3449,26 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1941205118752221375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7564678195247527264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f5f36877457ca4da93f9ef304cae4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerGold: {fileID: 8006621137088396239}
+  playerCash: {fileID: 6667596312198414440}
+  itemPrefab: {fileID: 0}
+  itemImage: {fileID: 0}
+  itemName: {fileID: 0}
+  itemPrice: {fileID: 0}
+  accessaryItemList: []
+  selectedItem: {fileID: 0}
 --- !u!1 &7839740292622396013
 GameObject:
   m_ObjectHideFlags: 0
