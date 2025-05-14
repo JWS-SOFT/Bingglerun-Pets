@@ -521,7 +521,6 @@ MonoBehaviour:
   stairWidth: 1
   stairHeight: 0.5
   SpawnItemPercent: 30
-  SpawnInvincibleItemPercent: 5
   changeDirectionChance: 0.2
 --- !u!4 &487118650
 Transform:

@@ -11,7 +11,6 @@ public class StairManager : MonoBehaviour
     public float stairWidth = 2f;
     public float stairHeight = 2f;
     [SerializeField] private int SpawnItemPercent = 20;
-    [SerializeField] private int SpawnInvincibleItemPercent = 5;
     [Header ("🔐 난이도 조정")]
     [Range(0f, 1f)]
     [SerializeField] private float changeDirectionChance = 0.3f; // 방향 바꿀 확률 (난이도용)
@@ -56,7 +55,7 @@ public class StairManager : MonoBehaviour
                 if (i > 0 && Random.Range(0, 100) < SpawnItemPercent)
                 {
                     //05.14 HJ 추가
-                    if (Random.Range(0, 100) > SpawnInvincibleItemPercent)
+                    if (Random.value < 0.5f)
                         stairScript.SetItemPrefab("Coin");
                     else
                         stairScript.SetItemPrefab("Gem");
