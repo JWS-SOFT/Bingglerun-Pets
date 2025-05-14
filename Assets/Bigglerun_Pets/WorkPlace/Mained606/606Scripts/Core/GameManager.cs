@@ -40,15 +40,17 @@ public class GameManager : MonoBehaviour
 
         // 핵심 매니저 연결
         gameObject.AddComponent<UIManager>();
-        // gameObject.AddComponent<AudioManager>();
-        // gameObject.AddComponent<InputManager>();
+        //gameObject.AddComponent<AudioManager>();
+        gameObject.AddComponent<InputManager>();
         gameObject.AddComponent<FirebaseManager>(); // 이건 나중에 초기화 시도
-        
+
         // 데이터 관련 매니저 추가
         gameObject.AddComponent<FirebaseDatabase>();
         gameObject.AddComponent<PlayerDataManager>();
 
-        // TODO: 필요 시 다른 매니저도 연결
+        // 아이템 관련 매니저
+        gameObject.AddComponent<ItemManager>();
+        gameObject.AddComponent<ShopManager>();
     }
 
     private void Start()

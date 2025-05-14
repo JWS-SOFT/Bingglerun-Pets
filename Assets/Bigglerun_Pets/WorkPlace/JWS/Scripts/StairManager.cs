@@ -54,7 +54,11 @@ public class StairManager : MonoBehaviour
                 stairScript.index = i;
                 if (i > 0 && Random.Range(0, 100) < SpawnItemPercent)
                 {
-                    stairScript.SetItemPrefab("Coin");
+                    //05.14 HJ 추가
+                    if (Random.value < 0.5f)
+                        stairScript.SetItemPrefab("Coin");
+                    else
+                        stairScript.SetItemPrefab("Gem");
                 }
                 stairs.Add(stairScript);
             }

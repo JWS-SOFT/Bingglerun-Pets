@@ -5,11 +5,11 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     [Header("소모 아이템")]
-    [SerializeField] private List<ItemData> usableItemList;   //데이터 베이스에 따라 추후 수정
+    [SerializeField] private List<ItemData> usableItemList;
     private Dictionary<string, int> ownedUsableItems = new Dictionary<string, int>();
 
     [Header("데코 아이템")]
-    [SerializeField] private List<DecorationItemData> decoItemList; //데이터 베이스에 따라 추후 수정
+    [SerializeField] private List<DecorationItemData> decoItemList;
     private HashSet<string> unlockedDecorationIds = new HashSet<string>();
 
     //선택된 스타트 아이템
@@ -25,14 +25,16 @@ public class ItemManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeItems();
-        }
-        else
             Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        InitializeItems();
     }
     #endregion
 
@@ -157,7 +159,6 @@ public class ItemManager : MonoBehaviour
     //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
     public bool IsCashItem(string itemId) => GetCashPrice(itemId) > 0;
 
-    #region Private Method
     //아이템 아이디로 찾기
     private ItemData GetUsableItemById(string itemId)
     {
@@ -195,6 +196,4 @@ public class ItemManager : MonoBehaviour
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
     }
-
-    #endregion
 }
