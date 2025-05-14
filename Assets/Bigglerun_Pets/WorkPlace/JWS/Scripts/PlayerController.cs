@@ -11,14 +11,19 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 targetPos;
     private Vector2 startJumpPos;       // ⬅ 점프 시작 위치 저장
-    private float jumpTimer = 0f;       // ⬅ 점프 시간 진행 추적
-    private float jumpDuration = 0.25f; // ⬅ 총 이동에 걸릴 시간
-    private float jumpHeight = 1.5f;    // ⬅ 점프 높이
+    [SerializeField] private float jumpTimer = 0f;       // ⬅ 점프 시간 진행 추적
+    [SerializeField] private float jumpDuration = 0.25f; // ⬅ 총 이동에 걸릴 시간
+    [SerializeField] private float jumpHeight = 2.5f;    // ⬅ 점프 높이
+    private bool isGameOver = false;
+    private bool isGamemode = false;  // false 계단, true 횡런게임.
 
     private void Start()
     {
         PlayerManager.Player_Transform = transform;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+        isGamemode = PlayerManager.PlayMode;
+        jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
+        jumpHeight = !isGamemode ? 2.5f : 3f;    // ⬅ 점프 높이
     }
 
     private void Update()
@@ -36,21 +41,32 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (moving)
+        if (!moving) return;
+
+        jumpTimer += Time.fixedDeltaTime;
+        float t = Mathf.Clamp01(jumpTimer / jumpDuration);
+        float heightOffset = Mathf.Sin(t * Mathf.PI) * jumpHeight;
+
+        if (isGamemode)
         {
-            jumpTimer += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(jumpTimer / jumpDuration);
+            // 🟦 횡스크롤 모드: 제자리에서 위아래로 점프
+            Vector2 jumpPos = startJumpPos;
+            jumpPos.y += heightOffset;
+            transform.position = jumpPos;
 
-            // 이동 위치 보간
+            if (t >= 1f)
+            {
+                transform.position = startJumpPos; // 정확히 제자리 복귀
+                moving = false;
+            }
+        }
+        else
+        {
+            // 🟩 계단 점프: 위치를 이동하며 점프
             Vector2 flatPos = Vector2.Lerp(startJumpPos, targetPos, t);
-
-            // 위로 튀는 점프 궤적 추가
-            float heightOffset = Mathf.Sin(t * Mathf.PI) * jumpHeight;
             flatPos.y += heightOffset;
-
             transform.position = flatPos;
 
-            // 도착 처리
             if (t >= 1f)
             {
                 transform.position = targetPos;
@@ -61,6 +77,17 @@ public class PlayerController : MonoBehaviour
 
     public void TurnButtonClick()
     {
+        if (isGameOver) return;
+
+        // ✅ 게임모드일 때는 방향 전환 비활성화
+        if (isGamemode) return;
+
+        if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
+        {
+            TriggerGameOver();
+            return;
+        }
+
         moveDirection *= -1;
 
         // 스프라이트 방향 반전
@@ -71,16 +98,28 @@ public class PlayerController : MonoBehaviour
 
     public void JumpButtonClick()
     {
-        if (moving) return; // 중복 방지
+        if (moving || isGameOver) return;
+
+        // ✅ 횡스크롤 모드일 경우: 제자리 점프
+        if (isGamemode)
+        {
+            moving = true;
+            jumpTimer = 0f;
+            startJumpPos = transform.position;
+            targetPos = startJumpPos; // 제자리 점프
+            return;
+        }
+
+        // ✅ 계단 모드일 경우
         if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
         {
             TriggerGameOver();
             return;
         }
 
-        moving = true;              // 🔐 입력 즉시 잠금
-        jumpTimer = 0f;             // 점프 시간 초기화
-        startJumpPos = transform.position; // 시작 위치 저장
+        moving = true;
+        jumpTimer = 0f;
+        startJumpPos = transform.position;
 
         int nextIndex = currentStairIndex + 1;
 
@@ -110,6 +149,7 @@ public class PlayerController : MonoBehaviour
             targetPos = new Vector2(nextStairPos.x, correctedY);
             currentStairIndex = nextIndex;
             PlayerManager.ChangeFloor(currentStairIndex);
+
             if (currentStairIndex > 1) PlayerManager.ActionTImeSuccess();
             else PlayerManager.ActionTImeStart();
         }
@@ -120,12 +160,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void TriggerGameOver()
+    public void TriggerGameOver()
     {
         moving = false;
         enabled = false;
-        PlayerManager.ActionTImeStop();
+        isGameOver = true;
+        if(!isGamemode) PlayerManager.ActionTImeStop();
         Debug.Log("Game Over!");
+        Time.timeScale = 0f;
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
     }
 }
