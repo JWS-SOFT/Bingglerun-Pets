@@ -8,7 +8,11 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
-        heart.text = PlayerDataManager.Instance.CurrentPlayerData.heart.ToString();
+        if(heart != null)
+        {
+            heart.text = PlayerDataManager.Instance.CurrentPlayerData.heart.ToString();
+        }
+        
     }
 
     public void TogglePopup(string uiName = "")
