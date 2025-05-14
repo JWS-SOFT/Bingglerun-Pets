@@ -16,6 +16,9 @@ public class SpawnItem : MonoBehaviour
     //private float flipTimer;
     //private bool flipped = false;
 
+    //05.14 HJ 추가
+    private spriteNameType currentItemType;
+
     private enum spriteNameType
     {
         Coin,
@@ -51,6 +54,9 @@ public class SpawnItem : MonoBehaviour
     {
         if (System.Enum.TryParse(type, out spriteNameType itemType))
         {
+            //05.14 HJ 추가
+            currentItemType = itemType;
+
             item_Sprite.sprite = spriteList[(int)itemType];
 
             // BoxCollider2D 활성화
@@ -67,7 +73,13 @@ public class SpawnItem : MonoBehaviour
             if (controller != null && stair != null && stair.index == controller.currentStairIndex)
             {
                 item_Sprite.enabled = false;
-                PlayerManager.ChangeCoin();
+
+                //05.14 HJ 추가
+                if (currentItemType == spriteNameType.Coin)
+                    PlayerManager.ChangeCoin();
+                else if (currentItemType == spriteNameType.Gem)
+                    ItemManager.Instance.UseUsableItem("item004");
+
                 Debug.Log("플레이어와 접촉");
             }
         }

@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
-    public int playerGold = 1000;   //테스트용 임시변수
-    public int playerCash = 50;     //테스트용 임시변수
+    public int PlayerGold
+    {
+        get => PlayerDataManager.Instance.CurrentPlayerData.gold;
+    }
+
+    private int PlayerCash
+    {
+        get => PlayerDataManager.Instance.CurrentPlayerData.diamond;
+    }
 
     #region Singleton
     public static ShopManager Instance { get; private set; }
@@ -26,32 +33,36 @@ public class ShopManager : MonoBehaviour
     //아이템 구매(상점 UI에서 적용)
     public bool TryBuyItem(string itemId, bool useCash = false, int amount = 1)
     {
+        if (amount <= 0) return false;
+
         if(useCash)
         {
-            int cashPrice = ItemManager.Instance.GetCashPrice(itemId);
+            int cashPrice = ItemManager.Instance.GetCashPrice(itemId) * amount;
 
-            if (cashPrice > 0 && playerCash >= cashPrice)
+            if (cashPrice > 0 && PlayerCash >= cashPrice)
             {
-                playerCash -= cashPrice;
-                GiveItem(itemId);
-                return true;
+                if(PlayerDataManager.Instance.TrySpendDiamond(cashPrice))
+                {
+                    GiveItem(itemId, amount);
+                    return true;
+                }
             }
-
-            return false;
         }
         else
         {
-            int goldPrice = ItemManager.Instance.GetGoldPrice(itemId);
+            int goldPrice = ItemManager.Instance.GetGoldPrice(itemId) * amount;
 
-            if(goldPrice > 0 && playerGold >= goldPrice)
+            if(goldPrice > 0 && PlayerGold >= goldPrice)
             {
-                playerGold -= goldPrice;
-                GiveItem(itemId);
-                return true;
+                if (PlayerDataManager.Instance.TrySpendGold(goldPrice))
+                {
+                    GiveItem(itemId, amount);
+                    return true;
+                }
             }
-
-            return false;
         }
+
+        return false;
     }
 
     //아이템 가격에 따라 필터링(캐쉬 전용, 골드 전용, 가격 오름차순으로 정렬)
