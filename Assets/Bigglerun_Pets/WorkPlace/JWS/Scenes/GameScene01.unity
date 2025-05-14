@@ -342,6 +342,9 @@ MonoBehaviour:
   moveSpeed: 5
   stairManager: {fileID: 487118649}
   currentStairIndex: 0
+  jumpTimer: 0
+  jumpDuration: 0.5
+  jumpHeight: 3
 --- !u!4 &290448709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6509873653763732206, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
@@ -507,7 +510,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487118648}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd6ce836a3640a940864eee2ff991cea, type: 3}
   m_Name: 
@@ -570,8 +573,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -62.499943, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -144, y: 67}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &518272086
 MonoBehaviour:
@@ -774,7 +777,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 290448709}
-  followSpeed: 2
+  followSpeed: 3
+  fixedY: 3.5
 --- !u!114 &688600701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -853,8 +857,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.5000505, y: -2}
-  m_SizeDelta: {x: 1803.8999, y: 27.654785}
+  m_AnchoredPosition: {x: -4.5000534, y: 77.221466}
+  m_SizeDelta: {x: 1803.8999, y: 186.0975}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &694135295
 MonoBehaviour:
@@ -1132,11 +1136,64 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1292006597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 34.99997, y: -25.878}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 215, y: 16}
   m_SizeDelta: {x: 200, y: 59.025}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &1073473416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1073473417}
+  - component: {fileID: 1073473418}
+  m_Layer: 0
+  m_Name: TerrainScrollManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1073473417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073473416}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1102880834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1073473418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073473416}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95389e2f3e032dd42a80128e87ceee95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainPrefab: {fileID: 415566698276254626, guid: 85bb4711d4728e547afff411f59df15a, type: 3}
+  poolSize: 5
+  scrollSpeed: 5
+  playerInstance: {fileID: 290448704}
+  obstaclePrefabs:
+  - {fileID: 7979775121601685149, guid: c1ee48e16c5b33447ac952b25d7b6a91, type: 3}
+  obstacleSpawnWidthRatio: 0.75
+  obstacleHeightOffset: 1.45
+  obstacleSpace: 5
 --- !u!1 &1079569709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,11 +1226,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1292006597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -135.00003, y: 8.4418335}
-  m_SizeDelta: {x: 1758.8999, y: 16.874817}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -139.99998, y: 60.367615}
+  m_SizeDelta: {x: 2028.8999, y: 180}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1079569711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1244,6 +1301,7 @@ Transform:
   - {fileID: 487118650}
   - {fileID: 1778933239}
   - {fileID: 26604197}
+  - {fileID: 1073473417}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1229339485
@@ -1376,8 +1434,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 62.49995, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 149, y: 67.00003}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1280328749
 GameObject:
@@ -1549,11 +1607,11 @@ RectTransform:
   - {fileID: 1706090877}
   m_Father: {fileID: 977117876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 135, y: 455.63016}
-  m_SizeDelta: {x: 270, y: 110.77997}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 141, y: -56}
+  m_SizeDelta: {x: 270, y: 110.78003}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1529350863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1587,11 +1645,11 @@ RectTransform:
   - {fileID: 1229339489}
   m_Father: {fileID: 977117876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.5000076, y: -467}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 224.99998, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1586652793
 GameObject:
   m_ObjectHideFlags: 0
@@ -1749,10 +1807,10 @@ RectTransform:
   - {fileID: 460670759}
   m_Father: {fileID: 1292006597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -135, y: 29.9}
-  m_SizeDelta: {x: 539.99, y: 89.939}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -135, y: -63.482002}
+  m_SizeDelta: {x: 539.99, y: 89.938995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1721068335
 GameObject:
@@ -1879,6 +1937,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeAction: 10
   timeBonus: 0.25
+  play_Mode: 1
+  StairManager: {fileID: 487118649}
+  terrainScrollManager: {fileID: 1073473418}
   floorText: {fileID: 1910438448}
   coinText: {fileID: 1066797039}
   timerText: {fileID: 460670761}
@@ -1990,11 +2051,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1292006597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -304.99994, y: -25.878}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -499, y: 16}
   m_SizeDelta: {x: 200, y: 59.025}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1910438447
 CanvasRenderer:
   m_ObjectHideFlags: 0
