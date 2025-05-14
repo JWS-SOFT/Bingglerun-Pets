@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/SH/Scenes/TestStageSelect.unity
     guid: 5a35cff841f0b214fbaa5bb403e4ffd1
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/WorkPlace/Mained606/606Scene/606TestTitle.unity
+    guid: e2b4cc2f4e495fc41a309445d0447771
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/WorkPlace/Mained606/606Scene/606TestLobby.unity
+    guid: b0481716e61c8704db6fff41aed5456c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
