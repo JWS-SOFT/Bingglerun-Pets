@@ -1207,7 +1207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -1215,11 +1215,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ExitPopupUI
+      value: TogglePopup
       objectReference: {fileID: 0}
     - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: TitleUI, Assembly-CSharp
+      value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5090831477561928360, guid: bd930aa54ab36594093baec558cb9c08, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
