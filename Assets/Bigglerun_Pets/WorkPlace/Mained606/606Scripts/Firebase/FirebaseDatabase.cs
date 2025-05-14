@@ -46,8 +46,8 @@ public class FirebaseDatabase : MonoBehaviour
 #if FIREBASE_DATABASE
         try
         {
-            // Firebase Database 인스턴스 가져오기
-            database = Firebase.Database.FirebaseDatabase.DefaultInstance;
+            // URL 직접 지정하여 데이터베이스 인스턴스 가져오기
+            database = Firebase.Database.FirebaseDatabase.GetInstance("https://bigglerun-pets-default-rtdb.firebaseio.com/");
             databaseReference = database.RootReference;
             
             IsInitialized = true;

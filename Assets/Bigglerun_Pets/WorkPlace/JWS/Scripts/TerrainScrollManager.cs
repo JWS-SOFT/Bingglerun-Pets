@@ -5,7 +5,7 @@ public class TerrainScrollManager : MonoBehaviour
 {
     [Header("지형 설정")]
     public GameObject terrainPrefab;
-    public int poolSize = 5;
+    public int poolSize = 50;
     public float scrollSpeed = 5f;
 
     [Header("플레이어 설정")]
@@ -21,6 +21,7 @@ public class TerrainScrollManager : MonoBehaviour
     private float terrainWidth;
     private Queue<GameObject> terrainPool = new Queue<GameObject>();
     private int terrainIndex = 0;
+    private float terrainDistance = 0;
 
     private void Start()
     {
@@ -50,13 +51,16 @@ public class TerrainScrollManager : MonoBehaviour
 
     private void Update()
     {
+        float delta = scrollSpeed * Time.deltaTime;
+        terrainDistance += delta; // ← 이동 거리 누적
+        PlayerManager.ChangeDistance(terrainDistance);
         foreach (var obj in terrainPool)
         {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
         }
 
         GameObject first = terrainPool.Peek();
-        if (first.transform.position.x < -terrainWidth)
+        if (first.transform.position.x < -terrainWidth * 5)
         {
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
@@ -71,7 +75,7 @@ public class TerrainScrollManager : MonoBehaviour
                 }
             }
 
-            SpawnObstacleOnTerrain(first, terrainIndex);
+            // SpawnObstacleOnTerrain(first, terrainIndex);
             terrainIndex++;
 
             terrainPool.Enqueue(first);
@@ -120,33 +124,51 @@ public class TerrainScrollManager : MonoBehaviour
         playerInstance.transform.position = spawnPos;
     }
 
+    private int consecutiveObstacleCount = 0;
+    private int skipCount = 0;
+
     private void SpawnObstacleOnTerrain(GameObject terrain, int index)
     {
         if (index == 0 || obstaclePrefabs == null || obstaclePrefabs.Count == 0)
             return;
 
-        float usableWidth = terrainWidth * obstacleSpawnWidthRatio;
-        float margin = (terrainWidth - usableWidth) / 2f;
-
-        float left = terrain.transform.position.x - terrainWidth / 2f + margin;
-        float right = terrain.transform.position.x + terrainWidth / 2f - margin;
-
-        // 장애물 사이 간격 설정
-        float obstacleSpacing = obstacleSpace;
-        int obstacleCount = Mathf.FloorToInt(usableWidth / obstacleSpacing);
-
-        for (int i = 0; i < obstacleCount; i++)
+        // 이전에 2개 연속 설치했다면 무조건 2타일은 건너뛴다
+        if (skipCount > 0)
         {
-            float offset = obstacleSpacing * i + Random.Range(-1f, 1f); // 약간의 무작위 위치
-            float x = Mathf.Clamp(left + offset, left, right);
-            float groundY = terrain.transform.position.y;
-            float y = groundY + obstacleHeightOffset;
+            skipCount--;
+            consecutiveObstacleCount = 0;
+            return;
+        }
+
+        // 랜덤하게 장애물을 설치할지 결정
+        bool placeObstacle = Random.value < 0.5f; // 확률 조정 가능
+
+        if (placeObstacle)
+        {
+            // 장애물 설치
+            float x = terrain.transform.position.x;
+            float y = terrain.transform.position.y + obstacleHeightOffset;
 
             GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)];
             GameObject obstacle = Instantiate(prefab, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform);
             obstacle.tag = "Obstacle";
+
+            consecutiveObstacleCount++;
+
+            // 연속 2개 설치했다면 이후 2타일 쉬어야 함
+            if (consecutiveObstacleCount >= 2)
+            {
+                skipCount = 2;
+                consecutiveObstacleCount = 0;
+            }
+        }
+        else
+        {
+            // 설치 안 함: 연속 설치 카운트 초기화
+            consecutiveObstacleCount = 0;
         }
     }
+
 
 
     private float GetLastTerrainX()

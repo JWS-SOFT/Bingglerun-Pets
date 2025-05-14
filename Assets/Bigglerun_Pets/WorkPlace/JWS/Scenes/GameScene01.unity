@@ -1186,11 +1186,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainPrefab: {fileID: 415566698276254626, guid: 85bb4711d4728e547afff411f59df15a, type: 3}
-  poolSize: 5
+  poolSize: 50
   scrollSpeed: 5
   playerInstance: {fileID: 290448704}
   obstaclePrefabs:
-  - {fileID: 7979775121601685149, guid: c1ee48e16c5b33447ac952b25d7b6a91, type: 3}
+  - {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
   obstacleSpawnWidthRatio: 0.75
   obstacleHeightOffset: 1.45
   obstacleSpace: 5
@@ -2295,6 +2295,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023822814}
   m_CullTransparentMesh: 1
+--- !u!1001 &761856634011052111
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+      propertyPath: m_Name
+      value: Huddle
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2304,3 +2361,4 @@ SceneRoots:
   - {fileID: 66358477}
   - {fileID: 1721068338}
   - {fileID: 1102880834}
+  - {fileID: 761856634011052111}
