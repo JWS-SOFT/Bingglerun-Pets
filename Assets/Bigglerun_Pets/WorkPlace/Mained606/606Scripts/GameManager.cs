@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
         // gameObject.AddComponent<AudioManager>();
         // gameObject.AddComponent<InputManager>();
         gameObject.AddComponent<FirebaseManager>(); // 이건 나중에 초기화 시도
+        
+        // 데이터 관련 매니저 추가
+        gameObject.AddComponent<FirebaseDatabase>();
+        gameObject.AddComponent<PlayerDataManager>();
 
         // TODO: 필요 시 다른 매니저도 연결
     }
@@ -63,5 +67,37 @@ public class GameManager : MonoBehaviour
             StateMachine.ChangeState(GameState.Title);
         else
             Debug.LogError("[GameManager] Firebase 로그인 실패 계정 정보 없음");
+    }
+    
+    /// <summary>
+    /// 플레이어 데이터를 로드하고 로비 씬으로 전환
+    /// </summary>
+    public async void LoadPlayerDataAndGoToLobby()
+    {
+        var firebase = FirebaseManager.Instance;
+        
+        if (!firebase.IsAuthenticated)
+        {
+            Debug.LogError("[GameManager] 로그인되지 않은 상태로 로비 전환 시도");
+            return;
+        }
+        
+        UIManager.Instance.ShowLoadingScreen(true, "데이터를 불러오는 중...");
+        
+        bool success = await PlayerDataManager.Instance.LoadPlayerDataAsync(firebase.UserId);
+        
+        UIManager.Instance.ShowLoadingScreen(false);
+        
+        if (success)
+        {
+            Debug.Log("[GameManager] 플레이어 데이터 로드 성공, 로비로 전환합니다.");
+            SceneFader.LoadScene("LobbyScene");
+            StateMachine.ChangeState(GameState.Lobby);
+        }
+        else
+        {
+            Debug.LogError("[GameManager] 플레이어 데이터 로드 실패");
+            // 오류 메시지 표시 또는 재시도 로직 추가
+        }
     }
 }

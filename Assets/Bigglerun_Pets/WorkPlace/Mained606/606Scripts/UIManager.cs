@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// UI 제어를 담당하는 매니저 (로비, 타이틀 등 상태별로 처리)
@@ -16,6 +17,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private string lastOpenedPopup = "";
 
     [SerializeField] private SceneFader fader;
+    
+    // 로딩 화면 관련
+    [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private Text loadingText;
 
     private void Awake()
     {
@@ -43,6 +48,14 @@ public class UIManager : MonoBehaviour
         {
             hud = canvas.transform.GetChild(0);
             popup = FindAnyObjectByType<CanvasGroup>().transform;
+            
+            // 로딩 화면 찾기
+            loadingScreen = GameObject.Find("LoadingScreen");
+            if (loadingScreen != null)
+            {
+                loadingText = loadingScreen.GetComponentInChildren<Text>();
+                loadingScreen.SetActive(false);
+            }
         }
 
 
@@ -65,6 +78,25 @@ public class UIManager : MonoBehaviour
     public void SceneChange()
     {
         UIInitialize();
+    }
+    
+    /// <summary>
+    /// 로딩 화면 표시/숨김
+    /// </summary>
+    public void ShowLoadingScreen(bool show, string message = "로딩 중...")
+    {
+        if (loadingScreen == null)
+        {
+            Debug.LogWarning("[UIManager] 로딩 화면이 설정되지 않았습니다.");
+            return;
+        }
+        
+        loadingScreen.SetActive(show);
+        
+        if (show && loadingText != null)
+        {
+            loadingText.text = message;
+        }
     }
 
     public void ShowTitleUI()

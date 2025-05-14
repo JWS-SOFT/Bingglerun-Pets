@@ -231,6 +231,7 @@ public class FirebaseManager : MonoBehaviour
             
             // 임시 구현
             Debug.LogWarning("[FirebaseManager] 구글 로그인은 Google Play Games SDK가 필요합니다.");
+            await Task.FromResult(false);
             return false;
         }
         catch (Exception e)
@@ -240,6 +241,7 @@ public class FirebaseManager : MonoBehaviour
         }
 #elif FIREBASE_AUTH
         Debug.LogWarning("[FirebaseManager] 구글 로그인은 Android 플랫폼에서만 지원됩니다.");
+        await Task.FromResult(false);
         return false;
 #else
         // 파이어베이스 SDK가 없을 때 테스트용 가짜 로그인
@@ -485,6 +487,7 @@ public class FirebaseManager : MonoBehaviour
             
             OnLoginStateChanged?.Invoke(false);
             Debug.Log("[FirebaseManager] 로그아웃 성공");
+            await Task.FromResult(true);
             return true;
         }
         catch (Exception e)

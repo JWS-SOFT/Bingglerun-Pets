@@ -116,11 +116,11 @@ public class TitleUIController : MonoBehaviour
     /// <summary>
     /// 이미 로그인된 세션이 있는지 확인 (게스트 계정 자동 생성 없이)
     /// </summary>
-    private async void CheckExistingLoginWithoutAutoCreate()
+    private void CheckExistingLoginWithoutAutoCreate()
     {
         var firebase = FirebaseManager.Instance;
         
-        // FirebaseManager에 추가된 메서드 호출
+        // Firebase Manager에 추가된 메서드 호출
         // 게스트 계정 자동 생성 없이 기존 로그인 상태만 확인
         bool isAuthenticated = firebase.CheckAuthenticationWithoutAutoLogin();
         
@@ -465,11 +465,11 @@ public class TitleUIController : MonoBehaviour
     /// </summary>
     private void OnClickStartGame()
     {
-        // 씬 전환 → 로비로
-        GameManager.Instance.SceneFader.LoadScene("LobbyScene");
-
-        // 상태 전환은 씬 로딩 이후 Start 등에서 처리하거나, 여기서 즉시
-        GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+        // 게임 시작 처리
+        Debug.Log("[TitleUI] 게임 시작");
+        
+        // PlayerDataManager를 통해 데이터 로드 후 로비 씬으로 전환
+        GameManager.Instance.LoadPlayerDataAndGoToLobby();
     }
     
     /// <summary>

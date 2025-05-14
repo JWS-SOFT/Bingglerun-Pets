@@ -1150,6 +1150,7 @@ GameObject:
   - component: {fileID: 2981205815569289932}
   - component: {fileID: 3185067457845158583}
   - component: {fileID: 1837395518882843884}
+  - component: {fileID: 4368514360345753319}
   m_Layer: 0
   m_Name: LoginUICanvas
   m_TagString: Untagged
@@ -1166,7 +1167,7 @@ RectTransform:
   m_GameObject: {fileID: 1816221502596734400}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8281503715432342045}
@@ -1281,6 +1282,18 @@ MonoBehaviour:
   sendResetEmailButton: {fileID: 6041067542633935134}
   backToLoginFromResetButton: {fileID: 2395700381363960684}
   resetErrorMessageText: {fileID: 7852546210870519199}
+--- !u!225 &4368514360345753319
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816221502596734400}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1873600338012535986
 GameObject:
   m_ObjectHideFlags: 0
