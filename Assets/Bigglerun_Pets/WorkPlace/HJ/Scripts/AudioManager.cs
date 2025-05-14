@@ -45,6 +45,7 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<BGMType, AudioClip> bgmClipMap;
     private Dictionary<SFXType, List<AudioClip>> sfxClipMap;
+    private int sfxIndex = 0;
 
     [Header("볼륨 셋팅")]
     [Range(0f, 1f)] public float masterVolume = 1f;
@@ -92,7 +93,16 @@ public class AudioManager : MonoBehaviour
     //SFX 재생
     public void PlaySFX(SFXType type)
     {
+        if(!sfxClipMap.ContainsKey(type) || sfxClipMap[type].Count == 0) return;
 
+        var clipList = sfxClipMap[type];
+        var clip = clipList[Random.Range(0, clipList.Count)];
+
+        var source = sfxSources[sfxIndex];
+        source.clip = clip;
+        source.Play();
+
+        sfxIndex = (sfxIndex + 1) % sfxSources.Length;
     }
 
     //전체 음소거(옵션 UI에서 호출)
@@ -122,7 +132,6 @@ public class AudioManager : MonoBehaviour
         audioMixer.SetFloat(sfxVolumeParam, ToDecibels(sfxVolume));
     }
 
-    #region Private Method
     //오디오클립 매핑 초기화
     private void InitBGMClipMap()
     {
@@ -161,5 +170,4 @@ public class AudioManager : MonoBehaviour
         SetBGMVolume(bgmVolume);
         SetSFXVolume(sfxVolume);
     }
-    #endregion
 }

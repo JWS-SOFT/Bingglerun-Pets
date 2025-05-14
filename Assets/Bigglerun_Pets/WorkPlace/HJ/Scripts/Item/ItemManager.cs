@@ -157,7 +157,6 @@ public class ItemManager : MonoBehaviour
     //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
     public bool IsCashItem(string itemId) => GetCashPrice(itemId) > 0;
 
-    #region Private Method
     //아이템 아이디로 찾기
     private ItemData GetUsableItemById(string itemId)
     {
@@ -195,6 +194,4 @@ public class ItemManager : MonoBehaviour
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
     }
-
-    #endregion
 }
