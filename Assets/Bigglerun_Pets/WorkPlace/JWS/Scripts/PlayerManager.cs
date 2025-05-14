@@ -20,6 +20,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private TerrainScrollManager terrainScrollManager;
     private int currentPlayerCoin = 0;
     private int currentPlayerFloor = 0;
+    private float currentPlayerDistance = 0;
     private BasicTimer actionTimer;
 
     [SerializeField] private TextMeshProUGUI floorText, coinText, timerText;
@@ -86,6 +87,13 @@ public class PlayerManager : MonoBehaviour
     {
         Instance.currentPlayerFloor = floor;
         Instance.floorText.text = "Floor\n" + Instance.currentPlayerFloor;
+    }
+
+    public static void ChangeDistance(float distance)
+    {
+        Instance.currentPlayerDistance = distance;
+        Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
+        Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
     }
 
     public static void ChangeCoin()
