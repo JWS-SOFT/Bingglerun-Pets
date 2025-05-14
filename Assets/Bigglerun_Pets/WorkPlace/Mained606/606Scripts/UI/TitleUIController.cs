@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using TMPro;
 
 public class TitleUIController : MonoBehaviour
 {
@@ -11,39 +12,39 @@ public class TitleUIController : MonoBehaviour
     
     [Header("로딩 UI")]
     public GameObject loadingPanel;
-    public Text loadingText;
+    public TextMeshProUGUI loadingText;
     
     [Header("로그인 성공 UI")]
     public GameObject loginSuccessPanel;
     public Button startGameButton;
-    public Text userIdText;
+    public TextMeshProUGUI userIdText;
     public Button deleteAccountButton;
     
     [Header("이메일 로그인 UI")]
     public GameObject emailLoginPanel;
-    public InputField emailInputField;
-    public InputField passwordInputField;
+    public TMP_InputField emailInputField;
+    public TMP_InputField passwordInputField;
     public Button loginButton;
     public Button backToMainButton;
     public Button goToRegisterButton;
     public Button forgotPasswordButton;
-    public Text errorMessageText;
+    public TextMeshProUGUI errorMessageText;
     
     [Header("이메일 회원가입 UI")]
     public GameObject emailRegisterPanel;
-    public InputField registerEmailInputField;
-    public InputField registerPasswordInputField;
-    public InputField confirmPasswordInputField;
+    public TMP_InputField registerEmailInputField;
+    public TMP_InputField registerPasswordInputField;
+    public TMP_InputField confirmPasswordInputField;
     public Button registerButton;
     public Button backToLoginButton;
-    public Text registerErrorMessageText;
+    public TextMeshProUGUI registerErrorMessageText;
     
     [Header("비밀번호 재설정 UI")]
     public GameObject resetPasswordPanel;
-    public InputField resetEmailInputField;
+    public TMP_InputField resetEmailInputField;
     public Button sendResetEmailButton;
     public Button backToLoginFromResetButton;
-    public Text resetErrorMessageText;
+    public TextMeshProUGUI resetErrorMessageText;
 
     private void Start()
     {
@@ -116,11 +117,11 @@ public class TitleUIController : MonoBehaviour
     /// <summary>
     /// 이미 로그인된 세션이 있는지 확인 (게스트 계정 자동 생성 없이)
     /// </summary>
-    private async void CheckExistingLoginWithoutAutoCreate()
+    private void CheckExistingLoginWithoutAutoCreate()
     {
         var firebase = FirebaseManager.Instance;
         
-        // FirebaseManager에 추가된 메서드 호출
+        // Firebase Manager에 추가된 메서드 호출
         // 게스트 계정 자동 생성 없이 기존 로그인 상태만 확인
         bool isAuthenticated = firebase.CheckAuthenticationWithoutAutoLogin();
         
@@ -144,7 +145,7 @@ public class TitleUIController : MonoBehaviour
     {
         // 로딩 UI 표시
         ShowLoginButtons(false);
-        ShowLoadingUI(true, "게스트 로그인 중...");
+        ShowLoadingUI(true, "Guest Login...");
         
         var firebase = FirebaseManager.Instance;
         bool success = await firebase.SignInAnonymouslyAsync();
@@ -171,7 +172,7 @@ public class TitleUIController : MonoBehaviour
     {
         // 로딩 UI 표시
         ShowLoginButtons(false);
-        ShowLoadingUI(true, "구글 로그인 중...");
+        ShowLoadingUI(true, "Google Login...");
         
         var firebase = FirebaseManager.Instance;
         bool success = await firebase.SignInWithGoogleAsync();
@@ -225,20 +226,20 @@ public class TitleUIController : MonoBehaviour
         if (string.IsNullOrEmpty(email))
         {
             if (errorMessageText != null)
-                errorMessageText.text = "이메일을 입력해주세요.";
+                errorMessageText.text = "Please enter your email.";
             return;
         }
         
         if (string.IsNullOrEmpty(password))
         {
             if (errorMessageText != null)
-                errorMessageText.text = "비밀번호를 입력해주세요.";
+                errorMessageText.text = "Please enter your password.";
             return;
         }
         
         // 로딩 UI 표시
         ShowEmailLoginUI(false);
-        ShowLoadingUI(true, "이메일 로그인 중...");
+        ShowLoadingUI(true, "Email Login...");
         
         var firebase = FirebaseManager.Instance;
         var result = await firebase.SignInWithEmailAsync(email, password);
@@ -325,34 +326,34 @@ public class TitleUIController : MonoBehaviour
         if (string.IsNullOrEmpty(email))
         {
             if (registerErrorMessageText != null)
-                registerErrorMessageText.text = "이메일을 입력해주세요.";
+                registerErrorMessageText.text = "Please enter your email.";
             return;
         }
         
         if (string.IsNullOrEmpty(password))
         {
             if (registerErrorMessageText != null)
-                registerErrorMessageText.text = "비밀번호를 입력해주세요.";
+                registerErrorMessageText.text = "Please enter your password.";
             return;
         }
         
         if (password.Length < 6)
         {
             if (registerErrorMessageText != null)
-                registerErrorMessageText.text = "비밀번호는 최소 6자리 이상이어야 합니다.";
+                registerErrorMessageText.text = "The password must be at least 6 characters long.";
             return;
         }
         
         if (password != confirmPassword)
         {
             if (registerErrorMessageText != null)
-                registerErrorMessageText.text = "비밀번호가 일치하지 않습니다.";
+                registerErrorMessageText.text = "The passwords do not match.";
             return;
         }
         
         // 로딩 UI 표시
         ShowEmailRegisterUI(false);
-        ShowLoadingUI(true, "회원가입 중...");
+        ShowLoadingUI(true, "Registering...");
         
         var firebase = FirebaseManager.Instance;
         var result = await firebase.CreateUserWithEmailAsync(email, password);
@@ -409,13 +410,13 @@ public class TitleUIController : MonoBehaviour
         if (string.IsNullOrEmpty(email))
         {
             if (resetErrorMessageText != null)
-                resetErrorMessageText.text = "이메일을 입력해주세요.";
+                resetErrorMessageText.text = "Please enter your email.";
             return;
         }
         
         // 로딩 UI 표시
         ShowResetPasswordUI(false);
-        ShowLoadingUI(true, "이메일 전송 중...");
+        ShowLoadingUI(true, "Sending email...");
         
         var firebase = FirebaseManager.Instance;
         var result = await firebase.SendPasswordResetEmailAsync(email);
@@ -426,7 +427,7 @@ public class TitleUIController : MonoBehaviour
             ShowEmailLoginUI(true);
             
             if (errorMessageText != null)
-                errorMessageText.text = "비밀번호 재설정 이메일이 전송되었습니다.";
+                errorMessageText.text = "The password reset email has been sent.";
         }
         else
         {
@@ -465,11 +466,11 @@ public class TitleUIController : MonoBehaviour
     /// </summary>
     private void OnClickStartGame()
     {
-        // 씬 전환 → 로비로
-        GameManager.Instance.SceneFader.LoadScene("LobbyScene");
-
-        // 상태 전환은 씬 로딩 이후 Start 등에서 처리하거나, 여기서 즉시
-        GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+        // 게임 시작 처리
+        Debug.Log("[TitleUI] 게임 시작");
+        
+        // PlayerDataManager를 통해 데이터 로드 후 로비 씬으로 전환
+        GameManager.Instance.LoadPlayerDataAndGoToLobby();
     }
     
     /// <summary>
@@ -483,7 +484,7 @@ public class TitleUIController : MonoBehaviour
         
         // 로딩 UI 표시
         ShowLoginSuccessUI(false);
-        ShowLoadingUI(true, "계정 삭제 중...");
+        ShowLoadingUI(true, "Deleting account...");
         
         var firebase = FirebaseManager.Instance;
         bool success = await firebase.DeleteUserAccountAsync();
@@ -511,10 +512,10 @@ public class TitleUIController : MonoBehaviour
         // 실제로는 UI 대화상자를 표시해야 하지만,
         // 임시로 에디터용 대화상자 사용
 #if UNITY_EDITOR
-        return UnityEditor.EditorUtility.DisplayDialog("확인", message, "예", "아니오");
+        return UnityEditor.EditorUtility.DisplayDialog("Confirm", message, "Yes", "No");
 #else
         // 실제 게임에서는 항상 true 반환 (UI는 별도 구현 필요)
-        Debug.Log($"[TitleUI] 확인 대화상자: {message}");
+        Debug.Log($"[TitleUI] Confirm dialog: {message}");
         return true;
 #endif
     }
@@ -532,22 +533,22 @@ public class TitleUIController : MonoBehaviour
             switch (firebase.CurrentLoginType)
             {
                 case FirebaseManager.LoginType.Guest:
-                    loginTypeStr = "게스트";
+                    loginTypeStr = "Guest";
                     break;
                 case FirebaseManager.LoginType.Google:
-                    loginTypeStr = "구글";
+                    loginTypeStr = "Google";
                     break;
                 case FirebaseManager.LoginType.Email:
-                    loginTypeStr = "이메일";
+                    loginTypeStr = "Email";
                     break;
             }
             
-            string displayInfo = $"ID: {firebase.UserId}\n로그인: {loginTypeStr}";
+            string displayInfo = $"ID: {firebase.UserId}\nLogin: {loginTypeStr}";
             
             // 이메일 로그인인 경우 이메일도 표시
             if (firebase.CurrentLoginType == FirebaseManager.LoginType.Email && !string.IsNullOrEmpty(firebase.UserEmail))
             {
-                displayInfo += $"\n이메일: {firebase.UserEmail}";
+                displayInfo += $"\nEmail: {firebase.UserEmail}";
             }
             
             userIdText.text = displayInfo;
@@ -572,7 +573,7 @@ public class TitleUIController : MonoBehaviour
     /// <summary>
     /// 로딩 UI 표시/숨김
     /// </summary>
-    private void ShowLoadingUI(bool show, string message = "로딩중...")
+    private void ShowLoadingUI(bool show, string message = "Loading...")
     {
         if (loadingPanel != null)
             loadingPanel.SetActive(show);
