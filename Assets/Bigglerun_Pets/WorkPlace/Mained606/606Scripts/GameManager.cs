@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public GameStateMachine StateMachine { get; private set; }
     public SceneFader SceneFader { get; private set; }
+
+    [SerializeField] private String LobbySceneName;
 
     private void Awake()
     {
@@ -82,7 +85,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         
-        UIManager.Instance.ShowLoadingScreen(true, "데이터를 불러오는 중...");
+        UIManager.Instance.ShowLoadingScreen(true, "Loading data...");
         
         bool success = await PlayerDataManager.Instance.LoadPlayerDataAsync(firebase.UserId);
         
@@ -91,7 +94,7 @@ public class GameManager : MonoBehaviour
         if (success)
         {
             Debug.Log("[GameManager] 플레이어 데이터 로드 성공, 로비로 전환합니다.");
-            SceneFader.LoadScene("LobbyScene");
+            SceneFader.LoadScene(LobbySceneName);
             StateMachine.ChangeState(GameState.Lobby);
         }
         else

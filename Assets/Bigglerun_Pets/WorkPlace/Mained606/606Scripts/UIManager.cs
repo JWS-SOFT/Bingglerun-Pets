@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// UI 제어를 담당하는 매니저 (로비, 타이틀 등 상태별로 처리)
@@ -20,7 +21,7 @@ public class UIManager : MonoBehaviour
     
     // 로딩 화면 관련
     [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private Text loadingText;
+    [SerializeField] private TextMeshProUGUI loadingText;
 
     private void Awake()
     {
@@ -37,28 +38,44 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         fader = FindAnyObjectByType<SceneFader>();
-
+        
+        // UI 초기화 호출
         UIInitialize();
+        
+        // 로딩 스크린이 없으면 자동으로 생성
+        CreateLoadingScreenIfNeeded();
     }
 
     private void UIInitialize()
     {
-        canvas = FindAnyObjectByType<Canvas>().transform;
-        if (canvas != null)
+        var canvasObj = FindAnyObjectByType<Canvas>();
+        if (canvasObj != null)
         {
-            hud = canvas.transform.GetChild(0);
-            popup = FindAnyObjectByType<CanvasGroup>().transform;
+            canvas = canvasObj.transform;
+            
+            if (canvas.childCount > 0)
+            {
+                hud = canvas.GetChild(0);
+            }
+            
+            // CanvasGroup 컴포넌트 찾기 (null 체크 추가)
+            var canvasGroup = FindAnyObjectByType<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                popup = canvasGroup.transform;
+            }
             
             // 로딩 화면 찾기
-            loadingScreen = GameObject.Find("LoadingScreen");
-            if (loadingScreen != null)
+            GameObject loadingObj = GameObject.Find("LoadingScreen");
+            if (loadingObj != null)
             {
-                loadingText = loadingScreen.GetComponentInChildren<Text>();
+                loadingScreen = loadingObj;
+                loadingText = loadingObj.GetComponentInChildren<TextMeshProUGUI>();
                 loadingScreen.SetActive(false);
             }
         }
 
-
+        // popup이 null이 아닐 때만 초기화
         if (popup != null)
         {
             PopupGroupInit();
@@ -78,17 +95,26 @@ public class UIManager : MonoBehaviour
     public void SceneChange()
     {
         UIInitialize();
+        
+        // 씬 변경 시에도 로딩 스크린 확인
+        CreateLoadingScreenIfNeeded();
     }
     
     /// <summary>
     /// 로딩 화면 표시/숨김
     /// </summary>
-    public void ShowLoadingScreen(bool show, string message = "로딩 중...")
+    public void ShowLoadingScreen(bool show, string message = "Loading...")
     {
+        // 로딩 스크린이 없으면 생성
         if (loadingScreen == null)
         {
-            Debug.LogWarning("[UIManager] 로딩 화면이 설정되지 않았습니다.");
-            return;
+            CreateLoadingScreenIfNeeded();
+            
+            if (loadingScreen == null)
+            {
+                Debug.LogWarning("[UIManager] 로딩 화면을 생성할 수 없습니다.");
+                return;
+            }
         }
         
         loadingScreen.SetActive(show);
@@ -161,8 +187,6 @@ public class UIManager : MonoBehaviour
                 return target;
         }
 
-
-
         return this.transform;
     }
 
@@ -211,5 +235,63 @@ public class UIManager : MonoBehaviour
     public void HideAll()
     {
         Debug.Log("모든 UI 숨김");
+    }
+
+    // 로딩 스크린이 없으면 자동으로 생성하는 메서드
+    private void CreateLoadingScreenIfNeeded()
+    {
+        if (loadingScreen == null && canvas != null)
+        {
+            Debug.Log("[UIManager] 로딩 스크린이 없어서 자동으로 생성합니다.");
+            
+            // LoadingScreen 생성
+            GameObject loadingObj = new GameObject("LoadingScreen");
+            RectTransform rect = loadingObj.AddComponent<RectTransform>();
+            loadingObj.AddComponent<CanvasGroup>();
+            
+            // 캔버스의 자식으로 설정
+            loadingObj.transform.SetParent(canvas, false);
+            
+            // 화면 전체를 채우도록 설정
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            
+            // 배경 패널 생성
+            GameObject bgPanel = new GameObject("Background");
+            RectTransform bgRect = bgPanel.AddComponent<RectTransform>();
+            Image bgImage = bgPanel.AddComponent<Image>();
+            bgPanel.transform.SetParent(loadingObj.transform, false);
+            
+            // 배경 패널 설정
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+            bgImage.color = new Color(0, 0, 0, 0.8f);
+            
+            // 로딩 텍스트 생성 (TextMeshPro 사용)
+            GameObject textObj = new GameObject("LoadingText");
+            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
+            textObj.transform.SetParent(loadingObj.transform, false);
+            
+            // 텍스트 설정
+            textRect.anchorMin = new Vector2(0.5f, 0.5f);
+            textRect.anchorMax = new Vector2(0.5f, 0.5f);
+            textRect.sizeDelta = new Vector2(300, 50);
+            text.text = "Loading...";
+            text.fontSize = 24;
+            text.alignment = TextAlignmentOptions.Center;
+            text.color = Color.white;
+            
+            // 참조 설정
+            loadingScreen = loadingObj;
+            loadingText = text;
+            
+            // 기본적으로 비활성화
+            loadingObj.SetActive(false);
+        }
     }
 }

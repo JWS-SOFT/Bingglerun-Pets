@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// 로비 UI 컨트롤러
@@ -7,11 +8,11 @@ using UnityEngine.UI;
 public class LobbyUIController : MonoBehaviour
 {
     [Header("플레이어 정보 UI")]
-    [SerializeField] private Text nicknameText;
-    [SerializeField] private Text levelText;
-    [SerializeField] private Text goldText;
-    [SerializeField] private Text diamondText;
-    [SerializeField] private Text starsText;
+    [SerializeField] private TextMeshProUGUI nicknameText;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI goldText;
+    [SerializeField] private TextMeshProUGUI diamondText;
+    [SerializeField] private TextMeshProUGUI starsText;
     
     [Header("메뉴 버튼")]
     [SerializeField] private Button storyModeButton;
