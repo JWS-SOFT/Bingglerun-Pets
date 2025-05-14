@@ -1302,8 +1302,55 @@ Transform:
   - {fileID: 1778933239}
   - {fileID: 26604197}
   - {fileID: 1073473417}
+  - {fileID: 1202239940}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1202239939
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1202239940}
+  - component: {fileID: 1202239941}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1202239940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202239939}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1102880834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1202239941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202239939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2aaa8b3d73c4a948905eabf81e1335d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usableItemList: []
+  decoItemList: []
 --- !u!1 &1229339485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,7 +1984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeAction: 10
   timeBonus: 0.25
-  play_Mode: 1
+  play_Mode: 0
   StairManager: {fileID: 487118649}
   terrainScrollManager: {fileID: 1073473418}
   floorText: {fileID: 1910438448}
