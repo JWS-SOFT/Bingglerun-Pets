@@ -166,6 +166,7 @@ public class PlayerController : MonoBehaviour
         enabled = false;
         isGameOver = true;
         if(!isGamemode) PlayerManager.ActionTImeStop();
+        UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
