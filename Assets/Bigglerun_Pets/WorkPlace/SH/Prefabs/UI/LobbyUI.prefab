@@ -5034,9 +5034,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2172845059379276663}
     - target: {fileID: 4201236706525457816, guid: 1bd660eada3002240a7786e77c8240c9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201236706525457816, guid: 1bd660eada3002240a7786e77c8240c9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2172845059379276663}
+    - target: {fileID: 4201236706525457816, guid: 1bd660eada3002240a7786e77c8240c9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PurchaseButton
+      objectReference: {fileID: 0}
     - target: {fileID: 5634882647317989273, guid: 1bd660eada3002240a7786e77c8240c9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
