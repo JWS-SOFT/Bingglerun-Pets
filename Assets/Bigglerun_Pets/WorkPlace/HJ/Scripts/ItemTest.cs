@@ -89,6 +89,8 @@ public class ItemTest : MonoBehaviour
 
 
 
+
+
         if (Input.GetKeyDown(KeyCode.Q))    //데코아이템 구매
         {
             bool result = ShopManager.Instance.TryBuyItem("hat001", useCash: false);
