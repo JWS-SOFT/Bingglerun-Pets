@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 5607911681372300954}
   - component: {fileID: 3671606846057993793}
   - component: {fileID: 8660181585944199895}
+  - component: {fileID: 5230357041803103036}
   m_Layer: 5
   m_Name: AccessaryListItem
   m_TagString: Untagged
@@ -260,8 +261,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
-        m_MethodName: TogglePopupUI
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: TogglePopup
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -297,6 +298,27 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &5230357041803103036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744122384918847238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f561b4329766e64e8be1222f7021ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decoItemData:
+    itemId: 
+    itemName: 
+    iconPath: 
+    prefabPath: 
+    type: 0
+    showInShop: 1
+    goldPrice: 0
+    cashPrice: 0
 --- !u!1 &6542794667934492841
 GameObject:
   m_ObjectHideFlags: 0

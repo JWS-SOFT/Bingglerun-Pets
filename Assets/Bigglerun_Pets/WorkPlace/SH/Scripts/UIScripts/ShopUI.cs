@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ShopUI : MonoBehaviour
@@ -17,7 +18,10 @@ public class ShopUI : MonoBehaviour
     public TextMeshProUGUI itemPrice;
 
     [SerializeField] private List<Transform> accessaryItemList = new List<Transform>();
-    [SerializeField] private Transform selectedItem;
+    [SerializeField] private Button itemButton;
+    [SerializeField] private int selectedItemIndex;
+
+    [SerializeField] private ConfirmUI confirmUI;
 
     private void Awake()
     {
@@ -61,5 +65,18 @@ public class ShopUI : MonoBehaviour
         }
     }
 
+    public void ItemSelect()
+    {
+        GameObject clickedObj = EventSystem.current.currentSelectedGameObject;
+
+        // 부모인 Content Transform
+        Transform parent = clickedObj.transform.parent;
+
+        // 클릭된 버튼이 Content에서 몇 번째 자식인지 찾기
+        selectedItemIndex = clickedObj.transform.GetSiblingIndex();
+
+        Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
+        confirmUI.decoItemData = parent.GetChild(selectedItemIndex).GetComponent<ShItem>().decoItemData;
+    }
 
 }

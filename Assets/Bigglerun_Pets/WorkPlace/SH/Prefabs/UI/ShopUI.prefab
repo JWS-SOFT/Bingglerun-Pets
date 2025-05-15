@@ -3531,7 +3531,9 @@ MonoBehaviour:
   itemName: {fileID: 0}
   itemPrice: {fileID: 0}
   accessaryItemList: []
-  selectedItem: {fileID: 0}
+  itemButton: {fileID: 0}
+  selectedItemIndex: 0
+  confirmUI: {fileID: 0}
 --- !u!1 &7839740292622396013
 GameObject:
   m_ObjectHideFlags: 0
@@ -3640,7 +3642,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -695.8678}
+  m_SizeDelta: {x: 0, y: -625.4675}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6981276894216337371
 MonoBehaviour:
@@ -3973,7 +3975,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 295.5
+      value: 482.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3992,16 +3994,60 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: shoes001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: RedShoes
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4253,11 +4299,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 669.5
+      value: 108.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -108.5
+      value: -295.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4272,16 +4318,60 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: body002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: BlueSuit
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4407,11 +4497,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 482.5
+      value: 108.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -295.5
+      value: -482.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4426,16 +4516,60 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: shoes002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: BlueShoes
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4580,16 +4714,56 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: hat002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: BlueHat
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4715,7 +4889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 108.5
+      value: 295.5
       objectReference: {fileID: 0}
     - target: {fileID: 3103578999823800042, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4734,16 +4908,60 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: body003
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: GreenSuit
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.cashPrice
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4876,16 +5094,48 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TogglePopup
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: hat001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: RedHat
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5030,16 +5280,60 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1941205118752221375}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ItemSelect
       objectReference: {fileID: 0}
     - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ShopUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671606846057993793, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4744122384918847238, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_Name
       value: AccessaryListItem (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemId
+      value: body001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.itemName
+      value: RedSuit
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230357041803103036, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
+      propertyPath: decoItemData.goldPrice
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5504391272399321449, guid: b3cc9e5c5584e4e4bb8caa8d6a37404c, type: 3}
       propertyPath: m_AnchorMax.y
