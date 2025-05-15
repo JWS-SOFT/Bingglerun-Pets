@@ -46,6 +46,7 @@ public class PlayerData
     public int totalPlayCount;
     public int bestScore;
     public int totalCoinsCollected;
+    public int competitiveBestScore;
     
     // 마지막 업데이트 시간
     public long lastUpdateTimestamp;

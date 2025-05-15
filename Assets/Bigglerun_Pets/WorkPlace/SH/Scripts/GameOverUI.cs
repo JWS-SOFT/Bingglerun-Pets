@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI totalScoreText;
+    [SerializeField] private TextMeshProUGUI bestScoreText;
 
     [SerializeField] private float totalScore;
 
@@ -18,6 +19,8 @@ public class GameOverUI : MonoBehaviour
             totalScore = PlayerManager.Instance.currentPlayerFloor;
         }
 
+        PlayerDataManager.Instance.UpdateCompetitiveBestScore((int)totalScore);
         totalScoreText.text = totalScore.ToString();
+        bestScoreText.text = PlayerDataManager.Instance.CurrentPlayerData.competitiveBestScore.ToString();
     }
 }

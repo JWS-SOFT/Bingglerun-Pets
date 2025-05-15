@@ -1717,6 +1717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalScoreText: {fileID: 6428238842900714856}
+  bestScoreText: {fileID: 3552159302788463285}
   totalScore: 0
 --- !u!1 &8102000025960945130
 GameObject:
