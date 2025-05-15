@@ -19,8 +19,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private StairManager StairManager;
     [SerializeField] private TerrainScrollManager terrainScrollManager;
     private int currentPlayerCoin = 0;
-    private int currentPlayerFloor = 0;
-    private float currentPlayerDistance = 0;
+    public int currentPlayerFloor = 0;
+    public float currentPlayerDistance = 0;
     private BasicTimer actionTimer;
 
     [SerializeField] private TextMeshProUGUI floorText, coinText, timerText;

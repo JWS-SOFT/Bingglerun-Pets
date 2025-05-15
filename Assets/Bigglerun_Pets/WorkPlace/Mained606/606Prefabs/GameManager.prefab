@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3245313162493396601}
   - component: {fileID: 421511972230858829}
+  - component: {fileID: 8054717451114348862}
+  - component: {fileID: 7868044842498544572}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -46,6 +48,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LobbySceneName: 606TestLobby
+--- !u!114 &8054717451114348862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819291236048537327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5496be76aec82469dd5f45f066b121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7868044842498544572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819291236048537327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a64d6aa38c98d4eb4c2df28c911e4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &188411976535824725
 PrefabInstance:
   m_ObjectHideFlags: 0

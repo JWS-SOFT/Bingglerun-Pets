@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 /// <summary>
 /// 플레이어 데이터를 관리하는 매니저 클래스
@@ -40,7 +41,8 @@ public class PlayerDataManager : MonoBehaviour
     public event Action<int> OnTotalStarsChanged;
     public event Action<string, bool> OnDecorationUnlocked;
     public event Action<string, int> OnItemQuantityChanged;
-    
+    public event Action<int> OnCompetitiveBestScoreChanged;
+
     // 로딩 상태
     public bool IsLoading { get; private set; }
     
@@ -494,8 +496,21 @@ public class PlayerDataManager : MonoBehaviour
         StageData stageData = GetStageData(stageId);
         return stageData != null && stageData.isUnlocked;
     }
+
+    public void UpdateCompetitiveBestScore(int score)
+    {
+        Debug.Log("UpdateScore");
+        if (CurrentPlayerData.competitiveBestScore == 0)
+        {
+            CurrentPlayerData.competitiveBestScore = score;
+        }
+        if (score > CurrentPlayerData.competitiveBestScore)
+        {
+            CurrentPlayerData.competitiveBestScore = score;
+        }
+    }
     #endregion
-    
+
     #region 닉네임 및 설정 관련
     /// <summary>
     /// 닉네임 변경
@@ -576,4 +591,4 @@ public class PlayerDataManager : MonoBehaviour
         return CurrentPlayerData.unlockedCharacters.Contains(characterId);
     }
     #endregion
-} 
+}
