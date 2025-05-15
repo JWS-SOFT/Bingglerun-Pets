@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8435563190001839269}
+  - {fileID: 5398801717712745489}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &421511972230858829
@@ -72,6 +73,84 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a64d6aa38c98d4eb4c2df28c911e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5253535681626554970
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5398801717712745489}
+  - component: {fileID: 8006635774475728251}
+  - component: {fileID: 8567741026446467104}
+  m_Layer: 0
+  m_Name: OrientationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5398801717712745489
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253535681626554970}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3245313162493396601}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8006635774475728251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253535681626554970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a991f3b580576549845b3083d9e9cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aspectRatioThreshold: 1
+  checkOnStart: 1
+  checkContinuously: 1
+  checkInterval: 0.5
+  onOrientationChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onLandscapeModeEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onPortraitModeEntered:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8567741026446467104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253535681626554970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75943cf058e8f66468ced1431461ecc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasesToAdjust: []
+  findAllCanvasesIfEmpty: 1
+  landscapeReferenceResolution: {x: 1080, y: 1920}
+  landscapeMatchWidthOrHeight: 0.7
+  portraitReferenceResolution: {x: 1080, y: 1920}
+  portraitMatchWidthOrHeight: 0.1
+  findCanvasesOnSceneLoad: 1
+  handleDontDestroyOnLoadCanvas: 1
 --- !u!1001 &188411976535824725
 PrefabInstance:
   m_ObjectHideFlags: 0

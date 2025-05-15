@@ -37,6 +37,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        // 초기화
         InputZone1 = false;
         InputZone2 = false;
         IsZone1Pressed = false;
@@ -44,6 +45,14 @@ public class InputManager : MonoBehaviour
 
         zone1Timer -= Time.deltaTime;
         zone2Timer -= Time.deltaTime;
+
+        // 게임 상태가 InGame이 아니면 입력 처리를 하지 않음
+        if (GameManager.Instance == null || 
+            GameManager.Instance.StateMachine == null || 
+            GameManager.Instance.StateMachine.CurrentState != GameState.InGame)
+        {
+            return;
+        }
 
         bool touchedZone1 = false;
         bool touchedZone2 = false;
