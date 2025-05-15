@@ -546,6 +546,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7652496585547013146, guid: 2340289412c4fdf499a734fb8a2ab5ca, type: 3}
+      propertyPath: bestScoreText
+      value: 
+      objectReference: {fileID: 59382861}
     - target: {fileID: 7774538721691809419, guid: 2340289412c4fdf499a734fb8a2ab5ca, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -616,6 +620,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 973249504243135355, guid: 2340289412c4fdf499a734fb8a2ab5ca, type: 3}
   m_PrefabInstance: {fileID: 59382859}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &59382861 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3552159302788463285, guid: 2340289412c4fdf499a734fb8a2ab5ca, type: 3}
+  m_PrefabInstance: {fileID: 59382859}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &66358477
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2360,6 +2375,8 @@ MonoBehaviour:
   play_Mode: 1
   StairManager: {fileID: 487118649}
   terrainScrollManager: {fileID: 1073473418}
+  currentPlayerFloor: 0
+  currentPlayerDistance: 0
   floorText: {fileID: 1910438448}
   coinText: {fileID: 1066797039}
   timerText: {fileID: 460670761}

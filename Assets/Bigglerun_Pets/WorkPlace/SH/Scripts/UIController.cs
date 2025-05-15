@@ -29,4 +29,10 @@ public class UIController : MonoBehaviour
     {
         GameManager.Instance.SceneFader.LoadScene(sceneName);
     }
+
+    public void PurchaseButton()
+    {
+        Debug.Log($"구매버튼 누름");
+        UIManager.Instance.ExitPopup();
+    }
 }

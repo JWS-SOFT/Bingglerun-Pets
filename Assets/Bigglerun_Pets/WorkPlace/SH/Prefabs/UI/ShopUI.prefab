@@ -499,7 +499,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7731336823026229112}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1941205118752221375}
+        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
+        m_MethodName: SubTabSwitch
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: DecorationType.Shoes
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &848958257330249324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,7 +1140,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6060890227605155140}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1941205118752221375}
+        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
+        m_MethodName: SubTabSwitch
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: DecorationType.Hat
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2149141275887866652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,7 +1273,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6962268209555603387}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1941205118752221375}
+        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
+        m_MethodName: MainTabSwitch
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2771436395114458691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,7 +1985,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7702297451934044875}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1941205118752221375}
+        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
+        m_MethodName: SubTabSwitch
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: DecorationType.Body
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3792406096335024470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2070,7 +2118,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4514434203377546860}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1941205118752221375}
+        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
+        m_MethodName: MainTabSwitch
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3803867901373735201
 GameObject:
   m_ObjectHideFlags: 0
@@ -3463,6 +3523,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerGold: {fileID: 8006621137088396239}
   playerCash: {fileID: 6667596312198414440}
+  mainTab:
+  - {fileID: 5080279861689113717}
+  - {fileID: 176279450945042158}
   itemPrefab: {fileID: 0}
   itemImage: {fileID: 0}
   itemName: {fileID: 0}
