@@ -1,7 +1,6 @@
-using System.Xml.Serialization;
+using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
@@ -35,6 +34,16 @@ public class PlayerManager : MonoBehaviour
     {
         return Player_Transform != null;
     }
+
+    //05.15 HJ 추가
+    [SerializeField] private int maxLife = 3;
+    private int currentLife = 0;
+
+    [SerializeField] private int maxSkillCount = 3;
+    private int currentSkillCount = 0;
+
+    private bool isInvincible = false;
+
 
     private void Awake()
     {
@@ -138,5 +147,61 @@ public class PlayerManager : MonoBehaviour
     public static void ActiveSkill()
     {
         Instance.skillManager.ActivateSkill(Instance.playerData.playerId);
+    }
+
+
+
+
+    //05.15 HJ 추가 부분
+    //목숨 초기화(게임 스타트시 호출)
+    public void InitializeLife()
+    {
+        currentLife = maxLife;
+    }
+
+    //스킬 사용횟수 초기화(게임 스타트시 호출)
+    public void InitializeSkillCount()
+    {
+        currentSkillCount = maxSkillCount;
+    }
+
+    //데미지
+    public void TakeDamage()
+    {
+
+    }
+
+    //무적
+    public void SetInvincible(float duration)
+    {
+        
+    }
+
+    private IEnumerator InvincibleCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+    }
+
+    //초반 부스터
+    public void StartBooster(float duration)
+    {
+
+    }
+
+    private IEnumerator BoosterCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+    }
+
+    //목숨 추가
+    public void AddLife(int amount = 1)
+    {
+
+    }
+
+    //스킬 횟수 추가
+    public void AddSkillCount(int amount = 1)
+    {
+
     }
 }
