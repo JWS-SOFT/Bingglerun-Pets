@@ -68,9 +68,22 @@ public class SpawnItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Stair stair = transform.GetComponentInParent<Stair>();
-            PlayerController controller = collision.gameObject.GetComponent<PlayerController>();
-            if (controller != null && stair != null && stair.index == controller.currentStairIndex)
+            if (!PlayerManager.PlayMode)
+            {
+                Stair stair = transform.GetComponentInParent<Stair>();
+                PlayerController controller = collision.gameObject.GetComponent<PlayerController>();
+                if (controller != null && stair != null && stair.index == controller.currentStairIndex)
+                {
+                    item_Sprite.enabled = false;
+
+                    //05.14 HJ 추가
+                    if (currentItemType == spriteNameType.Coin)
+                        PlayerManager.ChangeCoin();
+                    else if (currentItemType == spriteNameType.Gem)
+                        ItemManager.Instance.UseUsableItem("item004");
+                }
+            }
+            else
             {
                 item_Sprite.enabled = false;
 
@@ -79,9 +92,8 @@ public class SpawnItem : MonoBehaviour
                     PlayerManager.ChangeCoin();
                 else if (currentItemType == spriteNameType.Gem)
                     ItemManager.Instance.UseUsableItem("item004");
-
-                Debug.Log("플레이어와 접촉");
             }
+            Debug.Log("플레이어와 접촉");
         }
     }
 }

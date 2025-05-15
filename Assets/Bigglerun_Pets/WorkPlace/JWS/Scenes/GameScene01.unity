@@ -1626,7 +1626,7 @@ MonoBehaviour:
   obstaclePrefabs:
   - {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
   obstacleHeightOffset: 1
-  spawnItem: {fileID: 0}
+  spawnItem: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
   spawnPercent: 1
   maxTilesBetweenEmpty: 1
 --- !u!1 &1079569709

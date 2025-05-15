@@ -18,10 +18,10 @@ public class TerrainScrollManager : MonoBehaviour
 
     [Header("아이템 설정")]
     [SerializeField] private GameObject spawnItem;
-    [Range(0f, 1f)][SerializeField] private float spawnPercent = 1f;
+    [Range(0f, 1f)][SerializeField] private float spawnPercent = 0.5f;
 
     [Header("패턴 설정")]
-    [SerializeField] private int maxTilesBetweenEmpty = 3;
+    [SerializeField] private int maxTilesBetweenEmpty = 1;
 
     private float terrainWidth;
     private Queue<GameObject> terrainPool = new Queue<GameObject>();
@@ -52,8 +52,9 @@ public class TerrainScrollManager : MonoBehaviour
             if (i == 0)
                 SpawnPlayerOnTerrain(obj);
 
+            bool first = i > 5;
             // 타일/빈공간 설정
-            SetTileActive(obj, spawnPattern[i]);
+            SetTileActive(obj, spawnPattern[i], first);
 
             // 장애물 생성 (주석 처리된 상태면 유지)
             // SpawnObstacleOnTerrain(obj, terrainIndex);
@@ -85,19 +86,12 @@ public class TerrainScrollManager : MonoBehaviour
                     Destroy(child.gameObject);
             }
 
-            // 기존 아이템 제거 (아이템 태그가 있다고 가정)
-            foreach (Transform child in first.transform)
-            {
-                if (child.CompareTag("Item"))
-                    Destroy(child.gameObject);
-            }
-
             // 다음 타일 패턴 적용
             if (terrainIndex >= spawnPattern.Count)
                 spawnPattern = GenerateSpawnPattern(poolSize, maxTilesBetweenEmpty);
 
             int patternValue = spawnPattern[terrainIndex % spawnPattern.Count];
-            SetTileActive(first, patternValue);
+            SetTileActive(first, patternValue, true);
 
             // 장애물 생성 (필요 시 활성화)
             // SpawnObstacleOnTerrain(first, terrainIndex);
@@ -108,12 +102,10 @@ public class TerrainScrollManager : MonoBehaviour
     }
 
     // 타일 활성/비활성
-    private void SetTileActive(GameObject tile, int state)
+    private void SetTileActive(GameObject tile, int state, bool first)
     {
-        // 아이템 생성
-        SpawnItemOnTerrain(tile);
         tile.SetActive(state == 1);
-        Debug.Log(tile.name + ", " + tile.activeSelf);
+        if (state == 1 && first) SpawnItemOnTerrain(tile);
     }
 
     // 랜덤 패턴 생성 (빈공간 좌우 타일 보장 + 빈공간 간 최대 타일 수 설정)
@@ -234,18 +226,19 @@ public class TerrainScrollManager : MonoBehaviour
         float x = terrain.transform.position.x;
         float y;
 
-        if (terrain.activeSelf)
+        if (Random.Range(0,4) > 1)
         {
             // 타일 위에 생성
-            y = terrain.transform.position.y + 1f; // 적절한 아이템 높이 조절
+            y = terrain.transform.position.y + 1.75f; // 적절한 아이템 높이 조절
         }
         else
         {
             // 빈 공간일 경우 공중에 생성
-            y = terrain.transform.position.y + 3f;
+            y = terrain.transform.position.y + 3.25f;
         }
 
         SpawnItem spitem = Instantiate(spawnItem, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform).GetComponent<SpawnItem>();
+        spitem.transform.localScale = new Vector3(0.15f, 0.15f, 0);
         spitem.SetItemType("Coin");
     }
 

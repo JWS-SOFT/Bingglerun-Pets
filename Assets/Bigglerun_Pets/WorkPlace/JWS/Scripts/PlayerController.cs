@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
         //gameObject.SetActive(false);
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
-        jumpHeight = !isGamemode ? 2.5f : 3f;    // ⬅ 점프 높이
+        jumpHeight = !isGamemode ? 2f : 3f;    // ⬅ 점프 높이
         Rigidbody2D = GetComponent<Rigidbody2D>();
         if (!isGamemode) Rigidbody2D.Sleep();
     }
