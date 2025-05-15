@@ -49,9 +49,6 @@ public class TerrainScrollManager : MonoBehaviour
             GameObject obj = Instantiate(terrainPrefab, pos, Quaternion.identity, transform);
             terrainPool.Enqueue(obj);
 
-            if (i == 0)
-                SpawnPlayerOnTerrain(obj);
-
             bool first = i > 5;
             // 타일/빈공간 설정
             SetTileActive(obj, spawnPattern[i], first);
@@ -59,8 +56,12 @@ public class TerrainScrollManager : MonoBehaviour
             // 장애물 생성 (주석 처리된 상태면 유지)
             // SpawnObstacleOnTerrain(obj, terrainIndex);
 
+            if (i == 0)
+                SpawnPlayerOnTerrain(obj);
+
             terrainIndex++;
         }
+        PlayerManager.Instance.isGameStartReady = true;
     }
 
     private void Update()

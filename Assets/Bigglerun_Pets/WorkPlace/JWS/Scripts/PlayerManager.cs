@@ -1,7 +1,7 @@
 using System.Xml.Serialization;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
@@ -16,8 +16,11 @@ public class PlayerManager : MonoBehaviour
         set { Instance.play_Mode = value; }
     }
     [SerializeField] private bool play_Mode = true;
-    [SerializeField] private StairManager StairManager;
+    [SerializeField] private SkillManager skillManager;
+    [SerializeField] private StairManager stairManager;
     [SerializeField] private TerrainScrollManager terrainScrollManager;
+    [SerializeField] private Button[] actionButton = new Button[3];
+    private PlayerData playerData;
     private int currentPlayerCoin = 0;
     public int currentPlayerFloor = 0;
     public float currentPlayerDistance = 0;
@@ -25,6 +28,8 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI floorText, coinText, timerText;
     [SerializeField] private Slider timerSlider;
+
+    public bool isGameStartReady = false;
 
     public static bool IsSettingPlayer()
     {
@@ -46,18 +51,25 @@ public class PlayerManager : MonoBehaviour
 
         if (play_Mode)
         {
-            StairManager.enabled = false;
+            stairManager.enabled = false;
             terrainScrollManager.enabled = true;
+            actionButton[1].gameObject.SetActive(false);
+            actionButton[2].gameObject.SetActive(true);
         }
         else
         {
-            StairManager.enabled = true;
+            stairManager.enabled = true;
             terrainScrollManager.enabled = false;
+            actionButton[1].gameObject.SetActive(true);
+            actionButton[2].gameObject.SetActive(false);
         }
     }
 
     private void Start()
     {
+
+        //playerData = PlayerDataManager.Instance.CurrentPlayerData;
+        playerData = PlayerData.CreateDefault("cat");
         if (!play_Mode)
         {
             floorText.text = "Floor\n" + currentPlayerFloor;
@@ -121,5 +133,10 @@ public class PlayerManager : MonoBehaviour
     public static void ActionTImeStop()
     {
         TimerManager.Instance.StopTimer(Instance.actionTimer);
+    }
+
+    public static void ActiveSkill()
+    {
+        Instance.skillManager.ActivateSkill(Instance.playerData.playerId);
     }
 }

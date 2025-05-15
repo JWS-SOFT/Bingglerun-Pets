@@ -46,12 +46,12 @@ public class PlayerController : MonoBehaviour
     {
         if (!moving)
         {
+            Debug.Log(PlayerManager.Instance.isGameStartReady);
             // 🟥 횡스크롤 모드에서 아래 타일 유무 체크
-            if (isGamemode)
+            if (isGamemode && PlayerManager.Instance.isGameStartReady)
             {
                 Vector2 checkPos = footPoint.position; // 발밑 바로 아래
-                Collider2D hit = Physics2D.OverlapCircle(checkPos, 0.05f, LayerMask.GetMask("Ground")); // 'Ground' 레이어로 타일 설정했다고 가정
-
+                Collider2D hit = Physics2D.OverlapCircle(checkPos, 0.1f, LayerMask.GetMask("Ground")); // 'Ground' 레이어로 타일 설정했다고 가정
                 if (hit == null)
                 {
                     // 아래에 타일이 없고, 점프 중이 아님 → 게임오버
@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviour
         enabled = false;
         isGameOver = true;
         if(!isGamemode) PlayerManager.ActionTImeStop();
-        UIManager.Instance.TogglePopupUI("GameOverUI");
+        if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
