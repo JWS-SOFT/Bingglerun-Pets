@@ -114,12 +114,12 @@ public class ItemTest : MonoBehaviour
             ItemManager.Instance.UnequipDecoration(DecorationType.Hat);
         }
 
-        //if (Input.GetKeyDown(KeyCode.R))    //장착된 데코 아이템 검색
-        //{
-        //    string itemId = ItemManager.Instance.GetEquippedDecorationId(DecorationType.Hat);
+        if (Input.GetKeyDown(KeyCode.R))    //장착된 데코 아이템 검색
+        {
+            string itemId = ItemManager.Instance.GetEquippedDecorationId(DecorationType.Hat);
 
-        //    Debug.Log($"Hat에 장착된 아이템 {itemId}");
-        //}        
+            Debug.Log($"Hat에 장착된 아이템 {itemId}");
+        }
     }
 
     private void InitTestData()
