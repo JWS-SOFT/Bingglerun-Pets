@@ -25,6 +25,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI floorText, coinText, timerText;
     [SerializeField] private Slider timerSlider;
 
+    public bool isGameStartReady = false;
+
     public static bool IsSettingPlayer()
     {
         return Player_Transform != null;

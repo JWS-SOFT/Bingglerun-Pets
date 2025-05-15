@@ -216,6 +216,7 @@ public class TerrainScrollManager : MonoBehaviour
         {
             consecutiveObstacleCount = 0;
         }
+        PlayerManager.Instance.isGameStartReady = true; 
     }
 
     private void SpawnItemOnTerrain(GameObject terrain)
