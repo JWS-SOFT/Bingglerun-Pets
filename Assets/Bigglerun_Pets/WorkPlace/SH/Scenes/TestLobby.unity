@@ -408,46 +408,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyUI
       objectReference: {fileID: 0}
-    - target: {fileID: 4327966268802631313, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327966268802631313, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327966268802631313, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327966268802631313, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327966268802631313, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4915864683615927955, guid: aa083a308e8365547b643522996e9177, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8266804620237495193, guid: aa083a308e8365547b643522996e9177, type: 3}
       propertyPath: m_Pivot.x
       value: 0
