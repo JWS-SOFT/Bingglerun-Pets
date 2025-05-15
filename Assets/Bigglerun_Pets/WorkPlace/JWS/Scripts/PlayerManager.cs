@@ -1,6 +1,5 @@
 using System.Xml.Serialization;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +24,8 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI floorText, coinText, timerText;
     [SerializeField] private Slider timerSlider;
+
+    public bool isGameStartReady = false;
 
     public static bool IsSettingPlayer()
     {
