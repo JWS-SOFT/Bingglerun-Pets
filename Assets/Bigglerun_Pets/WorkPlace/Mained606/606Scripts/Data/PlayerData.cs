@@ -17,6 +17,7 @@ public class PlayerData
     // 재화
     public int gold;
     public int diamond;
+    public int heart;
     
     // 게임 진행
     public Dictionary<string, StageData> storyStages; // 스테이지 ID를 키로 사용
@@ -62,6 +63,7 @@ public class PlayerData
             experience = 0,
             gold = 1000,
             diamond = 50,
+            heart = 5,
             storyStages = new Dictionary<string, StageData>
             {
                 { "1", new StageData { stageId = "1", stars = 0, highScore = 0, isUnlocked = true } }

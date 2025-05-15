@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Bigglerun_Pets/Scenes/LobbyScene.unity
     guid: 2f00c751c2fdc4975b50ce3120017dc2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Bigglerun_Pets/Scenes/GameScene01.unity
     guid: a9323aed205cc42a5a373303a710c94e
   - enabled: 1
@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/Mained606/606Scene/606TestLobby.unity
     guid: b0481716e61c8704db6fff41aed5456c
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/WorkPlace/JWS/Scenes/GameScene01.unity
+    guid: 4316b7614e329344c9aa9fff788bc711
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

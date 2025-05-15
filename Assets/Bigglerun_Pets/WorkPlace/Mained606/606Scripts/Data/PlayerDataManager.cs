@@ -33,6 +33,7 @@ public class PlayerDataManager : MonoBehaviour
     public event Action OnDataLoaded;
     public event Action<int> OnGoldChanged;
     public event Action<int> OnDiamondChanged;
+    public event Action<int> OnHeartChanged;
     public event Action<int> OnLevelChanged;
     public event Action<int> OnExperienceChanged;
     public event Action<string> OnNicknameChanged;
@@ -178,6 +179,37 @@ public class PlayerDataManager : MonoBehaviour
         {
             CurrentPlayerData.diamond -= amount;
             OnDiamondChanged?.Invoke(CurrentPlayerData.diamond);
+            _ = SavePlayerDataAsync();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 하트 충전
+    /// </summary>
+    public void RefillHeart(int amount = 1)
+    {
+        if (!IsDataLoaded || amount <= 0) return;
+
+        CurrentPlayerData.heart += amount;
+        OnHeartChanged?.Invoke(CurrentPlayerData.heart);
+        UIManager.Instance.uiController.heart.text = CurrentPlayerData.heart.ToString();
+        _ = SavePlayerDataAsync();
+    }
+
+    /// <summary>
+    /// 하트 소비 시도
+    /// </summary>
+    public bool TrySpendHeart()
+    {
+        if (!IsDataLoaded) return false;
+
+        if(CurrentPlayerData.heart > 0)
+        {
+            CurrentPlayerData.heart--;
+            OnHeartChanged?.Invoke(CurrentPlayerData.diamond);
+            UIManager.Instance.uiController.heart.text = CurrentPlayerData.heart.ToString();
             _ = SavePlayerDataAsync();
             return true;
         }
