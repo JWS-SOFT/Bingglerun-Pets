@@ -85,6 +85,43 @@ public class ItemTest : MonoBehaviour
                 Debug.Log($"{item.itemName} | Cash: {item.cashPrice}");
         }
 
+
+
+
+
+        if (Input.GetKeyDown(KeyCode.Q))    //데코아이템 구매
+        {
+            bool result = ShopManager.Instance.TryBuyItem("hat001", useCash: false);
+            Debug.Log("데코 아이템 구매 성공 여부: " + result);
+        }
+
+        if(Input.GetKeyDown(KeyCode.W))     //데코아이템 장착
+        {
+            string itemId = "hat001";
+            bool unlocked = ItemManager.Instance.IsUnlockedDecoration(itemId);
+            if (unlocked)
+            {
+                ItemManager.Instance.EquipDecoration(itemId);
+                var deco = ItemManager.Instance.GetEquippedDecoration(DecorationType.Hat);
+                Debug.Log($"데코 아이템 장착됨: {deco.itemName}");
+            }
+            else
+            {
+                Debug.Log("데코 아이템 언락되지 않음");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E)) //장착 해제
+        {
+            ItemManager.Instance.UnequipDecoration(DecorationType.Hat);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))    //장착된 데코 아이템 검색
+        {
+            string itemId = ItemManager.Instance.GetEquippedDecorationId(DecorationType.Hat);
+
+            Debug.Log($"Hat에 장착된 아이템 {itemId}");
+        }        
     }
 
     private void InitTestData()
