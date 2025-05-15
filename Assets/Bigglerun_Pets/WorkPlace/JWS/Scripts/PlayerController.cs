@@ -2,20 +2,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public StairManager stairManager;
+    [SerializeField] private StairManager stairManager;
+    [SerializeField] private Transform footPoint;
 
+    [SerializeField] private float jumpTimer = 0f;       // ⬅ 점프 시간 진행 추적
+    [SerializeField] private float jumpDuration = 0.25f; // ⬅ 총 이동에 걸릴 시간
+    [SerializeField] private float jumpHeight = 2.5f;    // ⬅ 점프 높이
     private bool moving = false;
     private int moveDirection = 1; // 1 = 오른쪽, -1 = 왼쪽
     public int currentStairIndex = 0;
 
     private Vector2 targetPos;
     private Vector2 startJumpPos;       // ⬅ 점프 시작 위치 저장
-    [SerializeField] private float jumpTimer = 0f;       // ⬅ 점프 시간 진행 추적
-    [SerializeField] private float jumpDuration = 0.25f; // ⬅ 총 이동에 걸릴 시간
-    [SerializeField] private float jumpHeight = 2.5f;    // ⬅ 점프 높이
     private bool isGameOver = false;
     private bool isGamemode = false;  // false 계단, true 횡런게임.
+    private Rigidbody2D Rigidbody2D;
 
     private void Start()
     {
@@ -24,6 +25,8 @@ public class PlayerController : MonoBehaviour
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
         jumpHeight = !isGamemode ? 2.5f : 3f;    // ⬅ 점프 높이
+        Rigidbody2D = GetComponent<Rigidbody2D>();
+        if (!isGamemode) Rigidbody2D.Sleep();
     }
 
     private void Update()
@@ -41,7 +44,24 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!moving) return;
+        if (!moving)
+        {
+            // 🟥 횡스크롤 모드에서 아래 타일 유무 체크
+            if (isGamemode)
+            {
+                Vector2 checkPos = footPoint.position; // 발밑 바로 아래
+                Collider2D hit = Physics2D.OverlapCircle(checkPos, 0.05f, LayerMask.GetMask("Ground")); // 'Ground' 레이어로 타일 설정했다고 가정
+
+                if (hit == null)
+                {
+                    // 아래에 타일이 없고, 점프 중이 아님 → 게임오버
+                    TriggerGameOver();
+                    return;
+                }
+            }
+
+            return;
+        }
 
         jumpTimer += Time.fixedDeltaTime;
         float t = Mathf.Clamp01(jumpTimer / jumpDuration);
@@ -166,7 +186,7 @@ public class PlayerController : MonoBehaviour
         enabled = false;
         isGameOver = true;
         if(!isGamemode) PlayerManager.ActionTImeStop();
-        UIManager.Instance.TogglePopupUI("GameOverUI");
+        // UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
         // UIManager.Instance.ShowGameOverUI(); // 선택 사항
