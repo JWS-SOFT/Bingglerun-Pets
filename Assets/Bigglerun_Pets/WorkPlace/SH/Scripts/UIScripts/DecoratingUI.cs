@@ -7,15 +7,33 @@ public class DecoratingUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerGold;
     [SerializeField] private TextMeshProUGUI playerCash;
 
-    private void Start()
+    private void Awake()
     {
         playerData = PlayerDataManager.Instance;
-
-        SetData();
     }
-    public void SetData()
+
+    private void OnEnable()
     {
-        playerGold.text = playerData.CurrentPlayerData.gold.ToString();
-        playerCash.text = playerData.CurrentPlayerData.diamond.ToString();
+        PlayerDataManager.Instance.OnGoldChanged += SetGoldData;
+        PlayerDataManager.Instance.OnDiamondChanged += SetDiamondData;
+        SetGoldData(playerData.CurrentPlayerData.gold);
+        SetDiamondData(playerData.CurrentPlayerData.diamond);
+    }
+
+    private void OnDisable()
+    {
+        PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
+        PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
+    }
+
+    private void SetGoldData(int gold)
+    {
+        playerGold.text = gold.ToString();
+
+    }
+
+    private void SetDiamondData(int diamond)
+    {
+        playerCash.text = diamond.ToString();
     }
 }

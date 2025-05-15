@@ -30,19 +30,27 @@ public class ShopUI : MonoBehaviour
 
     private void OnEnable()
     {
-        SetData();
+        PlayerDataManager.Instance.OnGoldChanged += SetGoldData;
+        PlayerDataManager.Instance.OnDiamondChanged += SetDiamondData;
+        SetGoldData(playerData.CurrentPlayerData.gold);
+        SetDiamondData(playerData.CurrentPlayerData.diamond);
     }
 
-    public void SetData()
+    private void OnDisable()
     {
-        playerGold.text = playerData.CurrentPlayerData.gold.ToString();
-        playerCash.text = playerData.CurrentPlayerData.diamond.ToString();
+        PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
+        PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
     }
 
-    private void UpdateData()
+    private void SetGoldData(int gold)
     {
-        playerGold.text = playerData.CurrentPlayerData.gold.ToString();
-        playerCash.text = playerData.CurrentPlayerData.diamond.ToString();
+        playerGold.text = gold.ToString();
+        
+    }
+
+    private void SetDiamondData(int diamond)
+    {
+        playerCash.text = diamond.ToString();
     }
 
     public void SubTabSwitch(int index)
@@ -78,5 +86,4 @@ public class ShopUI : MonoBehaviour
         Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
         confirmUI.decoItemData = parent.GetChild(selectedItemIndex).GetComponent<ShItem>().decoItemData;
     }
-
 }

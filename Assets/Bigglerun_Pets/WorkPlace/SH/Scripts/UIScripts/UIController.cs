@@ -29,4 +29,9 @@ public class UIController : MonoBehaviour
     {
         GameManager.Instance.SceneFader.LoadScene(sceneName);
     }
+
+    public void UpdateData()
+    {
+
+    }
 }
