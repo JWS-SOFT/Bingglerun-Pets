@@ -35,13 +35,22 @@ public class ShopManager : MonoBehaviour
     {
         if (amount <= 0) return false;
 
-        if(useCash)
+        if (ItemManager.Instance.IsDecorationItem(itemId))
+        {
+            if (ItemManager.Instance.IsUnlockedDecoration(itemId))
+            {
+                //Debug.Log("이미 해금된 데코 아이템");
+                return false;
+            }
+        }
+
+        if (useCash)
         {
             int cashPrice = ItemManager.Instance.GetCashPrice(itemId) * amount;
 
             if (cashPrice > 0 && PlayerCash >= cashPrice)
             {
-                if(PlayerDataManager.Instance.TrySpendDiamond(cashPrice))
+                if (PlayerDataManager.Instance.TrySpendDiamond(cashPrice))
                 {
                     GiveItem(itemId, amount);
                     return true;
@@ -52,7 +61,7 @@ public class ShopManager : MonoBehaviour
         {
             int goldPrice = ItemManager.Instance.GetGoldPrice(itemId) * amount;
 
-            if(goldPrice > 0 && PlayerGold >= goldPrice)
+            if (goldPrice > 0 && PlayerGold >= goldPrice)
             {
                 if (PlayerDataManager.Instance.TrySpendGold(goldPrice))
                 {
@@ -86,8 +95,8 @@ public class ShopManager : MonoBehaviour
         return items;
     }
 
-    //데코 아이템 가격에 따라 필터링(캐쉬 전용, 골드 전용, 가격 오름차순으로 정렬)
-    public List<DecorationItemData> GetFilteredDecorationItems(DecorationType? type = null, bool cashOnly = false, bool goldOnly = false, bool sortByPriceAsc = false)
+    //데코 아이템 가격에 따라 필터링(캐쉬 전용, 골드 전용, 가격 오름차순으로 정렬, 이미 해금된건 제외)
+    public List<DecorationItemData> GetFilteredDecorationItems(DecorationType? type = null, bool cashOnly = false, bool goldOnly = false, bool sortByPriceAsc = false, bool excludeUnlocked = true)
     {
         var items = ItemManager.Instance.GetFilteredDecorationItems(type: type, showInShopOnly: true);
 
@@ -95,6 +104,9 @@ public class ShopManager : MonoBehaviour
             items = items.Where(i => i.cashPrice > 0).ToList();
         else if (goldOnly)
             items = items.Where(i => i.goldPrice > 0).ToList();
+
+        if(excludeUnlocked)
+            items = items.Where(i => !ItemManager.Instance.IsUnlockedDecoration(i.itemId)).ToList();
 
         if (sortByPriceAsc)
         {

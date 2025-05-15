@@ -147,7 +147,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607224478}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84a64d6aa38c98d4eb4c2df28c911e4f, type: 3}
   m_Name: 
@@ -164,8 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf98acdf0a41bf4a9693cbfc85b42f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerGold: 1000
-  playerCash: 50
 --- !u!114 &1607224481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +200,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607224478}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f842ef1e56ca90443bf53b120e7fef6a, type: 3}
   m_Name: 
@@ -216,7 +214,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607224478}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c5885e4093e5034d8ba8d919c176d2e, type: 3}
   m_Name: 
@@ -385,6 +383,10 @@ PrefabInstance:
     - target: {fileID: 3733351741066523304, guid: 7a2ad84e9589c494aac029e7faba8395, type: 3}
       propertyPath: m_Name
       value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3733351741066523304, guid: 7a2ad84e9589c494aac029e7faba8395, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8614396212502820336, guid: 7a2ad84e9589c494aac029e7faba8395, type: 3}
       propertyPath: m_LocalPosition.x
