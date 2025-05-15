@@ -576,4 +576,4 @@ public class PlayerDataManager : MonoBehaviour
         return CurrentPlayerData.unlockedCharacters.Contains(characterId);
     }
     #endregion
-} 
+}
