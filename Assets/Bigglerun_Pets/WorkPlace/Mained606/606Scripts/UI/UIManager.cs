@@ -150,7 +150,7 @@ public class UIManager : MonoBehaviour
             {
                 openedPopups.Push(target);
                 lastOpenedPopup = target.name;
-                Debug.Log($"{target.name} 오픈");
+                //Debug.Log($"{target.name} 오픈");
             }
             else
             {
@@ -176,7 +176,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private Transform FindDirectChildByName(string uiName)
+    public Transform FindDirectChildByName(string uiName)
     {
         if (uiName == "")
         {

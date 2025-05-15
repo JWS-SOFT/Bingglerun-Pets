@@ -10,16 +10,25 @@ public class ConfirmUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private TextMeshProUGUI itemPriceText;
 
-    private void OnEnable()
+    private void Start()
     {
         itemNameText.text = decoItemData.itemName.ToString();
         itemPriceText.text = decoItemData.goldPrice.ToString();
+
+        //Debug.Log($"itemName : {decoItemData.itemName}");
+        //Debug.Log($"itemPrice : {decoItemData.goldPrice}");
     }
 
     public void PurchaseButton()
     {
         bool result = ShopManager.Instance.TryBuyItem(decoItemData.itemId, useCash: false);
         Debug.Log($"아이템 구매 성공 여부 : {result}");
-        UIManager.Instance.ExitPopup();
+        //UIManager.Instance.ExitPopup();
+        Destroy(gameObject);
+    }
+
+    public void CancelButton()
+    {
+        Destroy(gameObject);
     }
 }

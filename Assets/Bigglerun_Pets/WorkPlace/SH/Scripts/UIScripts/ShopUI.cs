@@ -12,16 +12,18 @@ public class ShopUI : MonoBehaviour
 
     [SerializeField] private Transform[] mainTab;
 
-    public GameObject itemPrefab;
+    [SerializeField] private GameObject accessaryPrefab;
+    [SerializeField] private GameObject skinPrefab;
+    [SerializeField] private Transform contents;
     public Image itemImage;
     public TextMeshProUGUI itemName;
     public TextMeshProUGUI itemPrice;
 
-    [SerializeField] private List<Transform> accessaryItemList = new List<Transform>();
+    //[SerializeField] private List<GameObject> accessaryItemList = new List<GameObject>();
     [SerializeField] private Button itemButton;
     [SerializeField] private int selectedItemIndex;
 
-    [SerializeField] private ConfirmUI confirmUI;
+    public ConfirmUI confirmUI;
 
     private void Awake()
     {
@@ -34,6 +36,7 @@ public class ShopUI : MonoBehaviour
         PlayerDataManager.Instance.OnDiamondChanged += SetDiamondData;
         SetGoldData(playerData.CurrentPlayerData.gold);
         SetDiamondData(playerData.CurrentPlayerData.diamond);
+        
     }
 
     private void OnDisable()
@@ -41,23 +44,32 @@ public class ShopUI : MonoBehaviour
         PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
     }
+    private void Start()
+    {
+        AccessaryListLoad();
+        //confirmUI = UIManager.Instance.FindDirectChildByName("Confirm").GetComponent<ConfirmUI>();
+        //SkinListLoad();
+    }
 
+    // Gold Text 갱신
     private void SetGoldData(int gold)
     {
         playerGold.text = gold.ToString();
-        
     }
 
+    // Diamond Text 갱신
     private void SetDiamondData(int diamond)
     {
         playerCash.text = diamond.ToString();
     }
 
+    // SubTab 카테고리 변경
     public void SubTabSwitch(int index)
     {
         Debug.Log($"SubTab {index}로 변경");
     }
 
+    // MainTab 카테고리 변경
     public void MainTabSwitch(int index)
     {
         switch (index)
@@ -73,6 +85,7 @@ public class ShopUI : MonoBehaviour
         }
     }
 
+    // 선택한 아이템을 confirmUI에 전달
     public void ItemSelect()
     {
         GameObject clickedObj = EventSystem.current.currentSelectedGameObject;
@@ -83,7 +96,31 @@ public class ShopUI : MonoBehaviour
         // 클릭된 버튼이 Content에서 몇 번째 자식인지 찾기
         selectedItemIndex = clickedObj.transform.GetSiblingIndex();
 
-        Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
-        confirmUI.decoItemData = parent.GetChild(selectedItemIndex).GetComponent<ShItem>().decoItemData;
+        //Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
+        var item = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>();
+        GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
+        confirm.SetActive(true);
+        confirm.GetComponent<ConfirmUI>().decoItemData = item.decoItemData;
+        //Debug.Log($"confirmUI.decoItemData.itemName = {confirm.GetComponent<ConfirmUI>().decoItemData?.itemName}");
+    }
+
+    private void ContentsClear()
+    {
+
+    }
+
+    private void AccessaryListLoad()
+    {
+        for(int i = 0; i < ItemManager.AllDecorationItems.Count; i++)
+        {
+            GameObject itemPrefab = Instantiate(accessaryPrefab, contents);
+            itemPrefab.GetComponent<AccessaryItem>().decoItemData = ItemManager.AllDecorationItems[i];
+            ShopManager.Instance.accessaryItemList.Add(itemPrefab);
+        }
+    }
+
+    private void SkinListLoad()
+    {
+        // TODO
     }
 }

@@ -10,6 +10,9 @@ public class DecoratingUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerGold;
     [SerializeField] private TextMeshProUGUI playerCash;
 
+    [SerializeField] private GameObject accessaryPrefab;
+    [SerializeField] private Transform contents;
+
     private int selectedItemIndex;
 
     private void Awake()
@@ -29,6 +32,11 @@ public class DecoratingUI : MonoBehaviour
     {
         PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
+    }
+
+    private void Start()
+    {
+        AccessaryListLoad();
     }
 
     private void SetGoldData(int gold)
@@ -52,8 +60,19 @@ public class DecoratingUI : MonoBehaviour
         // 클릭된 버튼이 Content에서 몇 번째 자식인지 찾기
         selectedItemIndex = clickedObj.transform.GetSiblingIndex();
 
-        Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
-        decoItemData = parent.GetChild(selectedItemIndex).GetComponent<ShItem>().decoItemData;
+        //Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
+        decoItemData = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>().decoItemData;
+    }
+
+    private void AccessaryListLoad()
+    {
+        for (int i = 0; i < ItemManager.AllDecorationItems.Count; i++)
+        {
+            GameObject itemPrefab = Instantiate(accessaryPrefab, contents);
+            itemPrefab.GetComponent<AccessaryItem>().decoItemData = ItemManager.AllDecorationItems[i];
+            ShopManager.Instance.accessaryItemList.Add(itemPrefab);
+        }
+        //Debug.Log($"리스트 아이템 개수 : {ShopManager.Instance.accessaryItemList.Count}");
     }
 
     public void EquipButton()

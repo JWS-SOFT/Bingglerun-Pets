@@ -14,6 +14,8 @@ public class ShopManager : MonoBehaviour
         get => PlayerDataManager.Instance.CurrentPlayerData.diamond;
     }
 
+    public List<GameObject> accessaryItemList = new List<GameObject>();
+
     #region Singleton
     public static ShopManager Instance { get; private set; }
 
