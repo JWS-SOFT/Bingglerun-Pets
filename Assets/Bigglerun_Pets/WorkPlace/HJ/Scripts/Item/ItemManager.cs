@@ -11,6 +11,7 @@ public class ItemManager : MonoBehaviour
     [Header("데코 아이템")]
     [SerializeField] private List<DecorationItemData> decoItemList;
     private HashSet<string> unlockedDecorationIds = new HashSet<string>();
+    private Dictionary<DecorationType, string> equippedDecorationIds = new Dictionary<DecorationType, string>();
 
     //선택된 스타트 아이템
     private ItemData selectedPreGameItem = null;
@@ -92,6 +93,48 @@ public class ItemManager : MonoBehaviour
     public int GetUsableItemCount(string itemId)
     {
         return ownedUsableItems.TryGetValue(itemId, out int count) ? count : 0;
+    }
+
+    //데코 장착
+    public void EquipDecoration(string itemId)
+    {
+        var deco = GetDecorationById(itemId);
+        if (deco == null || !IsUnlockedDecoration(itemId)) return;
+
+        if (equippedDecorationIds.TryGetValue(deco.type, out var equippedId) && equippedId == itemId)
+        {
+            Debug.Log($"{deco.type}에 이미 {itemId}가 장착되어 있음");
+            return;
+        }
+
+        equippedDecorationIds[deco.type] = itemId;
+    }
+
+    //데코 장착 해제
+    public void UnequipDecoration(DecorationType type)
+    {
+        if(equippedDecorationIds.ContainsKey(type))
+        {
+            equippedDecorationIds.Remove(type);
+            Debug.Log($"{type} 장착 해제");
+        }
+        else
+        {
+            Debug.Log($"{type}에 장착된 아이템 없음");
+        }
+    }
+
+    //타입으로 장착된 데코 아이템 아이디 가져오기
+    public string GetEquippedDecorationId(DecorationType type)
+    {
+        return equippedDecorationIds.TryGetValue(type, out string id) ? id : null;
+    }
+
+    //타입으로 장착된 데코 아이템 가져오기
+    public DecorationItemData GetEquippedDecoration(DecorationType type)
+    {
+        string id = GetEquippedDecorationId(type);
+        return id != null ? GetDecorationById(id) : null;
     }
 
     //소모용 아이템 필터링(인벤토리UI, 상점에서 이용)
