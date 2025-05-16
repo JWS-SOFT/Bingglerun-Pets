@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 872f647ae4bb1494e9e08d4a4b0c999b
+timeCreated: 1528966813
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 123224
+  packageName: "FancyDoll \u2013 C012D: Two Faces Cat"
+  packageVersion: 1.0
+  assetPath: Assets/Bigglerun_Pets/WorkPlace/JWS/FD_C012D/prefab/FD_EF001.prefab
+  uploadId: 255761
