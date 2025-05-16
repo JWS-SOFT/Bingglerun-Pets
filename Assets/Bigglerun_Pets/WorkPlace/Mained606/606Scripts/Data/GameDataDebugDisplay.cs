@@ -4,12 +4,39 @@ using System.Collections.Generic;
 public class GameDataDebugDisplay : MonoBehaviour
 {
     private Vector2 scrollPosition;
-    private Rect windowRect = new Rect(10, 10, 450, 600); // 크기를 더 크게 조정
+    private Rect windowRect = new Rect(10, 10, 450, 600); // 기본 크기
     private bool showDetails = true;
     private bool showItems = true;
     private bool showStages = true;
     private bool showDecorations = true;
     private bool showCharacters = true;
+    
+    // 창 상태 관련 변수
+    private bool isCollapsed = false;
+    private Rect originalWindowRect;
+    private bool isResizing = false;
+    private Vector2 resizeStartPos;
+    private Rect resizeStartRect;
+    
+    // 최소/최대 창 크기
+    private readonly float minWindowWidth = 200f;
+    private readonly float minWindowHeight = 100f;
+    private readonly float maxWindowWidth = 800f;
+    private readonly float maxWindowHeight = 1000f;
+    
+    // 리사이징 영역 크기
+    private readonly float resizeHandleSize = 20f;
+    
+    // 최소화 버튼 상수
+    private readonly float collapsedHeight = 40f;
+    private readonly float buttonWidth = 40f;
+    private readonly float buttonHeight = 30f;
+
+    void Start()
+    {
+        // 초기 설정
+        originalWindowRect = windowRect;
+    }
 
     void OnGUI()
     {
@@ -18,8 +45,13 @@ public class GameDataDebugDisplay : MonoBehaviour
         // 어두운 배경과 검은색 텍스트로 디버그 윈도우 생성
         GUIStyle windowStyle = new GUIStyle(GUI.skin.window);
         windowStyle.normal.textColor = Color.black;
+        windowStyle.fontSize = 24; // 창 제목 글씨 크기 키움
         
-        windowRect = GUILayout.Window(0, windowRect, DrawDebugWindow, "게임 데이터 디버그", windowStyle);
+        // 창 표시
+        windowRect = GUILayout.Window(0, windowRect, DrawDebugWindow, isCollapsed ? "게임 데이터 디버그 ▼" : "게임 데이터 디버그 ▲", windowStyle);
+        
+        // 리사이징 처리
+        HandleResizing();
     }
     
     void DrawDebugWindow(int windowID)
@@ -27,17 +59,59 @@ public class GameDataDebugDisplay : MonoBehaviour
         // 모든 텍스트를 검은색으로 설정
         GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
         labelStyle.normal.textColor = Color.black;
-        labelStyle.fontSize = 14; // 글씨 크기 키움
+        labelStyle.fontSize = 30; // 글씨 크기 키움 (두 배 이상)
         
         GUIStyle headerStyle = new GUIStyle(labelStyle);
         headerStyle.fontStyle = FontStyle.Bold;
-        headerStyle.fontSize = 16;
+        headerStyle.fontSize = 36; // 헤더 글씨 크기 키움 (두 배 이상)
         
         GUIStyle subHeaderStyle = new GUIStyle(labelStyle);
         subHeaderStyle.fontStyle = FontStyle.Bold;
+        subHeaderStyle.fontSize = 32; // 서브헤더 글씨 크기 키움 (두 배 이상)
+        
+        // 접기/펼치기 버튼
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+        buttonStyle.normal.textColor = Color.black;
+        buttonStyle.fontSize = 24; // 버튼 글씨 크기 키움
+        
+        // 접기/펼치기 버튼 배치
+        Rect toggleButtonRect;
+        
+        if (isCollapsed)
+        {
+            // 접힌 상태에서는 버튼을 창 가운데 위치에 배치
+            toggleButtonRect = new Rect(windowRect.width / 2 - buttonWidth / 2, 5, buttonWidth, buttonHeight);
+            
+            if (GUI.Button(toggleButtonRect, "▼", buttonStyle))
+            {
+                ToggleCollapse();
+                // 강제로 상태 변경
+                isCollapsed = false;
+                // 원래 크기로 복원
+                windowRect = new Rect(
+                    windowRect.x,
+                    windowRect.y,
+                    originalWindowRect.width,
+                    originalWindowRect.height
+                );
+            }
+            
+            // 드래그 가능하도록
+            GUI.DragWindow(new Rect(0, 0, windowRect.width, 40));
+            return;
+        }
+        else
+        {
+            // 펼쳐진 상태에서는 우측 상단에 배치
+            toggleButtonRect = new Rect(windowRect.width - 50, 5, 40, 30);
+            if (GUI.Button(toggleButtonRect, "▲", buttonStyle))
+            {
+                ToggleCollapse();
+            }
+        }
         
         // 스크롤 시작
-        scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(430), GUILayout.Height(550));
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(windowRect.width - 20), GUILayout.Height(windowRect.height - 50));
         
         // 로그인 상태
         GUILayout.Label("로그인 정보", headerStyle);
@@ -199,7 +273,9 @@ public class GameDataDebugDisplay : MonoBehaviour
         else
         {
             GUILayout.Label("플레이어 데이터 없음", labelStyle);
-            if (GUILayout.Button("테스트 데이터 생성"))
+            GUIStyle bigButtonStyle = new GUIStyle(GUI.skin.button);
+            bigButtonStyle.fontSize = 28; // 버튼 글씨 크기 키움
+            if (GUILayout.Button("테스트 데이터 생성", bigButtonStyle))
             {
                 CreateTestData();
             }
@@ -207,8 +283,95 @@ public class GameDataDebugDisplay : MonoBehaviour
         
         GUILayout.EndScrollView();
         
+        // 우측 하단에 리사이징 핸들 표시
+        GUIStyle resizeStyle = new GUIStyle();
+        resizeStyle.normal.textColor = Color.gray;
+        resizeStyle.fontSize = 30; // 리사이징 핸들 크기 키움
+        GUI.Label(new Rect(windowRect.width - 26, windowRect.height - 26, 26, 26), "◢", resizeStyle);
+        
         // 창 드래그 가능하도록
-        GUI.DragWindow();
+        GUI.DragWindow(new Rect(0, 0, windowRect.width - 50, 40));
+    }
+    
+    // 창 접기/펼치기 토글
+    private void ToggleCollapse()
+    {
+        // Debug.Log("토글 호출됨: " + (isCollapsed ? "펼치기" : "접기"));
+        
+        if (!isCollapsed)
+        {
+            // 접힐 때 기존 크기 저장
+            originalWindowRect = new Rect(windowRect);
+            // 너비는 유지하고 높이만 변경
+            windowRect.height = collapsedHeight;
+            isCollapsed = true;
+        }
+        else
+        {
+            // 펼쳐질 때 원래 크기로 완전히 복원 (너비와 높이 모두)
+            windowRect = new Rect(
+                windowRect.x,
+                windowRect.y,
+                originalWindowRect.width,
+                originalWindowRect.height
+            );
+            isCollapsed = false;
+        }
+    }
+    
+    // 리사이징 처리
+    private void HandleResizing()
+    {
+        // 마우스 위치 가져오기
+        Vector2 mousePos = Event.current.mousePosition;
+        
+        // 리사이징 영역 (우측 하단)
+        Rect resizeHandle = new Rect(
+            windowRect.x + windowRect.width - resizeHandleSize,
+            windowRect.y + windowRect.height - resizeHandleSize,
+            resizeHandleSize,
+            resizeHandleSize
+        );
+        
+        // 접힌 상태에서는 리사이징 불가능
+        if (isCollapsed) return;
+        
+        // 이벤트 처리
+        switch (Event.current.type)
+        {
+            case EventType.MouseDown:
+                // 마우스가 리사이징 핸들 영역 안에 있으면 리사이징 시작
+                if (resizeHandle.Contains(new Vector2(mousePos.x, mousePos.y)))
+                {
+                    isResizing = true;
+                    resizeStartPos = mousePos;
+                    resizeStartRect = windowRect;
+                    Event.current.Use();
+                }
+                break;
+                
+            case EventType.MouseUp:
+                // 리사이징 종료
+                if (isResizing)
+                {
+                    isResizing = false;
+                    Event.current.Use();
+                }
+                break;
+                
+            case EventType.MouseDrag:
+                // 리사이징 중이면 창 크기 조정
+                if (isResizing)
+                {
+                    float newWidth = Mathf.Clamp(resizeStartRect.width + (mousePos.x - resizeStartPos.x), minWindowWidth, maxWindowWidth);
+                    float newHeight = Mathf.Clamp(resizeStartRect.height + (mousePos.y - resizeStartPos.y), minWindowHeight, maxWindowHeight);
+                    
+                    windowRect.width = newWidth;
+                    windowRect.height = newHeight;
+                    Event.current.Use();
+                }
+                break;
+        }
     }
     
     // Unix 타임스탬프를 가독성 있는 날짜로 변환

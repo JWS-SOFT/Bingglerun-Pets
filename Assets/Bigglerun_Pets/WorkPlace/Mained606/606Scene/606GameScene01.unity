@@ -693,7 +693,8 @@ PrefabInstance:
       value: 1000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8045406685613542489, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5903079175310295873, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
@@ -717,12 +718,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0eda59337a2de444aa6320ca7cef9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
   stairManager: {fileID: 487118649}
-  currentStairIndex: 0
+  footPoint: {fileID: 0}
   jumpTimer: 0
   jumpDuration: 0.5
   jumpHeight: 3
+  currentStairIndex: 0
 --- !u!4 &290448709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6509873653763732206, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
@@ -1632,9 +1633,10 @@ MonoBehaviour:
   playerInstance: {fileID: 290448704}
   obstaclePrefabs:
   - {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-  obstacleSpawnWidthRatio: 0.75
   obstacleHeightOffset: 1.45
-  obstacleSpace: 5
+  spawnItem: {fileID: 0}
+  spawnPercent: 0.5
+  maxTilesBetweenEmpty: 1
 --- !u!1 &1079569709
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,12 +2381,22 @@ MonoBehaviour:
   timeAction: 10
   timeBonus: 0.25
   play_Mode: 0
-  StairManager: {fileID: 487118649}
+  skillManager: {fileID: 0}
+  stairManager: {fileID: 0}
   terrainScrollManager: {fileID: 1073473418}
+  actionButton:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  currentPlayerFloor: 0
+  currentPlayerDistance: 0
   floorText: {fileID: 1910438448}
   coinText: {fileID: 1066797039}
   timerText: {fileID: 460670761}
   timerSlider: {fileID: 1706090876}
+  isGameStartReady: 0
+  maxLife: 3
+  maxSkillCount: 3
 --- !u!1 &1876773097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2773,63 +2785,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023822814}
   m_CullTransparentMesh: 1
---- !u!1001 &761856634011052111
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420586048912616109, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-      propertyPath: m_Name
-      value: Huddle
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2839,4 +2794,3 @@ SceneRoots:
   - {fileID: 66358477}
   - {fileID: 1721068338}
   - {fileID: 1102880834}
-  - {fileID: 761856634011052111}
