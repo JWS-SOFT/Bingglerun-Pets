@@ -13,6 +13,8 @@ public class DecoratingUI : MonoBehaviour
     [SerializeField] private GameObject accessaryPrefab;
     [SerializeField] private Transform contents;
 
+    private bool isEquiped = false;
+
     private int selectedItemIndex;
 
     private void Awake()
@@ -110,30 +112,23 @@ public class DecoratingUI : MonoBehaviour
         //Debug.Log($"리스트 아이템 개수 : {ShopManager.Instance.accessaryItemList.Count}");
     }
 
-    public void EquipButton()
+    public void EquipToggleButton()
     {
         ItemSelect();
         bool unlocked = ItemManager.Instance.IsUnlockedDecoration(decoItemData.itemId);
         if (unlocked)
         {
-            ItemManager.Instance.EquipDecoration(decoItemData.itemId);
-            DecorationItemData deco;
-            switch (decoItemData.type)
+            if(ItemManager.Instance.GetEquippedDecoration(decoItemData.type) != null)
             {
-                case DecorationType.Hat:
-                    deco = ItemManager.Instance.GetEquippedDecoration(DecorationType.Hat);
-                    break;
-                case DecorationType.Body:
-                    deco = ItemManager.Instance.GetEquippedDecoration(DecorationType.Body);
-                    break;
-                case DecorationType.Shoes:
-                    deco = ItemManager.Instance.GetEquippedDecoration(DecorationType.Shoes);
-                    break;
-                default:
-                    deco = ItemManager.Instance.GetEquippedDecoration(DecorationType.Hat);
-                    break;
+                isEquiped = true;
+                ItemManager.Instance.UnequipDecoration(decoItemData.type);
             }
-            Debug.Log($"데코 아이템 장착됨: {deco.itemName}");
+            else
+            {
+                isEquiped = false;
+                ItemManager.Instance.EquipDecoration(decoItemData.itemId);
+            }
+            //Debug.Log($"데코 장착여부 : {isEquiped}, 데코 아이템 : {decoItemData.itemName}");
         }
         else
         {
