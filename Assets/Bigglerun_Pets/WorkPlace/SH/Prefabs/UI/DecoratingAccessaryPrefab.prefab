@@ -201,7 +201,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3196831079886545011, guid: 60984eee18bd7054389db66c930cb4e0, type: 3}
         m_TargetAssemblyTypeName: DecoratingUI, Assembly-CSharp
-        m_MethodName: EquipButton
+        m_MethodName: EquipToggleButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
