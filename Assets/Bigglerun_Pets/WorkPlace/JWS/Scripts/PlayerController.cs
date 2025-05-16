@@ -17,16 +17,26 @@ public class PlayerController : MonoBehaviour
     private bool isGameOver = false;
     private bool isGamemode = false;  // false 계단, true 횡런게임.
     private Rigidbody2D Rigidbody2D;
+    private Animator player_Animator;
 
     private void Start()
     {
         PlayerManager.Player_Transform = transform;
+        player_Animator = GetComponent<Animator>();
         //gameObject.SetActive(false);
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
         jumpHeight = !isGamemode ? 2f : 3f;    // ⬅ 점프 높이
         Rigidbody2D = GetComponent<Rigidbody2D>();
-        if (!isGamemode) Rigidbody2D.Sleep();
+        if (!isGamemode)
+        {
+            player_Animator.SetBool("Walk", false);
+            Rigidbody2D.Sleep();
+        }
+        else
+        {
+            player_Animator.SetBool("Walk", true);
+        }
     }
 
     private void Update()
@@ -46,7 +56,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!moving)
         {
-            Debug.Log(PlayerManager.Instance.isGameStartReady);
             // 🟥 횡스크롤 모드에서 아래 타일 유무 체크
             if (isGamemode && PlayerManager.Instance.isGameStartReady)
             {
@@ -78,6 +87,7 @@ public class PlayerController : MonoBehaviour
             {
                 transform.position = startJumpPos; // 정확히 제자리 복귀
                 moving = false;
+                player_Animator.SetBool("Jump", false);
             }
         }
         else
@@ -91,6 +101,7 @@ public class PlayerController : MonoBehaviour
             {
                 transform.position = targetPos;
                 moving = false;
+                player_Animator.SetBool("Jump", false);
             }
         }
     }
@@ -120,6 +131,7 @@ public class PlayerController : MonoBehaviour
     {
         if (moving || isGameOver) return;
 
+        player_Animator.SetBool("Jump", true);
         // ✅ 횡스크롤 모드일 경우: 제자리 점프
         if (isGamemode)
         {
@@ -189,6 +201,5 @@ public class PlayerController : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
-        // UIManager.Instance.ShowGameOverUI(); // 선택 사항
     }
 }

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: c98104e3aa354604ea0dab706dd52936
+timeCreated: 1528966660
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 123224
+  packageName: "FancyDoll \u2013 C012D: Two Faces Cat"
+  packageVersion: 1.0
+  assetPath: Assets/Bigglerun_Pets/WorkPlace/JWS/FD_C012D/ani/inspector/RCoin.controller
+  uploadId: 255761

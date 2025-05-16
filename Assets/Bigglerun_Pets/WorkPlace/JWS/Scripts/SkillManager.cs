@@ -31,7 +31,7 @@ public class SkillManager : MonoBehaviour
                     skillType = PlayerSkillType.CatSuperJumpInvincible,
                     skillName = "수퍼점프",
                     description = "높게 점프하고 무적 상태가 됩니다.",
-                    duration = 2f,
+                    duration = 5f,
                     cooldown = 7f,
                     power = 15f, // 점프력
                     isInvincibleDuringSkill = true

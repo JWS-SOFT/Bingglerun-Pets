@@ -107,6 +107,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cc75c7b5d649f4ba1adf6cd99ae71c3d, type: 3}
   - {fileID: 21300000, guid: 347fad0423f5a4800a4f3265a03c7a83, type: 3}
   - {fileID: 21300000, guid: 7e6175f33767a4b80ae399651b2dbf18, type: 3}
+  floatAmplitude: 0.1
+  floatFrequency: 2.5
 --- !u!50 &1191030222755250280
 Rigidbody2D:
   serializedVersion: 5
