@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     {
         PlayerManager.Player_Transform = transform;
         player_Animator = GetComponent<Animator>();
+        player_Animator.SetBool("Walk", false);
+        player_Animator.SetBool("Jump", false);
         //gameObject.SetActive(false);
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
