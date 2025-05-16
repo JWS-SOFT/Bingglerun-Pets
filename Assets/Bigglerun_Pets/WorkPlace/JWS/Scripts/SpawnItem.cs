@@ -4,15 +4,15 @@ using UnityEngine;
 public class SpawnItem : MonoBehaviour
 {
     public List<Sprite> spriteList;
-    //public float floatAmplitude = 0.1f; // 위아래 움직임 크기
-    //public float floatFrequency = 2f;   // 움직임 속도
+    public float floatAmplitude = 0.5f; // 위아래 움직임 크기
+    public float floatFrequency = 4f;   // 움직임 속도
     //public float flipFrequency = 1f;    // 회전 속도
     //public float rotateAmplitude = 15f;     // 회전 각도 (좌우 최대 각도)
     //public float rotateFrequency = 2f;      // 회전 속도
 
     private SpriteRenderer item_Sprite;
     private BoxCollider2D BoxCollider2D;
-    //private Vector3 startPos;
+    private Vector3 startPos;
     //private float flipTimer;
     //private bool flipped = false;
 
@@ -27,22 +27,20 @@ public class SpawnItem : MonoBehaviour
         Wing
     }
 
-
-
     private void OnEnable()
     {
         item_Sprite = GetComponent<SpriteRenderer>();
         BoxCollider2D = GetComponent<BoxCollider2D>();
         BoxCollider2D.enabled = false;
-
-        //startPos = transform.localPosition;
+        if (!PlayerManager.PlayMode) transform.localScale = new Vector3(0.25f, 0.75f, 1);
+        startPos = transform.localPosition;
     }
 
     private void Update()
     {
-        //// 1. 위아래로 살짝 움직이기
-        //float newY = startPos.y + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
-        //transform.localPosition = new Vector3(startPos.x, newY, startPos.z);
+        // 1. 위아래로 살짝 움직이기
+        float newY = startPos.y + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        transform.localPosition = new Vector3(startPos.x, newY, startPos.z);
 
         //// 2. 회전 느낌 주기 (Z축 기준으로 흔들림)
         //float angleZ = Mathf.Sin(Time.time * rotateFrequency) * rotateAmplitude;
@@ -81,6 +79,7 @@ public class SpawnItem : MonoBehaviour
                         PlayerManager.ChangeCoin();
                     else if (currentItemType == spriteNameType.Gem)
                         ItemManager.Instance.UseUsableItem("item004");
+                    Debug.Log("플레이어와 접촉");
                 }
             }
             else
@@ -92,8 +91,8 @@ public class SpawnItem : MonoBehaviour
                     PlayerManager.ChangeCoin();
                 else if (currentItemType == spriteNameType.Gem)
                     ItemManager.Instance.UseUsableItem("item004");
+                Debug.Log("플레이어와 접촉");
             }
-            Debug.Log("플레이어와 접촉");
         }
     }
 }

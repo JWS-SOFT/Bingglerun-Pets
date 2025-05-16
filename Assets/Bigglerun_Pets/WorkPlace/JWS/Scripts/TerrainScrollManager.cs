@@ -227,7 +227,7 @@ public class TerrainScrollManager : MonoBehaviour
         float x = terrain.transform.position.x;
         float y;
 
-        if (Random.Range(0,4) > 1)
+        if (Random.Range(0,10) > 2)
         {
             // 타일 위에 생성
             y = terrain.transform.position.y + 1.75f; // 적절한 아이템 높이 조절
@@ -240,7 +240,13 @@ public class TerrainScrollManager : MonoBehaviour
 
         SpawnItem spitem = Instantiate(spawnItem, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform).GetComponent<SpawnItem>();
         spitem.transform.localScale = new Vector3(0.15f, 0.15f, 0);
-        spitem.SetItemType("Coin");
+        if (Random.value < spawnPercent)
+        {
+            if (Random.value < 0.5f)
+                spitem.SetItemType("Coin");
+            else
+                spitem.SetItemType("Gem");
+        }
     }
 
 

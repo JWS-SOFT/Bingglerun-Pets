@@ -640,14 +640,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
-      propertyPath: spawnItem
-      value: 
-      objectReference: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
-    - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
-      propertyPath: spawnPercent
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
       propertyPath: stairManager
       value: 
       objectReference: {fileID: 487118649}
@@ -695,8 +687,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8045406685613542489, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8045406685613542489, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
@@ -940,7 +937,7 @@ MonoBehaviour:
   stairTotalCount: 100
   stairWidth: 1
   stairHeight: 0.5
-  SpawnItemPercent: 30
+  SpawnItemPercent: 20
   changeDirectionChance: 0.2
 --- !u!4 &487118650
 Transform:
@@ -1624,10 +1621,10 @@ MonoBehaviour:
   scrollSpeed: 5
   playerInstance: {fileID: 290448704}
   obstaclePrefabs:
-  - {fileID: 8412496941406995761, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
+  - {fileID: 7174697107108937338, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
   obstacleHeightOffset: 1
   spawnItem: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
-  spawnPercent: 1
+  spawnPercent: 0.8
   maxTilesBetweenEmpty: 1
 --- !u!1 &1079569709
 GameObject:
@@ -2578,6 +2575,8 @@ MonoBehaviour:
   timerText: {fileID: 460670761}
   timerSlider: {fileID: 1706090876}
   isGameStartReady: 0
+  maxLife: 3
+  maxSkillCount: 3
 --- !u!1 &1876773097
 GameObject:
   m_ObjectHideFlags: 0

@@ -157,6 +157,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2309436156112019483}
     m_Modifications:
+    - target: {fileID: 1226162041824384512, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: floatAmplitude
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1226162041824384512, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: floatFrequency
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904373368118790929, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904373368118790929, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6021435725442254013, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 6021435725442254013, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -197,9 +217,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8855969400050148452, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 2.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8855969400050148452, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.56
+      objectReference: {fileID: 0}
     - target: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
       propertyPath: m_Name
       value: SpawnItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
