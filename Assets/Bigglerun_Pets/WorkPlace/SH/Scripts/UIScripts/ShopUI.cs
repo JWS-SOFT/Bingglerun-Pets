@@ -34,6 +34,9 @@ public class ShopUI : MonoBehaviour
     {
         PlayerDataManager.Instance.OnGoldChanged += SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged += SetDiamondData;
+        PlayerDataManager.Instance.OnItemQuantityChanged += OnItemChanged;
+        PlayerDataManager.Instance.OnDecorationUnlocked += OnDecorationChanged;
+        
         SetGoldData(playerData.CurrentPlayerData.gold);
         SetDiamondData(playerData.CurrentPlayerData.diamond);
         
@@ -43,12 +46,52 @@ public class ShopUI : MonoBehaviour
     {
         PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
+        PlayerDataManager.Instance.OnItemQuantityChanged -= OnItemChanged;
+        PlayerDataManager.Instance.OnDecorationUnlocked -= OnDecorationChanged;
     }
+    
     private void Start()
     {
         AccessaryListLoad();
         //confirmUI = UIManager.Instance.FindDirectChildByName("Confirm").GetComponent<ConfirmUI>();
         //SkinListLoad();
+    }
+
+    // 아이템 수량 변경 이벤트 처리
+    private void OnItemChanged(string itemId, int quantity)
+    {
+        // 아이템 리스트 UI 업데이트가 필요한 경우 처리
+        // 구매/사용한 아이템이 목록에 표시되는 아이템일 때 새로고침
+        if (ItemManager.Instance.IsUsableItem(itemId) && mainTab[0].gameObject.activeSelf)
+        {
+            RefreshItemList();
+        }
+    }
+
+    // 장식 아이템 해금 이벤트 처리
+    private void OnDecorationChanged(string decorationId, bool unlocked)
+    {
+        // 장식 아이템이 해금되었을 때 목록 새로고침
+        if (unlocked && mainTab[1].gameObject.activeSelf)
+        {
+            RefreshDecorationList();
+        }
+    }
+
+    // 아이템 목록 새로고침
+    private void RefreshItemList()
+    {
+        // 기존 목록 클리어 후 다시 로드
+        ContentsClear();
+        AccessaryListLoad();
+    }
+
+    // 장식 아이템 목록 새로고침
+    private void RefreshDecorationList()
+    {
+        // 기존 목록 클리어 후 다시 로드
+        ContentsClear();
+        AccessaryListLoad();
     }
 
     // Gold Text 갱신
@@ -77,10 +120,12 @@ public class ShopUI : MonoBehaviour
             case 0:
                 mainTab[0].gameObject.SetActive(true);
                 mainTab[1].gameObject.SetActive(false);
+                RefreshItemList();
                 break;
             case 1:
                 mainTab[0].gameObject.SetActive(false);
                 mainTab[1].gameObject.SetActive(true);
+                RefreshDecorationList();
                 break;
         }
     }
@@ -106,7 +151,18 @@ public class ShopUI : MonoBehaviour
 
     private void ContentsClear()
     {
-
+        // 기존 아이템 리스트 제거
+        foreach (var item in ShopManager.Instance.accessaryItemList)
+        {
+            Destroy(item);
+        }
+        ShopManager.Instance.accessaryItemList.Clear();
+        
+        // 컨텐츠 영역의 모든 자식 오브젝트 제거
+        for (int i = contents.childCount - 1; i >= 0; i--)
+        {
+            Destroy(contents.GetChild(i).gameObject);
+        }
     }
 
     private void AccessaryListLoad()
