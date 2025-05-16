@@ -229,7 +229,8 @@ public class ItemManager : MonoBehaviour
                 Debug.Log("목숨 1회 구제");
                 break;
             case ItemEffectType.Invincible:
-                Debug.Log("무적");
+                //Debug.Log("무적");
+                PlayerManager.Instance.SetInvincible(0.5f);
                 break;
         }
     }
