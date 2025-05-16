@@ -39,6 +39,73 @@ public class ItemManager : MonoBehaviour
     }
     #endregion
 
+    // PlayerDataManager 이벤트 구독
+    private void OnEnable()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.OnDataLoaded += SyncWithPlayerData;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.OnDataLoaded -= SyncWithPlayerData;
+        }
+    }
+
+    // PlayerDataManager와 데이터 동기화
+    public void SyncWithPlayerData()
+    {
+        if (PlayerDataManager.Instance == null || !PlayerDataManager.Instance.IsDataLoaded)
+            return;
+
+        var playerData = PlayerDataManager.Instance.CurrentPlayerData;
+
+        // 소모 아이템 동기화
+        ownedUsableItems.Clear();
+        if (playerData.items != null)
+        {
+            foreach (var item in playerData.items)
+            {
+                ownedUsableItems[item.Key] = item.Value;
+            }
+        }
+
+        // 장식 아이템 동기화
+        unlockedDecorationIds.Clear();
+        if (playerData.unlockedDecorations != null)
+        {
+            foreach (var decorationId in playerData.unlockedDecorations)
+            {
+                unlockedDecorationIds.Add(decorationId);
+            }
+        }
+
+        // 장착 아이템 동기화
+        equippedDecorationIds.Clear();
+        if (!string.IsNullOrEmpty(playerData.equippedHat))
+            equippedDecorationIds[DecorationType.Hat] = playerData.equippedHat;
+        if (!string.IsNullOrEmpty(playerData.equippedBody))
+            equippedDecorationIds[DecorationType.Body] = playerData.equippedBody;
+        if (!string.IsNullOrEmpty(playerData.equippedShoes))
+            equippedDecorationIds[DecorationType.Shoes] = playerData.equippedShoes;
+
+        // 선택된 시작 아이템 설정
+        if (!string.IsNullOrEmpty(playerData.selectedPreGameItem))
+        {
+            selectedPreGameItem = GetUsableItemById(playerData.selectedPreGameItem);
+        }
+        else
+        {
+            selectedPreGameItem = null;
+        }
+
+        Debug.Log("[ItemManager] 플레이어 데이터와 동기화 완료");
+    }
+
     //아이템 유효성 검사
     public bool IsUsableItem(string itemId) => GetUsableItemById(itemId) != null;
     public bool IsDecorationItem(string itemId) => GetDecorationById(itemId) != null;
@@ -54,6 +121,12 @@ public class ItemManager : MonoBehaviour
             ownedUsableItems[itemId] += amount;
         else
             ownedUsableItems[itemId] = amount;
+
+        // PlayerDataManager에 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            PlayerDataManager.Instance.AddItem(itemId, amount);
+        }
     }
 
     //초기 아이템 선택(UI에서 초기 아이템 선택시 호출)
@@ -68,6 +141,12 @@ public class ItemManager : MonoBehaviour
             selectedPreGameItem = null; //기존 아이템 선택시 해제
         else
             selectedPreGameItem = item;     
+
+        // PlayerDataManager에 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            PlayerDataManager.Instance.SelectPreGameItem(selectedPreGameItem?.itemId ?? "");
+        }
     }
 
     //선택된 스타트 아이템 사용(게임 스타트시 호출함)
@@ -84,7 +163,16 @@ public class ItemManager : MonoBehaviour
         ItemData item = GetUsableItemById(itemId);
         if(item == null) return;
 
-        if(item.useTiming == ItemUseTiming.PreGame) ownedUsableItems[itemId]--;
+        if(item.useTiming == ItemUseTiming.PreGame)
+        {
+            ownedUsableItems[itemId]--;
+
+            // PlayerDataManager에서도 아이템 사용
+            if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+            {
+                PlayerDataManager.Instance.TryUseItem(itemId);
+            }
+        }
 
         ApplyItemEffect(item);
     }
@@ -108,6 +196,23 @@ public class ItemManager : MonoBehaviour
         }
 
         equippedDecorationIds[deco.type] = itemId;
+
+        // PlayerDataManager에도 장착 상태 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            switch (deco.type)
+            {
+                case DecorationType.Hat:
+                    PlayerDataManager.Instance.EquipHat(itemId);
+                    break;
+                case DecorationType.Body:
+                    PlayerDataManager.Instance.EquipBody(itemId);
+                    break;
+                case DecorationType.Shoes:
+                    PlayerDataManager.Instance.EquipShoes(itemId);
+                    break;
+            }
+        }
     }
 
     //데코 장착 해제
@@ -117,6 +222,23 @@ public class ItemManager : MonoBehaviour
         {
             equippedDecorationIds.Remove(type);
             Debug.Log($"{type} 장착 해제");
+
+            // PlayerDataManager에도 장착 해제 상태 저장
+            if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+            {
+                switch (type)
+                {
+                    case DecorationType.Hat:
+                        PlayerDataManager.Instance.EquipHat("");
+                        break;
+                    case DecorationType.Body:
+                        PlayerDataManager.Instance.EquipBody("");
+                        break;
+                    case DecorationType.Shoes:
+                        PlayerDataManager.Instance.EquipShoes("");
+                        break;
+                }
+            }
         }
         else
         {
@@ -138,7 +260,7 @@ public class ItemManager : MonoBehaviour
     }
 
     //소모용 아이템 필터링(인벤토리UI, 상점에서 이용)
-    public List<ItemData> GetFilteredUsableItems(bool inventoryOnly = false, ItemUseTiming ? timing = null, bool showInShopOnly = false)
+    public List<ItemData> GetFilteredUsableItems(bool inventoryOnly = false, ItemUseTiming? timing = null, bool showInShopOnly = false)
     {
         var items = usableItemList;
 
@@ -175,6 +297,12 @@ public class ItemManager : MonoBehaviour
     public void UnlockDecoration(string itemId)
     {
         unlockedDecorationIds.Add(itemId);
+
+        // PlayerDataManager에도 해금 상태 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            PlayerDataManager.Instance.UnlockDecoration(itemId);
+        }
     }
 
     //데코 아이템 해금 여부(상점 UI에서 호출)
@@ -239,5 +367,11 @@ public class ItemManager : MonoBehaviour
     {
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
+
+        // 게임 매니저 초기화가 완료된 후 PlayerDataManager와 동기화
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            SyncWithPlayerData();
+        }
     }
 }

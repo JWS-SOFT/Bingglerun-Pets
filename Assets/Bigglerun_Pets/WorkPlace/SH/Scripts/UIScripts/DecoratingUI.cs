@@ -24,6 +24,7 @@ public class DecoratingUI : MonoBehaviour
     {
         PlayerDataManager.Instance.OnGoldChanged += SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged += SetDiamondData;
+        PlayerDataManager.Instance.OnDecorationUnlocked += OnDecorationChanged;
         SetGoldData(playerData.CurrentPlayerData.gold);
         SetDiamondData(playerData.CurrentPlayerData.diamond);
     }
@@ -32,10 +33,28 @@ public class DecoratingUI : MonoBehaviour
     {
         PlayerDataManager.Instance.OnGoldChanged -= SetGoldData;
         PlayerDataManager.Instance.OnDiamondChanged -= SetDiamondData;
+        PlayerDataManager.Instance.OnDecorationUnlocked -= OnDecorationChanged;
     }
 
     private void Start()
     {
+        AccessaryListLoad();
+    }
+
+    // 장식 아이템 해금 이벤트 처리
+    private void OnDecorationChanged(string decorationId, bool unlocked)
+    {
+        if (unlocked)
+        {
+            RefreshDecorationList();
+        }
+    }
+
+    // 장식 아이템 목록 새로고침
+    private void RefreshDecorationList()
+    {
+        // 기존 목록 클리어 후 다시 로드
+        ContentsClear();
         AccessaryListLoad();
     }
 
@@ -62,6 +81,22 @@ public class DecoratingUI : MonoBehaviour
 
         //Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
         decoItemData = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>().decoItemData;
+    }
+
+    private void ContentsClear()
+    {
+        // 기존 아이템 리스트 제거
+        foreach (var item in ShopManager.Instance.accessaryItemList)
+        {
+            Destroy(item);
+        }
+        ShopManager.Instance.accessaryItemList.Clear();
+        
+        // 컨텐츠 영역의 모든 자식 오브젝트 제거
+        for (int i = contents.childCount - 1; i >= 0; i--)
+        {
+            Destroy(contents.GetChild(i).gameObject);
+        }
     }
 
     private void AccessaryListLoad()
