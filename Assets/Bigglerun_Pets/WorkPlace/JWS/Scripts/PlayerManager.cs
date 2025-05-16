@@ -36,6 +36,8 @@ public class PlayerManager : MonoBehaviour
     }
 
     //05.15 HJ 추가
+    [SerializeField] PlayerController playerController;
+
     [SerializeField] private int maxLife = 3;
     private int currentLife = 0;
 
@@ -152,7 +154,7 @@ public class PlayerManager : MonoBehaviour
 
 
 
-    //05.15 HJ 추가 부분
+    //05.17 HJ 추가 부분
     //목숨 초기화(게임 스타트시 호출)
     public void InitializeLife()
     {
@@ -168,40 +170,87 @@ public class PlayerManager : MonoBehaviour
     //데미지
     public void TakeDamage()
     {
+        if (isInvincible)   //무적 상태
+        {
+            if (playerController.IsRecovering) return;
 
+            if (PlayerManager.PlayMode)                     //런모드
+                playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+            else                                            //계단모드
+                playerController.RecoverToLastStair();      //이전 계단으로 복귀
+
+            return;
+        }
+
+        currentLife--;
+        Debug.Log($"현재 생명력: {currentLife}");
+
+        if(currentLife <= 0)
+        {
+            playerController.TriggerGameOver(); //게임 오버
+        }
+        else
+        {
+            if (PlayerManager.PlayMode)                     //런모드
+                playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+            else                                            //계단모드
+                playerController.RecoverToLastStair();      //이전 계단으로 복귀
+
+            SetInvincible(1.5f);    //1.5초 동안 무적
+        }
     }
 
     //무적
     public void SetInvincible(float duration)
     {
-        
+        if (isInvincible) return;
+        StartCoroutine(InvincibleCoroutine(duration));
     }
 
     private IEnumerator InvincibleCoroutine(float duration)
     {
+        isInvincible = true;
+
+        Debug.Log($"무적 시작 {duration}초");
         yield return new WaitForSeconds(duration);
+
+        isInvincible = false;
+        Debug.Log($"무적 종료");
     }
 
-    //초반 부스터
+    //부스터
     public void StartBooster(float duration)
     {
-
+        StartCoroutine(BoosterCoroutine(duration));
     }
 
     private IEnumerator BoosterCoroutine(float duration)
     {
-        yield return new WaitForSeconds(duration);
+        float elapsed = 0f;
+
+        Debug.Log($"부스터 자동 점프 시작 {duration}초");
+
+        while (elapsed < duration)
+        {
+            playerController.AlignDirectionToNextStair();   //점프 방향 자동 보정
+            playerController.JumpButtonClick();             //점프
+
+            yield return new WaitForSeconds(0.05f);         //템포 조정
+            elapsed += 0.05f;
+        }
+
+        Debug.Log("부스터 자동 점프 종료");
     }
 
     //목숨 추가
     public void AddLife(int amount = 1)
     {
-
+        currentLife += amount;
     }
 
     //스킬 횟수 추가
     public void AddSkillCount(int amount = 1)
     {
-
+        currentSkillCount += amount;
     }
 }

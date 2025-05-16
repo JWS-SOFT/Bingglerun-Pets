@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -18,6 +19,10 @@ public class PlayerController : MonoBehaviour
     private bool isGamemode = false;  // false 계단, true 횡런게임.
     private Rigidbody2D Rigidbody2D;
     private Animator player_Animator;
+
+    //05.16 HJ 추가
+    private bool isRecovering = false;
+    public bool IsRecovering => isRecovering;
 
     private void Start()
     {
@@ -66,7 +71,8 @@ public class PlayerController : MonoBehaviour
                 if (hit == null)
                 {
                     // 아래에 타일이 없고, 점프 중이 아님 → 게임오버
-                    TriggerGameOver();
+                    //TriggerGameOver();
+                    PlayerManager.Instance.TakeDamage();
                     return;
                 }
             }
@@ -117,7 +123,8 @@ public class PlayerController : MonoBehaviour
 
         if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
         {
-            TriggerGameOver();
+            //TriggerGameOver();
+            PlayerManager.Instance.TakeDamage();
             return;
         }
 
@@ -147,7 +154,8 @@ public class PlayerController : MonoBehaviour
         // ✅ 계단 모드일 경우
         if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
         {
-            TriggerGameOver();
+            //TriggerGameOver();
+            PlayerManager.Instance.TakeDamage();
             return;
         }
 
@@ -165,7 +173,8 @@ public class PlayerController : MonoBehaviour
             if (!isValidDirection)
             {
                 Debug.Log("틀린 방향! 허공으로 떨어짐 → 게임 오버");
-                TriggerGameOver();
+                //TriggerGameOver();
+                PlayerManager.Instance.TakeDamage();
                 return;
             }
 
@@ -190,7 +199,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             Debug.Log("다음 계단 없음 → 게임 오버");
-            TriggerGameOver();
+            //TriggerGameOver();
+            PlayerManager.Instance.TakeDamage();
         }
     }
 
@@ -203,5 +213,101 @@ public class PlayerController : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
+    }
+
+
+
+
+
+    //05.17 HJ 추가
+    //다음 계단 위치로 캐릭터 방향 자동 조정
+    public void AlignDirectionToNextStair()
+    {
+        int nextIndex = currentStairIndex + 1;
+
+        if(stairManager.TryGetStairPosition(nextIndex, out Vector2 nextStairPos))
+        {
+            float directionX = nextStairPos.x - transform.position.x;   //방향 판단
+            moveDirection = (int)Mathf.Sign(directionX);                //+1: 오른쪽, -1: 왼쪽
+
+            //스프라이트 방향 반전
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * moveDirection;
+            transform.localScale = scale;
+        }
+    }
+
+    //이전 계단 위치로 이동
+    //복귀 애니메이션 등 추가해야함
+    public void RecoverToLastStair()
+    {
+        Debug.Log("복귀, 직전 계단으로 위치 초기화");
+        
+        if(stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
+        {
+            //복귀 애니메이션 추가
+
+            transform.position = stairPos;
+        }
+    }
+
+    //런게임 앞에 있는 땅으로 복귀
+    //복귀 애니메이션 등 추가
+    public void RecoverToForwardGround()
+    {
+        Debug.Log("안전한 땅으로 복귀");
+        //복귀 애니메이션 추가
+
+        StartCoroutine(RecoverForwardRoutine());
+    }
+
+    private IEnumerator RecoverForwardRoutine()
+    {
+        isRecovering = true;
+        moving = true;
+
+        Vector2 start = transform.position; //현재 위치
+        Vector2 target = FindGroundAhead(); //안전한 땅
+
+        float duration = 0.4f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;   //진행 비율
+            float height = Mathf.Sin(t * Mathf.PI) * 1.5f;  //위로 아치형
+            Vector2 jumpPos = Vector2.Lerp(start, target, t) + Vector2.up * height; //수평 이동 + 위로 점프하듯이
+
+            transform.position = jumpPos;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = target;    //위치 보정
+        moving = false;
+        isRecovering = false;
+    }
+
+    //안전한 땅 찾기(왼->오)
+    private Vector2 FindGroundAhead()
+    {
+        Vector2 checkOrigin = transform.position;
+        Vector2 result = checkOrigin;
+        float checkInterval = 0.5f;
+
+        for (int i = 1; i <= 10; i++)
+        {
+            Vector2 checkPos = checkOrigin + Vector2.right * i * checkInterval;
+            Collider2D ground = Physics2D.OverlapCircle(checkPos, 0.1f, LayerMask.GetMask("Ground"));
+
+            if (ground != null)
+            {
+                result = ground.transform.position + Vector3.up * 0.5f;
+                break;
+            }
+        }
+
+        return result;
     }
 }
