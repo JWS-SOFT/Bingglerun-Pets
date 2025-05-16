@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
 /// <summary>
@@ -33,8 +34,9 @@ public class PlayerData
     public string equippedBody;
     public string equippedShoes;
     public string selectedPreGameItem; // 선택된 시작 아이템
-    
+
     // 게임 설정
+    public List<float> volumeList;
     public bool soundEnabled;
     public bool vibrationEnabled;
     
@@ -73,12 +75,13 @@ public class PlayerData
             totalStars = 0,
             items = new Dictionary<string, int>(),
             unlockedDecorations = new List<string>(),
-            unlockedCharacters = new List<string> { "default" },
-            currentCharacter = "default",
+            unlockedCharacters = new List<string> { "dog" },
+            currentCharacter = "dog",
             equippedHat = "",
             equippedBody = "",
             equippedShoes = "",
             selectedPreGameItem = "",
+            volumeList = new List<float> { 1f, 1f, 1f },
             soundEnabled = true,
             vibrationEnabled = true,
             totalPlayCount = 0,
@@ -103,4 +106,4 @@ public class StageData
     
     // 추가 스테이지 데이터 (필요시 확장)
     public Dictionary<string, object> additionalData;
-} 
+}
