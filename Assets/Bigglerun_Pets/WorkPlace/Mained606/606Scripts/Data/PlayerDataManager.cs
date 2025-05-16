@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 /// <summary>
 /// 플레이어 데이터를 관리하는 매니저 클래스
@@ -523,9 +524,21 @@ public class PlayerDataManager : MonoBehaviour
         OnNicknameChanged?.Invoke(nickname);
         _ = SavePlayerDataAsync();
     }
+
+    ///<summary>
+    /// 볼륨 조절
+    /// </summary>
+    public void SetVolume(List<float> volumes)
+    {
+        if (!IsDataLoaded) return;
+
+        foreach(float value in volumes)
+        //CurrentPlayerData.volumeList[index] = value;
+        _ = SavePlayerDataAsync();
+    }
     
     /// <summary>
-    /// 사운드 설정 변경
+    /// 사운드 뮤트 여부 변경
     /// </summary>
     public void SetSoundEnabled(bool enabled)
     {
@@ -586,7 +599,7 @@ public class PlayerDataManager : MonoBehaviour
     public bool IsCharacterUnlocked(string characterId)
     {
         if (!IsDataLoaded || string.IsNullOrEmpty(characterId) || CurrentPlayerData.unlockedCharacters == null)
-            return characterId == "default"; // 기본 캐릭터는 항상 해금됨
+            return characterId == "dog"; // 기본 캐릭터는 항상 해금됨
             
         return CurrentPlayerData.unlockedCharacters.Contains(characterId);
     }
