@@ -22,6 +22,30 @@ public class OptionUI : MonoBehaviour
         Debug.Log("OptionUI OnEnable 호출됨");
         SetVolume();
         allMute.isOn = !PlayerDataManager.Instance.CurrentPlayerData.soundEnabled;
+        
+        // 오디오 매니저의 뮤트 상태 변경 이벤트 구독
+        SoundEvents.OnMuteStateChanged += OnMuteStateChanged;
+    }
+    
+    private void OnDisable()
+    {
+        // 오디오 매니저의 뮤트 상태 변경 이벤트 구독 해제
+        SoundEvents.OnMuteStateChanged -= OnMuteStateChanged;
+    }
+    
+    // 뮤트 상태가 변경되었을 때 호출되는 이벤트 핸들러
+    private void OnMuteStateChanged(bool isMuted)
+    {
+        Debug.Log($"OptionUI: 뮤트 상태 변경됨 - {isMuted}");
+        
+        // UI 토글 상태 업데이트 (이벤트 루프 방지를 위해 UI 이벤트 발생 없이 직접 값만 설정)
+        if (allMute.isOn != isMuted)
+        {
+            allMute.SetIsOnWithoutNotify(isMuted);
+        }
+        
+        // DB 상태 업데이트
+        PlayerDataManager.Instance.SetSoundEnabled(!isMuted);
     }
 
     private void InitValue()
@@ -171,10 +195,14 @@ public class OptionUI : MonoBehaviour
     public void AllMute()
     {
         AudioManager.Instance.Mute(allMute.isOn);
-        PlayerDataManager.Instance.SetSoundEnabled(!allMute.isOn);
+        
+        // 뮤트 해제 시 볼륨 적용
         if (!allMute.isOn)
         {
             SetVolume();
         }
+        
+        // AudioManager에서 이벤트를 발생시키므로 여기서는 DB 업데이트 코드 제거
+        // AudioManager가 OnMuteStateChanged 이벤트를 발생시키면 OnMuteStateChanged 메서드에서 처리
     }
 }
