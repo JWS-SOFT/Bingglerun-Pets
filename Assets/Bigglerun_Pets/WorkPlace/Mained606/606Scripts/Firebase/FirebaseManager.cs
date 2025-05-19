@@ -526,7 +526,31 @@ public class FirebaseManager : MonoBehaviour
                 return false;
             }
             
-            Debug.Log("[FirebaseManager] 계정 삭제 시도 중...");
+            // 사용자 ID와 로그인 타입 저장
+            string userId = UserId;
+            LoginType userLoginType = CurrentLoginType;
+            
+            Debug.Log($"[FirebaseManager] 계정 삭제 시도 중... (타입: {userLoginType})");
+            
+            // 계정 삭제 전에 로그인 타입 확인
+            // 게스트 계정인 경우 DB에서도 데이터 삭제
+            if (userLoginType == LoginType.Guest)
+            {
+                Debug.Log("[FirebaseManager] 게스트 계정 삭제 - DB 데이터도 함께 삭제합니다.");
+                bool dbDeleteResult = await FirebaseDatabase.Instance.DeletePlayerDataAsync(userId);
+                if (!dbDeleteResult)
+                {
+                    Debug.LogWarning($"[FirebaseManager] 게스트 계정 DB 데이터 삭제 실패: {userId}");
+                    // DB 삭제 실패해도 계정 삭제는 진행
+                }
+            }
+            else if (userLoginType == LoginType.Email)
+            {
+                Debug.Log("[FirebaseManager] 이메일 계정 삭제 - DB 데이터는 유지합니다.");
+                // 이메일 계정은 DB 데이터 유지 (별도 조치 없음)
+            }
+            
+            // Firebase 인증 계정 삭제
             await auth.CurrentUser.DeleteAsync();
             
             // 삭제 후 정보 초기화
@@ -549,6 +573,22 @@ public class FirebaseManager : MonoBehaviour
         // 파이어베이스 SDK가 없을 때 테스트용 가짜 계정 삭제
         Debug.LogWarning("[FirebaseManager] Firebase SDK가 없습니다. 가짜 계정 삭제를 수행합니다.");
         await Task.Delay(500);
+        
+        // 테스트 환경에서도 계정 유형에 따른 처리 구현
+        string userId = UserId;
+        LoginType userLoginType = CurrentLoginType;
+        
+        // 게스트 계정이면 테스트 DB에서도 삭제
+        if (userLoginType == LoginType.Guest)
+        {
+            Debug.Log("[FirebaseManager] 테스트 환경 - 게스트 계정 DB 데이터 삭제");
+            await FirebaseDatabase.Instance.DeletePlayerDataAsync(userId);
+        }
+        else if (userLoginType == LoginType.Email)
+        {
+            Debug.Log("[FirebaseManager] 테스트 환경 - 이메일 계정 DB 데이터 유지");
+            // 데이터 유지 (별도 조치 없음)
+        }
         
         IsAuthenticated = false;
         UserId = null;
