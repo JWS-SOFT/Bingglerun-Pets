@@ -13,7 +13,6 @@ public class TerrainScrollManager : MonoBehaviour
 
     [Header("장애물 설정")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
-    [Range(0.1f, 1f)]
     [SerializeField] private float obstacleHeightOffset = 1.45f;
 
     [Header("아이템 설정")]
@@ -30,7 +29,7 @@ public class TerrainScrollManager : MonoBehaviour
 
     private List<int> spawnPattern;
 
-    private void Start()
+    public void StartTest(Vector3 lastTerranPosition)
     {
         if (terrainPrefab == null || playerInstance == null)
         {
@@ -45,7 +44,7 @@ public class TerrainScrollManager : MonoBehaviour
 
         for (int i = 0; i < poolSize; i++)
         {
-            Vector3 pos = new Vector3(i * terrainWidth, 0, 0);
+            Vector3 pos = lastTerranPosition + new Vector3(i * terrainWidth, 0, 0);
             GameObject obj = Instantiate(terrainPrefab, pos, Quaternion.identity, transform);
             terrainPool.Enqueue(obj);
 
@@ -56,16 +55,17 @@ public class TerrainScrollManager : MonoBehaviour
             // 장애물 생성 (주석 처리된 상태면 유지)
             // SpawnObstacleOnTerrain(obj, terrainIndex);
 
-            if (i == 0)
-                SpawnPlayerOnTerrain(obj);
+            // if (i == 0)
+            //     SpawnPlayerOnTerrain(obj);
 
             terrainIndex++;
         }
-        PlayerManager.Instance.isGameStartReady = true;
     }
 
     private void Update()
     {
+        if (!PlayerManager.Instance.isGameStartReady) return;
+        
         float delta = scrollSpeed * Time.deltaTime;
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
@@ -78,13 +78,12 @@ public class TerrainScrollManager : MonoBehaviour
         {
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
-            first.transform.position = new Vector3(lastX + terrainWidth, 0, 0);
+            first.transform.position = new Vector3(lastX + terrainWidth, first.transform.position.y, 0);
 
             // 기존 장애물 제거
             foreach (Transform child in first.transform)
             {
-                if (child.CompareTag("Obstacle"))
-                    Destroy(child.gameObject);
+                Destroy(child.gameObject);
             }
 
             // 다음 타일 패턴 적용
@@ -230,16 +229,16 @@ public class TerrainScrollManager : MonoBehaviour
         if (Random.Range(0,10) > 2)
         {
             // 타일 위에 생성
-            y = terrain.transform.position.y + 1.75f; // 적절한 아이템 높이 조절
+            y = terrain.transform.position.y + 1f; // 적절한 아이템 높이 조절
         }
         else
         {
             // 빈 공간일 경우 공중에 생성
-            y = terrain.transform.position.y + 3.25f;
+            y = terrain.transform.position.y + 2f;
         }
 
         SpawnItem spitem = Instantiate(spawnItem, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform).GetComponent<SpawnItem>();
-        spitem.transform.localScale = new Vector3(0.15f, 0.15f, 0);
+        spitem.transform.localScale = new Vector3(0.25f, 0.75f, 0);
         if (Random.value < spawnPercent)
         {
             if (Random.value < 0.5f)

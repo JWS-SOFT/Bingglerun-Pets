@@ -967,14 +967,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487118648}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd6ce836a3640a940864eee2ff991cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 290448704}
   stairPrefab: {fileID: 2684492153823160394, guid: 260d3307814b748498edf812112760d5, type: 3}
-  stairTotalCount: 100
+  stairTotalCount: 0
   stairWidth: 1
   stairHeight: 0.5
   SpawnItemPercent: 20
@@ -1651,7 +1651,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1073473416}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95389e2f3e032dd42a80128e87ceee95, type: 3}
   m_Name: 
@@ -1665,7 +1665,7 @@ MonoBehaviour:
   obstacleHeightOffset: 1
   spawnItem: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
   spawnPercent: 0.8
-  maxTilesBetweenEmpty: 1
+  maxTilesBetweenEmpty: 3
 --- !u!1 &1079569709
 GameObject:
   m_ObjectHideFlags: 0
@@ -2600,9 +2600,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeAction: 10
   timeBonus: 0.25
+  prepareTimeInterval: 3
   play_Mode: 0
   skillManager: {fileID: 1339467147}
   stairManager: {fileID: 487118649}
+  stageLevel: 1
+  stairBaseCount: 1
   terrainScrollManager: {fileID: 1073473418}
   actionButton:
   - {fileID: 518272088}

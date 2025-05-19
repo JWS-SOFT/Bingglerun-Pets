@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float jumpTimer = 0f;       // ⬅ 점프 시간 진행 추적
     [SerializeField] private float jumpDuration = 0.25f; // ⬅ 총 이동에 걸릴 시간
-    [SerializeField] private float jumpHeight = 2.5f;    // ⬅ 점프 높이
+    [SerializeField] private float jumpHeight = 3f;    // ⬅ 점프 높이
     private bool moving = false;
     private int moveDirection = 1; // 1 = 오른쪽, -1 = 왼쪽
     public int currentStairIndex = 0;
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
         //gameObject.SetActive(false);
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
-        jumpHeight = !isGamemode ? 2f : 3f;    // ⬅ 점프 높이
+        jumpHeight = !isGamemode ? 0.25f : 3f;    // ⬅ 점프 높이
         Rigidbody2D = GetComponent<Rigidbody2D>();
         if (!isGamemode)
         {
@@ -51,11 +51,16 @@ public class PlayerController : MonoBehaviour
         if (moving) return;
         else
         {
-            if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
+            if (currentStairIndex > 0 && currentStairIndex < PlayerManager.GetStageStair - 1 && !PlayerManager.ActionTImerCheck())
             {
                 TriggerGameOver();
                 return;
             }
+        }
+        if (PlayerManager.PlayMode && PlayerManager.Instance.isGameStartReady && !player_Animator.GetBool("Walk"))
+        {
+            player_Animator.SetBool("Walk", true);
+            player_Animator.speed = 1.5f;
         }
     }
 
@@ -76,7 +81,6 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
             }
-
             return;
         }
 
@@ -110,12 +114,20 @@ public class PlayerController : MonoBehaviour
                 transform.position = targetPos;
                 moving = false;
                 player_Animator.SetBool("Jump", false);
+
+                if (currentStairIndex + 1 == PlayerManager.GetStageStair)
+                {
+                    StageStairCLear();
+                }
             }
         }
     }
 
     public void TurnButtonClick()
     {
+        isGamemode = PlayerManager.PlayMode;
+        jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
+        jumpHeight = !isGamemode ? 0.25f : 3f;    // ⬅ 점프 높이
         if (isGameOver) return;
 
         // ✅ 게임모드일 때는 방향 전환 비활성화
@@ -138,6 +150,9 @@ public class PlayerController : MonoBehaviour
 
     public void JumpButtonClick()
     {
+        isGamemode = PlayerManager.PlayMode;
+        jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
+        jumpHeight = !isGamemode ? 0.25f : 3f;    // ⬅ 점프 높이
         if (moving || isGameOver) return;
 
         player_Animator.SetBool("Jump", true);
@@ -150,57 +165,61 @@ public class PlayerController : MonoBehaviour
             targetPos = startJumpPos; // 제자리 점프
             return;
         }
-
-        // ✅ 계단 모드일 경우
-        if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
+        else
         {
-            //TriggerGameOver();
-            PlayerManager.Instance.TakeDamage();
-            return;
-        }
 
-        moving = true;
-        jumpTimer = 0f;
-        startJumpPos = transform.position;
-
-        int nextIndex = currentStairIndex + 1;
-
-        if (stairManager.TryGetStairPosition(nextIndex, out Vector2 nextStairPos))
-        {
-            Vector2 delta = nextStairPos - (Vector2)transform.position;
-            bool isValidDirection = Mathf.Sign(delta.x) == moveDirection;
-
-            if (!isValidDirection)
+            // ✅ 계단 모드일 경우
+            if (currentStairIndex > 0 && !PlayerManager.ActionTImerCheck())
             {
-                Debug.Log("틀린 방향! 허공으로 떨어짐 → 게임 오버");
                 //TriggerGameOver();
                 PlayerManager.Instance.TakeDamage();
                 return;
             }
 
-            GameObject nextStair = stairManager.GetStairObject(nextIndex);
-            float stairTopY = nextStair != null && nextStair.TryGetComponent<SpriteRenderer>(out var stairRenderer)
-                ? nextStair.transform.position.y + (stairRenderer.bounds.size.y / 2f)
-                : nextStairPos.y + (stairManager.stairHeight / 2f);
+            moving = true;
+            jumpTimer = 0f;
+            startJumpPos = transform.position;
 
-            float playerHeight = TryGetComponent<SpriteRenderer>(out var playerRenderer)
-                ? playerRenderer.bounds.size.y
-                : GetComponent<Collider2D>().bounds.size.y;
+            int nextIndex = currentStairIndex + 1;
 
-            float correctedY = stairTopY + (playerHeight / 2f);
+            if (stairManager.TryGetStairPosition(nextIndex, out Vector2 nextStairPos))
+            {
+                Vector2 delta = nextStairPos - (Vector2)transform.position;
+                bool isValidDirection = Mathf.Sign(delta.x) == moveDirection;
 
-            targetPos = new Vector2(nextStairPos.x, correctedY);
-            currentStairIndex = nextIndex;
-            PlayerManager.ChangeFloor(currentStairIndex);
+                if (!isValidDirection)
+                {
+                    Debug.Log("틀린 방향! 허공으로 떨어짐 → 게임 오버");
+                    //TriggerGameOver();
+                    PlayerManager.Instance.TakeDamage();
+                    return;
+                }
 
-            if (currentStairIndex > 1) PlayerManager.ActionTImeSuccess();
-            else PlayerManager.ActionTImeStart();
-        }
-        else
-        {
-            Debug.Log("다음 계단 없음 → 게임 오버");
-            //TriggerGameOver();
-            PlayerManager.Instance.TakeDamage();
+                GameObject nextStair = stairManager.GetStairObject(nextIndex);
+                float stairTopY = nextStair != null && nextStair.TryGetComponent<SpriteRenderer>(out var stairRenderer)
+                    ? nextStair.transform.position.y + (stairRenderer.bounds.size.y / 2f)
+                    : nextStairPos.y + (stairManager.stairHeight / 2f);
+
+                float playerHeight = TryGetComponent<SpriteRenderer>(out var playerRenderer)
+                    ? playerRenderer.bounds.size.y
+                    : GetComponent<Collider2D>().bounds.size.y;
+
+                float correctedY = stairTopY + (playerHeight / 2f);
+
+                targetPos = new Vector2(nextStairPos.x, correctedY);
+                currentStairIndex = nextIndex;
+                PlayerManager.ChangeFloor(currentStairIndex);
+
+                // if (currentStairIndex > 1) PlayerManager.ActionTImeSuccess();
+                // else PlayerManager.ActionTImeStart();
+                // PlayerManager.ActionTImeStart();
+            }
+            else
+            {
+                Debug.Log("다음 계단 없음 → 게임 오버");
+                //TriggerGameOver();
+                PlayerManager.Instance.TakeDamage();
+            }
         }
     }
 
@@ -209,14 +228,20 @@ public class PlayerController : MonoBehaviour
         moving = false;
         enabled = false;
         isGameOver = true;
-        if(!isGamemode) PlayerManager.ActionTImeStop();
+        if (!isGamemode) PlayerManager.ActionTImeStop();
         if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
     }
 
-
-
+    public void StageStairCLear()
+    {
+        if (!isGamemode) PlayerManager.ActionTImeStop();
+        //if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
+        Debug.Log("Arrived Max Stair!");
+        PlayerManager.Instance.SetPlayMode(true);
+        transform.localScale = new Vector3(0.5f, 0.5f, 1);
+    }
 
 
     //05.17 HJ 추가
@@ -225,7 +250,7 @@ public class PlayerController : MonoBehaviour
     {
         int nextIndex = currentStairIndex + 1;
 
-        if(stairManager.TryGetStairPosition(nextIndex, out Vector2 nextStairPos))
+        if (stairManager.TryGetStairPosition(nextIndex, out Vector2 nextStairPos))
         {
             float directionX = nextStairPos.x - transform.position.x;   //방향 판단
             moveDirection = (int)Mathf.Sign(directionX);                //+1: 오른쪽, -1: 왼쪽
