@@ -32,11 +32,11 @@ namespace OrientationSystem
         {
             orientationDetector = GetComponent<OrientationDetector>();
 
-            // 씬 전환 감지를 위해 이 객체를 유지
-            if (findCanvasesOnSceneLoad)
-            {
-                DontDestroyOnLoad(gameObject);
-            }
+            // // 씬 전환 감지를 위해 이 객체를 유지
+            // if (findCanvasesOnSceneLoad)
+            // {
+            //     DontDestroyOnLoad(gameObject);
+            // }
 
             FindAndSetupCanvases();
         }

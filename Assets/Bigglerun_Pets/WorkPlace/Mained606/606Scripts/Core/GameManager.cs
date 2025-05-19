@@ -40,7 +40,20 @@ public class GameManager : MonoBehaviour
 
         // 핵심 매니저 연결
         gameObject.AddComponent<UIManager>();
-        //gameObject.AddComponent<AudioManager>();
+        
+        // AudioManager 확인 및 처리
+        AudioManager existingAudioManager = GetComponentInChildren<AudioManager>();
+        if (existingAudioManager == null)
+        {
+            // 오디오 매니저가 없는 경우에만 추가
+            gameObject.AddComponent<AudioManager>();
+        }
+        else
+        {
+            // 이미 존재하는 오디오 매니저가 있으므로 사용
+            Debug.Log("[GameManager] 기존 AudioManager를 사용합니다.");
+        }
+        
         gameObject.AddComponent<InputManager>();
         gameObject.AddComponent<FirebaseManager>(); // 이건 나중에 초기화 시도
 
@@ -71,7 +84,11 @@ public class GameManager : MonoBehaviour
         if (success)
             StateMachine.ChangeState(GameState.Title);
         else
+        {
             Debug.LogError("[GameManager] Firebase 로그인 실패 계정 정보 없음");
+            // 로그인 실패해도 타이틀 상태로 전환
+            StateMachine.ChangeState(GameState.Title);
+        }
     }
     
     /// <summary>

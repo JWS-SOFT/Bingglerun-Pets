@@ -85,7 +85,17 @@ public class AudioManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        
+        // GameManager의 자식이 아닌 경우에만 DontDestroyOnLoad 적용
+        if (transform.parent == null || transform.parent.GetComponent<GameManager>() == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            Debug.Log("[AudioManager] 독립적인 AudioManager - DontDestroyOnLoad 적용");
+        }
+        else
+        {
+            Debug.Log("[AudioManager] GameManager 자식 객체로서 AudioManager 초기화");
+        }
 
         InitBGMClipMap();
         InitSFXClipMap();
@@ -96,7 +106,8 @@ public class AudioManager : MonoBehaviour
     #region Events
     private void OnEnable()
     {
-        SoundEvents.OnPlayBGM += (type) => PlayBGM(type);
+        // 델리게이트에 맞는 메서드 참조를 사용
+        SoundEvents.OnPlayBGM += HandlePlayBGM;
         SoundEvents.OnStopBGM += StopBGM;
         SoundEvents.OnPlaySFX += PlaySFX;
 
@@ -116,7 +127,8 @@ public class AudioManager : MonoBehaviour
 
     private void OnDisable()
     {
-        SoundEvents.OnPlayBGM -= (type) => PlayBGM(type);
+        // 델리게이트에 맞는 메서드 참조 해제
+        SoundEvents.OnPlayBGM -= HandlePlayBGM;
         SoundEvents.OnStopBGM -= StopBGM;
         SoundEvents.OnPlaySFX -= PlaySFX;
 
@@ -134,6 +146,12 @@ public class AudioManager : MonoBehaviour
         //SoundEvents.OnStageClear -= () => PlaySFX(SFXType.StageClear);
     }
     #endregion
+
+    // 이벤트 핸들러 메서드 - Action<BGMType> 델리게이트와 일치하는 시그니처
+    private void HandlePlayBGM(BGMType type)
+    {
+        PlayBGM(type);
+    }
 
     //전체 음소거(옵션 UI에서 호출)
     public void Mute(bool isMute)
