@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// 플레이어 데이터를 관리하는 매니저 클래스
@@ -531,9 +532,36 @@ public class PlayerDataManager : MonoBehaviour
     public void SetVolume(List<float> volumes)
     {
         if (!IsDataLoaded) return;
+        
+        Debug.Log($"SetVolume 호출됨 - 입력 volumes: {string.Join(", ", volumes)}, 현재 volumeList: {string.Join(", ", CurrentPlayerData.volumeList)}");
 
-        foreach(float value in volumes)
-        //CurrentPlayerData.volumeList[index] = value;
+        // volumeList가 null인 경우 초기화
+        if (CurrentPlayerData.volumeList == null)
+        {
+            CurrentPlayerData.volumeList = new List<float>();
+        }
+        
+        // volumeList 크기 조정 (최소 3개 요소 보장)
+        while (CurrentPlayerData.volumeList.Count < 3)
+        {
+            CurrentPlayerData.volumeList.Add(1f);
+        }
+
+        // volumes가 비어있는 경우 보호 로직
+        if (volumes == null || volumes.Count == 0)
+        {
+            Debug.LogWarning("SetVolume: 입력 volumes가 null이거나 비어있습니다!");
+            return;
+        }
+
+        // 볼륨 값 업데이트
+        int count = Mathf.Min(volumes.Count, CurrentPlayerData.volumeList.Count);
+        for (int i = 0; i < count; i++)
+        {
+            CurrentPlayerData.volumeList[i] = volumes[i];
+        }
+        
+        Debug.Log($"볼륨 저장됨: {string.Join(", ", CurrentPlayerData.volumeList)}");
         _ = SavePlayerDataAsync();
     }
     
