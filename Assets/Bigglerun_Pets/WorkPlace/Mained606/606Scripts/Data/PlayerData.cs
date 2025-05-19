@@ -36,7 +36,7 @@ public class PlayerData
     public string selectedPreGameItem; // 선택된 시작 아이템
 
     // 게임 설정
-    public List<float> volumeList;
+    public List<float> volumeList = new List<float>();
     public bool soundEnabled;
     public bool vibrationEnabled;
     
@@ -81,7 +81,7 @@ public class PlayerData
             equippedBody = "",
             equippedShoes = "",
             selectedPreGameItem = "",
-            volumeList = new List<float> { 1f, 1f, 1f },
+            volumeList = { 1f, 1f, 1f },
             soundEnabled = true,
             vibrationEnabled = true,
             totalPlayCount = 0,
