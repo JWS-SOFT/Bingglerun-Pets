@@ -3,8 +3,8 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
-    public float followSpeed = 2f;
-    public float fixedY = 1.5f; // 횡모드에서 고정할 Y값
+    public float followSpeed = 3f;
+    public float fixedY = 3.5f; // 횡모드에서 고정할 Y값
 
     private void LateUpdate()
     {
@@ -15,7 +15,8 @@ public class CameraFollow : MonoBehaviour
         if (PlayerManager.PlayMode)
         {
             // ➤ 횡스크롤 모드 (y는 고정, x만 따라감)
-            targetPos = new Vector3(player.position.x + 1.5f , 3.5f, -10f);
+            followSpeed *= 0;
+            targetPos = new Vector3(player.position.x + 1.5f , player.position.y + 10f, -10f);
         }
         else
         {

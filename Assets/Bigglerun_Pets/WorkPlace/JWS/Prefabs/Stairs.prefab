@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1780812963579870480}
   - component: {fileID: 5747697598902734232}
   - component: {fileID: 5901663030085978483}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stairs
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,6 +228,10 @@ PrefabInstance:
     - target: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
       propertyPath: m_Name
       value: SpawnItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
       propertyPath: m_IsActive
