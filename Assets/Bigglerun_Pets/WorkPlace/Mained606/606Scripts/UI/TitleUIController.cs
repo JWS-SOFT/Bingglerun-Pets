@@ -117,13 +117,13 @@ public class TitleUIController : MonoBehaviour
     /// <summary>
     /// 이미 로그인된 세션이 있는지 확인 (게스트 계정 자동 생성 없이)
     /// </summary>
-    private void CheckExistingLoginWithoutAutoCreate()
+    private async void CheckExistingLoginWithoutAutoCreate()
     {
         var firebase = FirebaseManager.Instance;
         
-        // Firebase Manager에 추가된 메서드 호출
+        // Firebase Manager에 추가된 비동기 메서드 호출
         // 게스트 계정 자동 생성 없이 기존 로그인 상태만 확인
-        bool isAuthenticated = firebase.CheckAuthenticationWithoutAutoLogin();
+        bool isAuthenticated = await firebase.CheckAuthenticationWithoutAutoLoginAsync();
         
         if (isAuthenticated)
         {
@@ -133,7 +133,7 @@ public class TitleUIController : MonoBehaviour
         }
         else
         {
-            // 기존 계정이 없으면 로그인 선택 화면 표시
+            // 기존 계정이 없거나 Auth에서 삭제된 계정이면 로그인 선택 화면 표시
             ShowLoginButtons(true);
         }
     }
