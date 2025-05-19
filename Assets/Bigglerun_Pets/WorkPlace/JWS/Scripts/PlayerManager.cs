@@ -113,6 +113,7 @@ public class PlayerManager : MonoBehaviour
             actionTimer = new BasicTimer(prepareTimeInterval);
             ActionTImeStart();
             stairManager.ResetStiar();
+            SetTerrain(stairManager.GetStairObject(currentPlayerFloor).transform.position);
             stairManager.gameObject.SetActive(false);
         }
         else
