@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// 플레이어 데이터를 관리하는 매니저 클래스
@@ -532,8 +533,12 @@ public class PlayerDataManager : MonoBehaviour
     {
         if (!IsDataLoaded) return;
 
-        foreach(float value in volumes)
-        //CurrentPlayerData.volumeList[index] = value;
+        //foreach(float value in volumes)
+        for(int i = 0; i< CurrentPlayerData.volumeList.Count; i++)
+        {
+            CurrentPlayerData.volumeList[i] = volumes[i];
+        }
+        
         _ = SavePlayerDataAsync();
     }
     
