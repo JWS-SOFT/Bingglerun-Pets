@@ -182,13 +182,20 @@ public class GameStateMachine : MonoBehaviour
 
         if (playerData.volumeList != null && playerData.volumeList.Count >= 3)
         {
+            // 무한 이벤트 루프 방지를 위해 이전 뮤트 상태를 저장
+            bool previousMuteState = AudioManager.Instance.IsMuted();
+            bool newMuteState = !playerData.soundEnabled;
+            
             // 볼륨 리스트: [0]=마스터, [1]=BGM, [2]=SFX
             AudioManager.Instance.SetMasterVolume(playerData.volumeList[0]);
             AudioManager.Instance.SetBGMVolume(playerData.volumeList[1]);
             AudioManager.Instance.SetSFXVolume(playerData.volumeList[2]);
             
-            // 사운드 활성화 설정
-            AudioManager.Instance.Mute(!playerData.soundEnabled);
+            // 사운드 활성화 설정 (뮤트 상태가 변경된 경우에만 적용)
+            if (previousMuteState != newMuteState)
+            {
+                AudioManager.Instance.Mute(newMuteState);
+            }
             
             Debug.Log($"[GameStateMachine] 오디오 설정 동기화 완료: 마스터={playerData.volumeList[0]}, BGM={playerData.volumeList[1]}, SFX={playerData.volumeList[2]}, 사운드활성화={playerData.soundEnabled}");
         }

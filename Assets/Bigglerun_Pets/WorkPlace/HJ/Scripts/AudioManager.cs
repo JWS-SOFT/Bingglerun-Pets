@@ -8,6 +8,7 @@ public static class SoundEvents
     public static Action<BGMType> OnPlayBGM;
     public static Action OnStopBGM;
     public static Action<SFXType> OnPlaySFX;
+    public static Action<bool> OnMuteStateChanged;
 
     //public static Action OnJump;
     //public static Action OnLand;
@@ -72,6 +73,7 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
+    [SerializeField] private bool isMuted = false;
 
     #region Singleton
     public static AudioManager Instance;
@@ -156,28 +158,62 @@ public class AudioManager : MonoBehaviour
     //전체 음소거(옵션 UI에서 호출)
     public void Mute(bool isMute)
     {
+        isMuted = isMute;
         audioMixer.SetFloat(masterVolumeParam, isMute ? -80f : ToDecibels(masterVolume));
+        
+        // UI 및 DB에 뮤트 상태 변경 알림
+        SoundEvents.OnMuteStateChanged?.Invoke(isMuted);
     }
 
     //전체 볼륨 제어(옵션 UI에서 호출)
     public void SetMasterVolume(float volume)
     {
         masterVolume = Mathf.Clamp01(volume);
-        audioMixer.SetFloat(masterVolumeParam, ToDecibels(masterVolume));
+        
+        bool wasMuted = isMuted;
+        if (isMuted && volume > 0)
+        {
+            isMuted = false;
+            
+            // 뮤트 상태가 변경되었을 때 UI 및 DB에 알림
+            if (wasMuted != isMuted)
+            {
+                SoundEvents.OnMuteStateChanged?.Invoke(isMuted);
+            }
+        }
+        
+        if (!isMuted)
+        {
+            audioMixer.SetFloat(masterVolumeParam, ToDecibels(masterVolume));
+        }
     }
 
     //BGM 볼륨 제어(옵션 UI에서 호출)
     public void SetBGMVolume(float volume)
     {
         bgmVolume = Mathf.Clamp01(volume);
-        audioMixer.SetFloat(bgmVolumeParam, ToDecibels(bgmVolume));
+        
+        if (!isMuted)
+        {
+            audioMixer.SetFloat(bgmVolumeParam, ToDecibels(bgmVolume));
+        }
     }
 
     //SFX 볼륨 제어(옵션 UI에서 호출)
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
-        audioMixer.SetFloat(sfxVolumeParam, ToDecibels(sfxVolume));
+        
+        if (!isMuted)
+        {
+            audioMixer.SetFloat(sfxVolumeParam, ToDecibels(sfxVolume));
+        }
+    }
+
+    // 현재 뮤트 상태 반환 (UI에서 사용)
+    public bool IsMuted()
+    {
+        return isMuted;
     }
 
     //BGM 재생
@@ -257,8 +293,15 @@ public class AudioManager : MonoBehaviour
     //볼륨 적용(초기화)
     private void ApplyVolume()
     {
-        SetMasterVolume(masterVolume);
-        SetBGMVolume(bgmVolume);
-        SetSFXVolume(sfxVolume);
+        if (!isMuted)
+        {
+            SetMasterVolume(masterVolume);
+            SetBGMVolume(bgmVolume);
+            SetSFXVolume(sfxVolume);
+        }
+        else
+        {
+            audioMixer.SetFloat(masterVolumeParam, -80f);
+        }
     }
 }
