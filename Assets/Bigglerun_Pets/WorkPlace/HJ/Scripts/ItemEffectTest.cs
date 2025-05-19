@@ -12,12 +12,12 @@ public class ItemEffectTest : MonoBehaviour
         ItemManager.Instance.AddUsableItems("item001", 2);
         ItemManager.Instance.AddUsableItems("item002", 2);
         ItemManager.Instance.AddUsableItems("item003", 5);
-
-        ItemManager.Instance.UseUsableItem(testItem);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            ItemManager.Instance.UseUsableItem(testItem);
     }
 }
