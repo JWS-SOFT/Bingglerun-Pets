@@ -227,14 +227,14 @@ public class PlayerManager : MonoBehaviour
             else                                            //계단모드
                 playerController.RecoverToLastStair();      //이전 계단으로 복귀
 
-            SetInvincible(1.5f);    //1.5초 동안 무적
+            SetInvincible(0.5f);    //0.5초 동안 무적
         }
     }
 
     //무적
     public void SetInvincible(float duration)
     {
-        if (isInvincible) return;
+        //if (isInvincible) return;
         StartCoroutine(InvincibleCoroutine(duration));
     }
 
@@ -277,11 +277,13 @@ public class PlayerManager : MonoBehaviour
     public void AddLife(int amount = 1)
     {
         currentLife += amount;
+        Debug.Log($"스타트 목숨: {currentLife}");
     }
 
     //스킬 횟수 추가
     public void AddSkillCount(int amount = 1)
     {
         currentSkillCount += amount;
+        Debug.Log($"스타트 스킬 횟수: {currentSkillCount}");
     }
 }

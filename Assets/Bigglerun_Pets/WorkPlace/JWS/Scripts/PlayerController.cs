@@ -267,11 +267,10 @@ public class PlayerController : MonoBehaviour
     public void RecoverToLastStair()
     {
         Debug.Log("복귀, 직전 계단으로 위치 초기화");
-        
-        if(stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
+
+        if (stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
         {
             //복귀 애니메이션 추가
-
             transform.position = stairPos;
         }
     }
@@ -280,6 +279,8 @@ public class PlayerController : MonoBehaviour
     //복귀 애니메이션 등 추가
     public void RecoverToForwardGround()
     {
+        if (isRecovering) return;
+
         Debug.Log("안전한 땅으로 복귀");
         //복귀 애니메이션 추가
 

@@ -79,7 +79,7 @@ public class SpawnItem : MonoBehaviour
                         PlayerManager.ChangeCoin();
                     else if (currentItemType == spriteNameType.Gem)
                         ItemManager.Instance.UseUsableItem("item004");
-                    Debug.Log("플레이어와 접촉");
+                    //Debug.Log("플레이어와 접촉");
                 }
             }
             else
@@ -91,7 +91,7 @@ public class SpawnItem : MonoBehaviour
                     PlayerManager.ChangeCoin();
                 else if (currentItemType == spriteNameType.Gem)
                     ItemManager.Instance.UseUsableItem("item004");
-                Debug.Log("플레이어와 접촉");
+                //Debug.Log("플레이어와 접촉");
             }
         }
     }

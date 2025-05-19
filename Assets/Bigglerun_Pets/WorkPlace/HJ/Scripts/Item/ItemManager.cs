@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,7 +16,9 @@ public class ItemManager : MonoBehaviour
 
     //선택된 스타트 아이템
     private ItemData selectedPreGameItem = null;
-    public ItemData SelectedPreGameItem => selectedPreGameItem;
+
+    //아이템 이펙트
+    private Dictionary<ItemEffectType, Action> itemEffectActions;
 
     //읽기전용 변수
     public static IReadOnlyList<ItemData> AllUsableItems => Instance.usableItemList;
@@ -36,6 +39,7 @@ public class ItemManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         InitializeItems();
+        InitializeItemEffects();
     }
     #endregion
 
@@ -137,7 +141,7 @@ public class ItemManager : MonoBehaviour
         ItemData item = GetUsableItemById(itemId);
         if (item == null || item.useTiming != ItemUseTiming.PreGame) return;
 
-        if (SelectedPreGameItem?.itemId == itemId)
+        if (selectedPreGameItem?.itemId == itemId)
             selectedPreGameItem = null; //기존 아이템 선택시 해제
         else
             selectedPreGameItem = item;     
@@ -155,6 +159,18 @@ public class ItemManager : MonoBehaviour
         if(selectedPreGameItem == null) return;
 
         UseUsableItem(selectedPreGameItem.itemId);
+    }
+
+    //현재 선택된 아이템 가져오기
+    public ItemData GetSelectedPreGameItem()
+    {
+        return selectedPreGameItem;
+    }
+
+    //특정 아이템이 선택되었는지 확인
+    public bool IsSelectedPreGameItem(string itemId)
+    {
+        return selectedPreGameItem != null && selectedPreGameItem.itemId == itemId;
     }
 
     //아이템 사용(인게임 아이템 습득시 호출할 함수, 게임 스타트시 호출됨)
@@ -345,24 +361,18 @@ public class ItemManager : MonoBehaviour
     //아이템 효과 적용
     private void ApplyItemEffect(ItemData item)
     {
-        switch (item.effectType)
+        if(itemEffectActions.TryGetValue(item.effectType, out var effectAction))
         {
-            case ItemEffectType.Booster:
-                Debug.Log("부스터 적용");
-                break;
-            case ItemEffectType.SkillUp:
-                Debug.Log("스킬 횟수 +1");
-                break;
-            case ItemEffectType.Heart:
-                Debug.Log("목숨 1회 구제");
-                break;
-            case ItemEffectType.Invincible:
-                //Debug.Log("무적");
-                PlayerManager.Instance.SetInvincible(0.5f);
-                break;
+            effectAction.Invoke();
+            Debug.Log($"{item.effectType} 아이템 효과 적용");
+        }
+        else
+        {
+            Debug.Log($"{item.effectType} 아이템 효과 없음");
         }
     }
 
+    //아이템 리스트 초기화
     private void InitializeItems()
     {
         usableItemList = ItemLoader.LoadUsableItemData();
@@ -373,5 +383,29 @@ public class ItemManager : MonoBehaviour
         {
             SyncWithPlayerData();
         }
+    }
+
+    //아이템 효과 초기화
+    private void InitializeItemEffects()
+    {
+        itemEffectActions = new Dictionary<ItemEffectType, Action>
+        {
+            {
+                ItemEffectType.Booster,
+                () => PlayerManager.Instance.StartBooster(1.5f)
+            },
+            {
+                ItemEffectType.SkillUp,
+                () => PlayerManager.Instance.AddSkillCount(1)
+            },
+            {
+                ItemEffectType.Heart,
+                () => PlayerManager.Instance.AddLife(1)
+            },
+            {
+                ItemEffectType.Invincible,
+                () => PlayerManager.Instance.SetInvincible(3f)
+            }
+        };
     }
 }
