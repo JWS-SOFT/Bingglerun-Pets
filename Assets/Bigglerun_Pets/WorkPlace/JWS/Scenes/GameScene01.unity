@@ -753,11 +753,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0eda59337a2de444aa6320ca7cef9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &290448709 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6509873653763732206, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
-  m_PrefabInstance: {fileID: 66358477}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &379626788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,9 +1228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2fd2040dca0bb47aa04b50e6658d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 290448709}
   followSpeed: 3
-  fixedY: 3.5
 --- !u!114 &688600701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1658,8 +1651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainPrefab: {fileID: 415566698276254626, guid: 85bb4711d4728e547afff411f59df15a, type: 3}
   poolSize: 50
-  scrollSpeed: 5
-  playerInstance: {fileID: 290448704}
+  scrollSpeed: 4
   obstaclePrefabs:
   - {fileID: 7174697107108937338, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
   obstacleHeightOffset: 1

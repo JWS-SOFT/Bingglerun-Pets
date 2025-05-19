@@ -159,6 +159,11 @@ public class PlayerController : MonoBehaviour
         // ✅ 횡스크롤 모드일 경우: 제자리 점프
         if (isGamemode)
         {
+            if (!PlayerManager.Instance.isGameStartReady)
+            {
+                jumpDuration = 0.05f;
+                jumpHeight = 0.05f;
+            }
             moving = true;
             jumpTimer = 0f;
             startJumpPos = transform.position;
@@ -241,6 +246,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Arrived Max Stair!");
         PlayerManager.Instance.SetPlayMode(true);
         transform.localScale = new Vector3(0.5f, 0.5f, 1);
+        JumpButtonClick();
     }
 
 
