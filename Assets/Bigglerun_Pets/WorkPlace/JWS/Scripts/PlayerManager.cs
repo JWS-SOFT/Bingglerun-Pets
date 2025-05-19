@@ -7,16 +7,20 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
     public static Transform Player_Transform;
-    public float timeAction = 10f;  // 리미티드 시간설정 
+    public float timeAction = 1f;  // 리미티드 시간설정 
     public float timeBonus = 0.25f;  // 보너스 시간설정 
+    public float prepareTimeInterval = 3f; // 횡게임 대기시간.
     public static bool PlayMode
     {
         get { return Instance.play_Mode; }
         set { Instance.play_Mode = value; }
     }
-    [SerializeField] private bool play_Mode = true;
+    [SerializeField] private bool play_Mode = false;
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private StairManager stairManager;
+    [SerializeField] private int stageLevel = 1;
+    [SerializeField] private int stairBaseCount = 20;
+    public static int GetStageStair;
     [SerializeField] private TerrainScrollManager terrainScrollManager;
     [SerializeField] private Button[] actionButton = new Button[3];
     private PlayerData playerData;
@@ -36,7 +40,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     //05.15 HJ 추가
-    [SerializeField] PlayerController playerController;
+    private PlayerController playerController;
 
     [SerializeField] private int maxLife = 3;
     private int currentLife = 0;
@@ -59,29 +63,15 @@ public class PlayerManager : MonoBehaviour
         }
 
         actionTimer = new BasicTimer(timeAction);
-
-        if (play_Mode)
-        {
-            stairManager.enabled = false;
-            terrainScrollManager.enabled = true;
-            actionButton[1].gameObject.SetActive(false);
-            actionButton[2].gameObject.SetActive(true);
-        }
-        else
-        {
-            stairManager.enabled = true;
-            terrainScrollManager.enabled = false;
-            actionButton[1].gameObject.SetActive(true);
-            actionButton[2].gameObject.SetActive(false);
-        }
+        GetStageStair = ((stageLevel * 10) + stairBaseCount);
     }
 
     private void Start()
     {
-
+        SetPlayMode(false);
         //playerData = PlayerDataManager.Instance.CurrentPlayerData;
         playerData = PlayerData.CreateDefault("cat");
-        if (!play_Mode)
+        if (!PlayMode)
         {
             floorText.text = "Floor\n" + currentPlayerFloor;
             coinText.text = "Coin\n" + currentPlayerCoin;
@@ -99,17 +89,57 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        if (!play_Mode && actionTimer.IsRunning)
+        if (Player_Transform != null && playerController == null) playerController = Player_Transform.GetComponent<PlayerController>();
+        if (/*!PlayMode &&*/ actionTimer.IsRunning)
         {
             timerSlider.value = actionTimer.RemainingTime;
             timerText.text = actionTimer.RemainingTime.ToString("N1");
         }
+        if (PlayMode && !actionTimer.IsRunning)
+        {
+            isGameStartReady = true;
+        }
     }
+
+    public void SetPlayMode(bool mode)
+    {
+        if (mode)
+        {
+            // stairManager.enabled = false;
+            // terrainScrollManager.enabled = true;
+            actionButton[1].gameObject.SetActive(false);
+            actionButton[2].gameObject.SetActive(true);
+            ActionTImeStop();
+            actionTimer = new BasicTimer(prepareTimeInterval);
+            ActionTImeStart();
+            stairManager.ResetStiar();
+            stairManager.gameObject.SetActive(false);
+        }
+        else
+        {
+            // stairManager.enabled = true;
+            // terrainScrollManager.enabled = false;
+            actionButton[1].gameObject.SetActive(true);
+            actionButton[2].gameObject.SetActive(false);
+            isGameStartReady = false;
+        }
+        PlayMode = mode;
+    }
+
+    public void SetTerrain(Vector3 position)
+    {
+        terrainScrollManager.StartTest(position);
+    }
+
+
 
     public static void ChangeFloor(int floor)
     {
+        Debug.Log("현재층: " + (floor + 1).ToString());
         Instance.currentPlayerFloor = floor;
-        Instance.floorText.text = "Floor\n" + Instance.currentPlayerFloor;
+        Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
+            "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
+        ActionTImeStart();
     }
 
     public static void ChangeDistance(float distance)

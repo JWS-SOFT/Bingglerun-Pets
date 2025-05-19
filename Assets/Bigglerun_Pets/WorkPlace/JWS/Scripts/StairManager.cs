@@ -6,12 +6,12 @@ public class StairManager : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject stairPrefab;
 
-    [SerializeField] private int stairTotalCount = 20;
+    [SerializeField] private int stairTotalCount = 0;
     // [SerializeField] private  int stairWidthCount = 5;
     public float stairWidth = 2f;
     public float stairHeight = 2f;
     [SerializeField] private int SpawnItemPercent = 20;
-    [Header ("🔐 난이도 조정")]
+    [Header("🔐 난이도 조정")]
     [Range(0f, 1f)]
     [SerializeField] private float changeDirectionChance = 0.3f; // 방향 바꿀 확률 (난이도용)
 
@@ -20,11 +20,14 @@ public class StairManager : MonoBehaviour
     private List<Stair> stairs = new List<Stair>();
     private int currentIndex = -1;
     private int xIndex = 0; // -2 ~ 2 사이 유지 (현재 x 위치를 인덱스로 관리)
+    private Vector3 lastStairPosition = Vector3.zero;
 
     private void Start()
     {
+        stairTotalCount = PlayerManager.GetStageStair;
         GenerateInitialStairs();
         SetPlayerOnFirstStair();
+        PlayerManager.Instance.SetTerrain(lastStairPosition);
     }
 
     private void GenerateInitialStairs()
@@ -48,6 +51,7 @@ public class StairManager : MonoBehaviour
             currentPos.y += stairHeight;
 
             GameObject stair = Instantiate(stairPrefab, currentPos, Quaternion.identity);
+            if (i == stairTotalCount - 1) lastStairPosition = currentPos;
             Stair stairScript = stair.GetComponent<Stair>();
             if (stairScript != null)
             {
@@ -97,9 +101,13 @@ public class StairManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateCurrentStairIndex();
-        // UpdateStairColliders();
-        // RecycleStairs();
+        if (!PlayerManager.Instance.isGameStartReady)
+        {
+            UpdateCurrentStairIndex();
+
+            // UpdateStairColliders();
+            // RecycleStairs();
+        }
     }
 
     private void UpdateCurrentStairIndex()
@@ -172,5 +180,13 @@ public class StairManager : MonoBehaviour
             return stairs[index].gameObject;
         }
         return null;
+    }
+
+    public void ResetStiar()
+    {
+        foreach (Stair st in stairs)
+        {
+            if ( st != null ) Destroy(st.gameObject);
+        }
     }
 }
