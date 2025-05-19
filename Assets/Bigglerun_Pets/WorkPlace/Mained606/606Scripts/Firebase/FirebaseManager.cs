@@ -72,9 +72,50 @@ public class FirebaseManager : MonoBehaviour
                 // 이미 로그인한 사용자가 있는지 확인
                 if (auth.CurrentUser != null)
                 {
-                    UpdateUserInfo(auth.CurrentUser);
-                    Debug.Log($"[FirebaseManager] 기존 로그인 정보 발견: {UserId}");
-                    return true;
+                    try
+                    {
+                        // 토큰 갱신을 시도하여 사용자 계정이 여전히 유효한지 확인
+                        await auth.CurrentUser.ReloadAsync(); // 사용자 정보 갱신
+                        
+                        // 갱신이 성공하면 계정이 유효함
+                        if (auth.CurrentUser != null) // 갱신 후 사용자가 여전히 존재하는지 확인
+                        {
+                            UpdateUserInfo(auth.CurrentUser);
+                            Debug.Log($"[FirebaseManager] 기존 로그인 정보 발견 및 확인됨: {UserId}");
+                            return true;
+                        }
+                        else
+                        {
+                            // 갱신 후 사용자가 없어진 경우 (이런 경우는 거의 없음)
+                            Debug.LogWarning("[FirebaseManager] 사용자 정보 갱신 후 계정이 유효하지 않음");
+                            // 로컬 인증 정보 초기화
+                            auth.SignOut();
+                            currentUser = null;
+                            IsAuthenticated = false;
+                            UserId = null;
+                            UserEmail = null;
+                            CurrentLoginType = LoginType.None;
+                            
+                            OnLoginStateChanged?.Invoke(false);
+                            return false;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // 토큰 갱신 실패 - 계정이 삭제되었거나 유효하지 않음
+                        Debug.LogWarning($"[FirebaseManager] 기존 계정이 더 이상 유효하지 않음 (Auth에서 삭제됨): {e.Message}");
+                        
+                        // 로컬 인증 정보 초기화
+                        auth.SignOut();
+                        currentUser = null;
+                        IsAuthenticated = false;
+                        UserId = null;
+                        UserEmail = null;
+                        CurrentLoginType = LoginType.None;
+                        
+                        OnLoginStateChanged?.Invoke(false);
+                        return false;
+                    }
                 }
                 
                 // 더 이상 자동으로 게스트 로그인을 시도하지 않음
@@ -526,7 +567,31 @@ public class FirebaseManager : MonoBehaviour
                 return false;
             }
             
-            Debug.Log("[FirebaseManager] 계정 삭제 시도 중...");
+            // 사용자 ID와 로그인 타입 저장
+            string userId = UserId;
+            LoginType userLoginType = CurrentLoginType;
+            
+            Debug.Log($"[FirebaseManager] 계정 삭제 시도 중... (타입: {userLoginType})");
+            
+            // 계정 삭제 전에 로그인 타입 확인
+            // 게스트 계정인 경우 DB에서도 데이터 삭제
+            if (userLoginType == LoginType.Guest)
+            {
+                Debug.Log("[FirebaseManager] 게스트 계정 삭제 - DB 데이터도 함께 삭제합니다.");
+                bool dbDeleteResult = await FirebaseDatabase.Instance.DeletePlayerDataAsync(userId);
+                if (!dbDeleteResult)
+                {
+                    Debug.LogWarning($"[FirebaseManager] 게스트 계정 DB 데이터 삭제 실패: {userId}");
+                    // DB 삭제 실패해도 계정 삭제는 진행
+                }
+            }
+            else if (userLoginType == LoginType.Email)
+            {
+                Debug.Log("[FirebaseManager] 이메일 계정 삭제 - DB 데이터는 유지합니다.");
+                // 이메일 계정은 DB 데이터 유지 (별도 조치 없음)
+            }
+            
+            // Firebase 인증 계정 삭제
             await auth.CurrentUser.DeleteAsync();
             
             // 삭제 후 정보 초기화
@@ -550,6 +615,22 @@ public class FirebaseManager : MonoBehaviour
         Debug.LogWarning("[FirebaseManager] Firebase SDK가 없습니다. 가짜 계정 삭제를 수행합니다.");
         await Task.Delay(500);
         
+        // 테스트 환경에서도 계정 유형에 따른 처리 구현
+        string userId = UserId;
+        LoginType userLoginType = CurrentLoginType;
+        
+        // 게스트 계정이면 테스트 DB에서도 삭제
+        if (userLoginType == LoginType.Guest)
+        {
+            Debug.Log("[FirebaseManager] 테스트 환경 - 게스트 계정 DB 데이터 삭제");
+            await FirebaseDatabase.Instance.DeletePlayerDataAsync(userId);
+        }
+        else if (userLoginType == LoginType.Email)
+        {
+            Debug.Log("[FirebaseManager] 테스트 환경 - 이메일 계정 DB 데이터 유지");
+            // 데이터 유지 (별도 조치 없음)
+        }
+        
         IsAuthenticated = false;
         UserId = null;
         UserEmail = null;
@@ -566,7 +647,7 @@ public class FirebaseManager : MonoBehaviour
     /// 자동 게스트 계정 생성 없이 인증 상태만 확인
     /// </summary>
     /// <returns>인증된 상태이면 true, 아니면 false</returns>
-    public bool CheckAuthenticationWithoutAutoLogin()
+    public async Task<bool> CheckAuthenticationWithoutAutoLoginAsync()
     {
         Debug.Log("[FirebaseManager] 기존 로그인 상태 확인(자동 생성 없이)");
         
@@ -582,7 +663,86 @@ public class FirebaseManager : MonoBehaviour
         var user = auth.CurrentUser;
         if (user != null)
         {
-            // 이미 로그인된 사용자가 있으면 정보 업데이트
+            try
+            {
+                // 토큰 갱신을 시도하여 계정이 여전히 유효한지 확인
+                await user.ReloadAsync(); // 사용자 정보 갱신
+                
+                // 갱신이 성공하면 계정이 유효함
+                if (auth.CurrentUser != null) // 갱신 후 사용자가 여전히 존재하는지 확인
+                {
+                    Debug.Log($"[FirebaseManager] 유효한 계정 확인: {user.UserId}");
+                    UpdateUserInfo(user);
+                    return true;
+                }
+                else
+                {
+                    // 갱신 후 사용자가 없어진 경우 (이런 경우는 거의 없음)
+                    Debug.LogWarning("[FirebaseManager] 사용자 정보 갱신 후 계정이 유효하지 않음");
+                    // 로컬 인증 정보 초기화
+                    auth.SignOut();
+                    currentUser = null;
+                    IsAuthenticated = false;
+                    UserId = null;
+                    UserEmail = null;
+                    CurrentLoginType = LoginType.None;
+                    
+                    OnLoginStateChanged?.Invoke(false);
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                // 토큰 갱신 실패 - 계정이 삭제되었거나 유효하지 않음
+                Debug.LogWarning($"[FirebaseManager] 계정이 더 이상 유효하지 않음 (Auth에서 삭제됨): {e.Message}");
+                
+                // 로컬 인증 정보 초기화
+                auth.SignOut();
+                currentUser = null;
+                IsAuthenticated = false;
+                UserId = null;
+                UserEmail = null;
+                CurrentLoginType = LoginType.None;
+                
+                OnLoginStateChanged?.Invoke(false);
+                return false;
+            }
+        }
+        
+        Debug.Log("[FirebaseManager] 기존 로그인된 계정이 없습니다.");
+        return false;
+#else
+        // 테스트 환경에서는 IsAuthenticated 값만 확인
+        // 이미 SignInAnonymouslyAsync()가 호출된 경우에만 true
+        Debug.Log($"[FirebaseManager] 테스트 환경에서 로그인 상태 확인: {IsAuthenticated}");
+        // 테스트 환경에서도 비동기 일관성 유지
+        await Task.Delay(1);
+        return IsAuthenticated;
+#endif
+    }
+    
+    /// <summary>
+    /// 자동 게스트 계정 생성 없이 인증 상태만 확인 (동기 버전 - 레거시 지원용)
+    /// </summary>
+    /// <returns>인증된 상태이면 true, 아니면 false</returns>
+    public bool CheckAuthenticationWithoutAutoLogin()
+    {
+        Debug.LogWarning("[FirebaseManager] 동기 버전의 CheckAuthenticationWithoutAutoLogin이 호출됨. 비동기 버전을 사용하는 것이 좋습니다.");
+        
+#if FIREBASE_AUTH
+        // Firebase 초기화가 안 되었으면 false 반환
+        if (!IsInitialized || auth == null)
+        {
+            Debug.Log("[FirebaseManager] Firebase가 초기화되지 않았습니다.");
+            return false;
+        }
+        
+        // 현재 사용자 정보 확인 (새 계정 생성하지 않음)
+        var user = auth.CurrentUser;
+        if (user != null)
+        {
+            // 동기 버전에서는 토큰 검증을 생략하므로 실제 삭제된 계정을 감지하지 못할 수 있음
+            // 가능하면 비동기 버전을 사용해야 함
             UpdateUserInfo(user);
             return true;
         }
@@ -591,7 +751,6 @@ public class FirebaseManager : MonoBehaviour
         return false;
 #else
         // 테스트 환경에서는 IsAuthenticated 값만 확인
-        // 이미 SignInAnonymouslyAsync()가 호출된 경우에만 true
         Debug.Log($"[FirebaseManager] 테스트 환경에서 로그인 상태 확인: {IsAuthenticated}");
         return IsAuthenticated;
 #endif
