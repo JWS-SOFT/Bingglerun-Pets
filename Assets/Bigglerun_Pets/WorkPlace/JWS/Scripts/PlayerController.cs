@@ -255,6 +255,8 @@ public class PlayerController : MonoBehaviour
     //복귀 애니메이션 등 추가
     public void RecoverToForwardGround()
     {
+        if (isRecovering) return;
+
         Debug.Log("안전한 땅으로 복귀");
         //복귀 애니메이션 추가
 

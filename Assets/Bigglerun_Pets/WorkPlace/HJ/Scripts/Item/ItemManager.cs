@@ -358,7 +358,7 @@ public class ItemManager : MonoBehaviour
                 break;
             case ItemEffectType.Invincible:
                 //Debug.Log("무적");
-                PlayerManager.Instance.SetInvincible(0.5f);
+                PlayerManager.Instance.SetInvincible(3f);
                 break;
         }
     }

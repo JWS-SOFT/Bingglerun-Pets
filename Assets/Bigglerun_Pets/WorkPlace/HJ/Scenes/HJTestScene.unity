@@ -2677,7 +2677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeAction: 10
   timeBonus: 0.25
-  play_Mode: 0
+  play_Mode: 1
   skillManager: {fileID: 1339467147}
   stairManager: {fileID: 487118649}
   terrainScrollManager: {fileID: 1073473418}
