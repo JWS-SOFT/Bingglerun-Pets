@@ -478,21 +478,48 @@ public class TitleUIController : MonoBehaviour
     /// </summary>
     private async void OnClickDeleteAccount()
     {
-        // 확인 메시지 표시 (실제 UI는 구현 필요)
-        if (!Confirm("정말 계정을 삭제하시겠습니까?"))
+        var firebase = FirebaseManager.Instance;
+        string confirmMessage;
+        
+        // 계정 유형에 따라 다른 확인 메시지 표시
+        if (firebase.CurrentLoginType == FirebaseManager.LoginType.Guest)
+        {
+            confirmMessage = "정말 게스트 계정을 삭제하시겠습니까?\n계정과 모든 게임 데이터가 영구적으로 삭제됩니다.";
+        }
+        else if (firebase.CurrentLoginType == FirebaseManager.LoginType.Email)
+        {
+            confirmMessage = "정말 계정을 삭제하시겠습니까?\n계정은 삭제되지만 게임 데이터는 보존됩니다.";
+        }
+        else
+        {
+            confirmMessage = "정말 계정을 삭제하시겠습니까?";
+        }
+        
+        // 확인 메시지 표시
+        if (!Confirm(confirmMessage))
             return;
         
         // 로딩 UI 표시
         ShowLoginSuccessUI(false);
         ShowLoadingUI(true, "Deleting account...");
         
-        var firebase = FirebaseManager.Instance;
         bool success = await firebase.DeleteUserAccountAsync();
         
         if (success)
         {
             Debug.Log("[TitleUI] 계정 삭제 성공");
             ShowLoadingUI(false);
+            
+            // 게스트 계정인 경우는 모든 데이터가 삭제되었다고 안내
+            if (firebase.CurrentLoginType == FirebaseManager.LoginType.Guest)
+            {
+                Alert("계정과 모든 게임 데이터가 삭제되었습니다.");
+            }
+            else
+            {
+                Alert("계정이 삭제되었습니다.");
+            }
+            
             ShowLoginButtons(true);
         }
         else
@@ -500,6 +527,7 @@ public class TitleUIController : MonoBehaviour
             // 삭제 실패 처리
             Debug.LogWarning("[TitleUI] 계정 삭제 실패");
             ShowLoadingUI(false);
+            Alert("계정 삭제 중 오류가 발생했습니다.");
             ShowLoginSuccessUI(true);
         }
     }
@@ -517,6 +545,21 @@ public class TitleUIController : MonoBehaviour
         // 실제 게임에서는 항상 true 반환 (UI는 별도 구현 필요)
         Debug.Log($"[TitleUI] Confirm dialog: {message}");
         return true;
+#endif
+    }
+    
+    /// <summary>
+    /// 알림 메시지 표시 (임시 구현)
+    /// </summary>
+    private void Alert(string message)
+    {
+        // 실제로는 UI 알림창을 표시해야 하지만,
+        // 임시로 에디터용 대화상자 사용
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.DisplayDialog("알림", message, "확인");
+#else
+        // 실제 게임에서는 별도 UI 구현 필요
+        Debug.Log($"[TitleUI] Alert: {message}");
 #endif
     }
     
