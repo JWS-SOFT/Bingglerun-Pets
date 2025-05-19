@@ -29,11 +29,9 @@ public class GameStateMachine : MonoBehaviour
                 break;
 
             case GameState.Title:
-                // 타이틀 상태일 때 계정 정보 확인 및 오디오 설정 동기화
-                SyncAudioSettingsBasedOnAccount();
+                // 타이틀 상태일 때 계정 정보 확인 및 오디오 설정 동기화 후 BGM 재생
+                SyncAudioSettingsBasedOnAccount(BGMType.Title);
                 UIManager.Instance.ShowTitleUI();
-                // 타이틀 BGM 재생
-                SoundEvents.OnPlayBGM?.Invoke(BGMType.Title);
                 break;
 
             case GameState.Lobby:
@@ -79,8 +77,10 @@ public class GameStateMachine : MonoBehaviour
     }
     
     // 계정 정보에 따라 오디오 설정을 동기화하는 메서드
-    private async void SyncAudioSettingsBasedOnAccount()
+    private async void SyncAudioSettingsBasedOnAccount(BGMType bgmType = BGMType.Title)
     {
+        bool settingsApplied = false;
+        
         // 인증된 사용자가 있는지 확인
         if (FirebaseManager.Instance.IsAuthenticated)
         {
@@ -91,6 +91,7 @@ public class GameStateMachine : MonoBehaviour
             {
                 // 플레이어 데이터에서 오디오 설정 적용
                 SyncAudioWithUserData(PlayerDataManager.Instance.CurrentPlayerData);
+                settingsApplied = true;
             }
             else
             {
@@ -101,11 +102,13 @@ public class GameStateMachine : MonoBehaviour
                 if (success && PlayerDataManager.Instance.CurrentPlayerData != null)
                 {
                     SyncAudioWithUserData(PlayerDataManager.Instance.CurrentPlayerData);
+                    settingsApplied = true;
                 }
                 else
                 {
                     // 데이터 로드 실패 시 기본 설정 적용
                     ApplyDefaultAudioSettings();
+                    settingsApplied = true;
                 }
             }
         }
@@ -113,6 +116,14 @@ public class GameStateMachine : MonoBehaviour
         {
             Debug.Log("[GameStateMachine] 계정 정보가 없습니다. 기본 오디오 설정을 적용합니다.");
             ApplyDefaultAudioSettings();
+            settingsApplied = true;
+        }
+        
+        // 오디오 설정 적용 후 BGM 재생
+        if (settingsApplied)
+        {
+            Debug.Log($"[GameStateMachine] 오디오 설정 적용 완료. BGM 재생: {bgmType}");
+            SoundEvents.OnPlayBGM?.Invoke(bgmType);
         }
     }
 
