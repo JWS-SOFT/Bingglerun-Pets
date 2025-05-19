@@ -20,14 +20,12 @@ public class StairManager : MonoBehaviour
     private List<Stair> stairs = new List<Stair>();
     private int currentIndex = -1;
     private int xIndex = 0; // -2 ~ 2 사이 유지 (현재 x 위치를 인덱스로 관리)
-    private Vector3 lastStairPosition = Vector3.zero;
 
     private void Start()
     {
         stairTotalCount = PlayerManager.GetStageStair;
         GenerateInitialStairs();
         SetPlayerOnFirstStair();
-        PlayerManager.Instance.SetTerrain(lastStairPosition);
     }
 
     private void GenerateInitialStairs()
@@ -51,7 +49,6 @@ public class StairManager : MonoBehaviour
             currentPos.y += stairHeight;
 
             GameObject stair = Instantiate(stairPrefab, currentPos, Quaternion.identity);
-            if (i == stairTotalCount - 1) lastStairPosition = currentPos;
             Stair stairScript = stair.GetComponent<Stair>();
             if (stairScript != null)
             {

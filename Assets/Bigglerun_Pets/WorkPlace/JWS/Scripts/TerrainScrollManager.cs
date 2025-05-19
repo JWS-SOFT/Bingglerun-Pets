@@ -8,9 +8,6 @@ public class TerrainScrollManager : MonoBehaviour
     [SerializeField] private int poolSize = 50;
     [SerializeField] private float scrollSpeed = 5f;
 
-    [Header("플레이어 설정")]
-    [SerializeField] private GameObject playerInstance;
-
     [Header("장애물 설정")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
     [SerializeField] private float obstacleHeightOffset = 1.45f;
@@ -31,7 +28,7 @@ public class TerrainScrollManager : MonoBehaviour
 
     public void StartTest(Vector3 lastTerranPosition)
     {
-        if (terrainPrefab == null || playerInstance == null)
+        if (terrainPrefab == null || PlayerManager.Player_Transform.gameObject == null)
         {
             Debug.LogError("지형 프리팹 또는 플레이어가 비어 있습니다!");
             return;
@@ -55,8 +52,8 @@ public class TerrainScrollManager : MonoBehaviour
             // 장애물 생성 (주석 처리된 상태면 유지)
             // SpawnObstacleOnTerrain(obj, terrainIndex);
 
-            // if (i == 0)
-            //     SpawnPlayerOnTerrain(obj);
+            if (i == 0)
+                SpawnPlayerOnTerrain(obj);
 
             terrainIndex++;
         }
@@ -154,6 +151,7 @@ public class TerrainScrollManager : MonoBehaviour
 
     private void SpawnPlayerOnTerrain(GameObject terrain)
     {
+        GameObject playerInstance = PlayerManager.Player_Transform.gameObject;
         float terrainTopY = 0f;
         if (terrain.TryGetComponent<SpriteRenderer>(out var terrainSR))
             terrainTopY = terrain.transform.position.y + terrainSR.bounds.extents.y;
