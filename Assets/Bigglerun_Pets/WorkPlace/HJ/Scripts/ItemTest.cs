@@ -142,6 +142,7 @@ public class ItemTest : MonoBehaviour
 
         //보유 아이템 추가 (초기 인벤토리 상태 설정)
         ItemManager.Instance.AddUsableItems("item001", 2);
+        ItemManager.Instance.AddUsableItems("item002", 2);
         ItemManager.Instance.AddUsableItems("item003", 5);
     }
 }

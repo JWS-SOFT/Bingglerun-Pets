@@ -246,11 +246,13 @@ public class PlayerManager : MonoBehaviour
     public void AddLife(int amount = 1)
     {
         currentLife += amount;
+        Debug.Log($"스타트 목숨: {currentLife}");
     }
 
     //스킬 횟수 추가
     public void AddSkillCount(int amount = 1)
     {
         currentSkillCount += amount;
+        Debug.Log($"스타트 스킬 횟수: {currentSkillCount}");
     }
 }
