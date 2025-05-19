@@ -37,7 +37,7 @@ public class GameStateMachine : MonoBehaviour
             case GameState.Lobby:
                 UIManager.Instance.ShowLobbyUI();
                 // 로비 BGM 재생
-                SoundEvents.OnPlayBGM?.Invoke(BGMType.Lobby);
+                PlayBGM(BGMType.Lobby);
                 break;
 
             case GameState.ModeSelect:
@@ -79,36 +79,62 @@ public class GameStateMachine : MonoBehaviour
     // 계정 정보에 따라 오디오 설정을 동기화하는 메서드
     private async void SyncAudioSettingsBasedOnAccount(BGMType bgmType = BGMType.Title)
     {
-        bool settingsApplied = false;
+        Debug.Log($"[GameStateMachine] 오디오 설정 동기화 시작. BGM 타입: {bgmType}");
+        
+        // AudioManager 존재 여부 확인
+        if (AudioManager.Instance == null)
+        {
+            Debug.LogError("[GameStateMachine] AudioManager.Instance가 null입니다. 오디오 설정을 적용할 수 없습니다.");
+            return;
+        }
+
+        // FirebaseManager 존재 여부 확인
+        if (FirebaseManager.Instance == null)
+        {
+            Debug.LogError("[GameStateMachine] FirebaseManager.Instance가 null입니다. 기본 오디오 설정을 적용합니다.");
+            ApplyDefaultAudioSettings();
+            PlayBGM(bgmType);
+            return;
+        }
         
         // 인증된 사용자가 있는지 확인
         if (FirebaseManager.Instance.IsAuthenticated)
         {
             Debug.Log("[GameStateMachine] 계정 정보가 있습니다. 오디오 설정을 동기화합니다.");
             
+            // PlayerDataManager 존재 여부 확인
+            if (PlayerDataManager.Instance == null)
+            {
+                Debug.LogError("[GameStateMachine] PlayerDataManager.Instance가 null입니다. 기본 오디오 설정을 적용합니다.");
+                ApplyDefaultAudioSettings();
+                PlayBGM(bgmType);
+                return;
+            }
+            
             // 플레이어 데이터가 로드되었는지 확인
             if (PlayerDataManager.Instance.IsDataLoaded && PlayerDataManager.Instance.CurrentPlayerData != null)
             {
                 // 플레이어 데이터에서 오디오 설정 적용
                 SyncAudioWithUserData(PlayerDataManager.Instance.CurrentPlayerData);
-                settingsApplied = true;
             }
             else
             {
                 // 데이터 로드 후 오디오 설정 적용
                 string userId = FirebaseManager.Instance.UserId;
+                Debug.Log($"[GameStateMachine] 플레이어 데이터 로드 시도. 유저 ID: {userId}");
+                
                 bool success = await PlayerDataManager.Instance.LoadPlayerDataAsync(userId);
                 
                 if (success && PlayerDataManager.Instance.CurrentPlayerData != null)
                 {
+                    Debug.Log("[GameStateMachine] 플레이어 데이터 로드 성공. 오디오 설정 적용.");
                     SyncAudioWithUserData(PlayerDataManager.Instance.CurrentPlayerData);
-                    settingsApplied = true;
                 }
                 else
                 {
                     // 데이터 로드 실패 시 기본 설정 적용
+                    Debug.LogWarning("[GameStateMachine] 플레이어 데이터 로드 실패. 기본 설정 적용.");
                     ApplyDefaultAudioSettings();
-                    settingsApplied = true;
                 }
             }
         }
@@ -116,20 +142,44 @@ public class GameStateMachine : MonoBehaviour
         {
             Debug.Log("[GameStateMachine] 계정 정보가 없습니다. 기본 오디오 설정을 적용합니다.");
             ApplyDefaultAudioSettings();
-            settingsApplied = true;
         }
         
-        // 오디오 설정 적용 후 BGM 재생
-        if (settingsApplied)
+        // 오디오 설정 적용 완료 후 BGM 재생 (계정 여부와 상관없이 항상 재생)
+        Debug.Log($"[GameStateMachine] 오디오 설정 적용 완료. BGM 재생: {bgmType}");
+        PlayBGM(bgmType);
+    }
+
+    // BGM 재생 메서드 - SoundEvents.OnPlayBGM 또는 직접 AudioManager 호출
+    private void PlayBGM(BGMType bgmType)
+    {
+        if (AudioManager.Instance == null)
         {
-            Debug.Log($"[GameStateMachine] 오디오 설정 적용 완료. BGM 재생: {bgmType}");
-            SoundEvents.OnPlayBGM?.Invoke(bgmType);
+            Debug.LogError("[GameStateMachine] AudioManager.Instance가 null입니다. BGM을 재생할 수 없습니다.");
+            return;
+        }
+
+        // SoundEvents.OnPlayBGM이 null이 아닌지 확인
+        if (SoundEvents.OnPlayBGM != null)
+        {
+            SoundEvents.OnPlayBGM.Invoke(bgmType);
+        }
+        else
+        {
+            Debug.LogWarning("[GameStateMachine] SoundEvents.OnPlayBGM이 null입니다. 직접 AudioManager.PlayBGM을 호출합니다.");
+            // 직접 AudioManager 호출
+            AudioManager.Instance.PlayBGM(bgmType);
         }
     }
 
     // 사용자 데이터로 오디오 설정 동기화
     private void SyncAudioWithUserData(PlayerData playerData)
     {
+        if (AudioManager.Instance == null)
+        {
+            Debug.LogError("[GameStateMachine] AudioManager.Instance가 null입니다. 오디오 설정을 적용할 수 없습니다.");
+            return;
+        }
+
         if (playerData.volumeList != null && playerData.volumeList.Count >= 3)
         {
             // 볼륨 리스트: [0]=마스터, [1]=BGM, [2]=SFX
@@ -152,6 +202,12 @@ public class GameStateMachine : MonoBehaviour
     // 기본 오디오 설정 적용
     private void ApplyDefaultAudioSettings()
     {
+        if (AudioManager.Instance == null)
+        {
+            Debug.LogError("[GameStateMachine] AudioManager.Instance가 null입니다. 기본 오디오 설정을 적용할 수 없습니다.");
+            return;
+        }
+
         // 기본 볼륨 값
         float defaultVolume = 1.0f;
         
