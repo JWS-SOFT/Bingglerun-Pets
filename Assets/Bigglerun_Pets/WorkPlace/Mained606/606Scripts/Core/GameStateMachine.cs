@@ -32,10 +32,14 @@ public class GameStateMachine : MonoBehaviour
                 // 타이틀 상태일 때 계정 정보 확인 및 오디오 설정 동기화
                 SyncAudioSettingsBasedOnAccount();
                 UIManager.Instance.ShowTitleUI();
+                // 타이틀 BGM 재생
+                SoundEvents.OnPlayBGM?.Invoke(BGMType.Title);
                 break;
 
             case GameState.Lobby:
                 UIManager.Instance.ShowLobbyUI();
+                // 로비 BGM 재생
+                SoundEvents.OnPlayBGM?.Invoke(BGMType.Lobby);
                 break;
 
             case GameState.ModeSelect:
