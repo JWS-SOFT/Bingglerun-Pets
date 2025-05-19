@@ -2605,7 +2605,7 @@ MonoBehaviour:
   skillManager: {fileID: 1339467147}
   stairManager: {fileID: 487118649}
   stageLevel: 1
-  stairBaseCount: 1
+  stairBaseCount: 20
   terrainScrollManager: {fileID: 1073473418}
   actionButton:
   - {fileID: 518272088}
