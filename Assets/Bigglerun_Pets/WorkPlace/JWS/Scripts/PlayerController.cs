@@ -306,7 +306,7 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
-        //계단의 SpriteRenderer 높이 사용
+        //계단의 SpriteRenderer 높이
         GameObject stair = stairManager.GetStairObject(currentStairIndex);
         float stairTopY = stair.transform.position.y + stair.GetComponent<SpriteRenderer>().bounds.size.y / 2f;
 
@@ -334,7 +334,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        yield return StartCoroutine(Jump(start, fakeTarget));           //갔다가
+        yield return StartCoroutine(Jump(start, fakeTarget));           //점프했다가
         yield return StartCoroutine(Jump(fakeTarget, returnTarget));    //돌아오기
 
         transform.position = returnTarget;
