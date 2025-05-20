@@ -3846,7 +3846,7 @@ PrefabInstance:
       objectReference: {fileID: 2172845059379276663}
     - target: {fileID: 1498357626162031296, guid: 3e9be895a5f1a5345aeba80d3389d75e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: TestGameScene01
+      value: CompetitiveGameScene01
       objectReference: {fileID: 0}
     - target: {fileID: 2492614059118650568, guid: 3e9be895a5f1a5345aeba80d3389d75e, type: 3}
       propertyPath: m_AnchorMax.y

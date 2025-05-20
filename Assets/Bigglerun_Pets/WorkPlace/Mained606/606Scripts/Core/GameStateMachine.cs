@@ -51,7 +51,31 @@ public class GameStateMachine : MonoBehaviour
             //     break;
 
             case GameState.StoryStageSelect:
-                UIManager.Instance.ShowStoryStageSelectUI();
+                // 스테이지 선택 진입 시 최신 플레이어 데이터 로드
+                if (FirebaseManager.Instance != null && FirebaseManager.Instance.IsAuthenticated && PlayerDataManager.Instance != null)
+                {
+                    Debug.Log("[GameStateMachine] 스테이지 선택 씬 진입 - 최신 데이터 로드 시작");
+                    string userId = FirebaseManager.Instance.UserId;
+
+                    // 데이터 로드 완료 이벤트를 일회성으로 구독
+                    System.Action dataLoadedHandler = null;
+                    dataLoadedHandler = () => {
+                        Debug.Log("[GameStateMachine] 플레이어 데이터 로드 완료 - UI 초기화 시작");
+                        UIManager.Instance.ShowStoryStageSelectUI();
+                        
+                        // 이벤트 구독 해제
+                        PlayerDataManager.Instance.OnDataLoaded -= dataLoadedHandler;
+                    };
+                    
+                    // 이벤트 구독 및 데이터 로드 시작
+                    PlayerDataManager.Instance.OnDataLoaded += dataLoadedHandler;
+                    _ = PlayerDataManager.Instance.LoadPlayerDataAsync(userId);
+                }
+                else
+                {
+                    // Firebase 인증이 없는 경우 기본 UI만 표시
+                    UIManager.Instance.ShowStoryStageSelectUI();
+                }
                 break;
 
             case GameState.CompetitiveSetup:

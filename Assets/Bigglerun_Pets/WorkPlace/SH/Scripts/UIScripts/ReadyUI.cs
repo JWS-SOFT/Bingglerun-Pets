@@ -17,6 +17,18 @@ public class ReadyUI : MonoBehaviour
             itemToggles[i].onValueChanged.AddListener((isOn) => OnToggleChanged(index, isOn));
         }
     }
+    
+    //활성화 될 때 게임 스테이트 변경
+    private void OnEnable()
+    {
+        GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
+    }
+
+    //비활성화 될 때 게임 스테이트 변경
+    private void OnDisable()
+    {
+        GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+    }
 
     private void OnToggleChanged(int changedIndex, bool isOn)
     {

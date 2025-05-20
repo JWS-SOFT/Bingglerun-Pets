@@ -146,42 +146,105 @@ public class StageButtonUI : MonoBehaviour
     {
         Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 시작");
         
-        if (PlayerDataManager.Instance == null || !PlayerDataManager.Instance.IsDataLoaded)
+        // PlayerDataManager 및 데이터 로드 상태 확인
+        if (PlayerDataManager.Instance == null)
         {
-            Debug.LogWarning($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 실패: PlayerDataManager가 초기화되지 않았거나 데이터가 로드되지 않음");
+            Debug.LogError($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 실패: PlayerDataManager.Instance가 null입니다.");
+            isUnlocked = stageId == "1"; // 첫 스테이지는 기본 해금
+            stars = 0;
+            highScore = 0;
+            UpdateUI();
             return;
         }
             
-        StageData stageData = PlayerDataManager.Instance.GetStageData(stageId);
-        
-        if (stageData != null)
+        if (!PlayerDataManager.Instance.IsDataLoaded)
         {
-            isUnlocked = stageData.isUnlocked;
-            stars = stageData.stars;
-            highScore = stageData.highScore;
-        }
-        else if (stageId == "1") // 첫 스테이지는 기본적으로 해금
-        {
-            isUnlocked = true;
+            Debug.LogWarning($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 실패: 플레이어 데이터가 로드되지 않았습니다.");
+            isUnlocked = stageId == "1"; // 첫 스테이지는 기본 해금
             stars = 0;
             highScore = 0;
+            UpdateUI();
+            return;
         }
-        else
+        
+        try
         {
-            // 이전 스테이지가 클리어되었으면 현재 스테이지 해금
-            int prevStageNum = int.Parse(stageId) - 1;
-            StageData prevStageData = PlayerDataManager.Instance.GetStageData(prevStageNum.ToString());
+            // 스테이지 데이터 Dictionary 확인
+            if (PlayerDataManager.Instance.CurrentPlayerData.storyStages == null)
+            {
+                Debug.LogWarning($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 실패: storyStages Dictionary가 null입니다.");
+                
+                // Dictionary 재초기화 시도
+                if (PlayerDataManager.Instance.CurrentPlayerData.storyStagesList != null && 
+                    PlayerDataManager.Instance.CurrentPlayerData.storyStagesList.Count > 0)
+                {
+                    Debug.Log($"[StageButtonUI] storyStages Dictionary 재초기화 시도");
+                    PlayerDataManager.Instance.CurrentPlayerData.InitializeStagesFromList();
+                }
+                else
+                {
+                    Debug.LogWarning($"[StageButtonUI] 스테이지 리스트도 비어있어 재초기화할 수 없습니다.");
+                }
+            }
+                
+            StageData stageData = PlayerDataManager.Instance.GetStageData(stageId);
             
-            if (prevStageData != null && prevStageData.stars > 0)
+            Debug.Log($"[StageButtonUI] 스테이지 {stageId} GetStageData 결과: {(stageData != null ? "데이터 있음" : "데이터 없음")}");
+            
+            if (stageData != null)
+            {
+                isUnlocked = stageData.isUnlocked;
+                stars = stageData.stars;
+                highScore = stageData.highScore;
+                Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 완료 - 잠금 상태: {isUnlocked}, 별 개수: {stars}, 최고점수: {highScore}");
+            }
+            else if (stageId == "1") // 첫 스테이지는 기본적으로 해금
             {
                 isUnlocked = true;
-                PlayerDataManager.Instance.UnlockStage(stageId);
+                stars = 0;
+                highScore = 0;
+                Debug.Log($"[StageButtonUI] 첫 번째 스테이지는 기본적으로 해금 상태로 설정합니다.");
+                
+                // 스테이지 1 데이터 생성 및 저장
+                if (PlayerDataManager.Instance.CurrentPlayerData.storyStages != null)
+                {
+                    if (!PlayerDataManager.Instance.CurrentPlayerData.storyStages.ContainsKey("1"))
+                    {
+                        Debug.Log($"[StageButtonUI] 스테이지 1 데이터가 없어 생성합니다.");
+                        PlayerDataManager.Instance.UnlockStage("1");
+                    }
+                }
             }
             else
             {
-                isUnlocked = false;
+                // 이전 스테이지가 클리어되었으면 현재 스테이지 해금
+                int prevStageNum = int.Parse(stageId) - 1;
+                StageData prevStageData = PlayerDataManager.Instance.GetStageData(prevStageNum.ToString());
+                
+                Debug.Log($"[StageButtonUI] 이전 스테이지 {prevStageNum} 데이터: {(prevStageData != null ? $"별 {prevStageData.stars}개" : "데이터 없음")}");
+                
+                if (prevStageData != null && prevStageData.stars > 0)
+                {
+                    isUnlocked = true;
+                    Debug.Log($"[StageButtonUI] 이전 스테이지가 클리어되어({prevStageData.stars}★) 스테이지 {stageId}를 해금합니다.");
+                    PlayerDataManager.Instance.UnlockStage(stageId);
+                }
+                else
+                {
+                    isUnlocked = false;
+                    Debug.Log($"[StageButtonUI] 이전 스테이지가 클리어되지 않아 스테이지 {stageId}는 잠금 상태입니다.");
+                }
+                
+                stars = 0;
+                highScore = 0;
             }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[StageButtonUI] 스테이지 {stageId} 데이터 로드 중 오류 발생: {ex.Message}");
             
+            // 오류 발생 시 기본값 설정
+            isUnlocked = stageId == "1"; // 첫 스테이지는 기본 해금
             stars = 0;
             highScore = 0;
         }
@@ -224,10 +287,19 @@ public class StageButtonUI : MonoBehaviour
     /// </summary>
     public void RefreshData()
     {
+        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 시작");
+        
+        // 데이터가 로드되지 않았거나 로딩 중이면 무시
+        if (PlayerDataManager.Instance == null || !PlayerDataManager.Instance.IsDataLoaded || PlayerDataManager.Instance.IsLoading)
+        {
+            Debug.LogWarning($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 실패: 데이터가 로드되지 않았거나 로딩 중입니다.");
+            return;
+        }
+        
         // 파이어베이스에서 최신 데이터 로드
         LoadStageData();
         
         // UI가 제대로 갱신되었는지 확인 로그
-        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 - 별 개수: {stars}, 잠금 상태: {isUnlocked}");
+        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 완료 - 별 개수: {stars}, 잠금 상태: {isUnlocked}");
     }
 } 

@@ -97,6 +97,25 @@ public class FirebaseDatabase : MonoBehaviour
                 // JSON을 PlayerData 객체로 변환
                 PlayerData playerData = JsonUtility.FromJson<PlayerData>(json);
                 
+                // Dictionary 초기화
+                if (playerData != null)
+                {
+                    // 스테이지 데이터 Dictionary 초기화
+                    playerData.InitializeStagesFromList();
+                    
+                    // 아이템 데이터 Dictionary 초기화
+                    playerData.InitializeItemsFromList();
+                    
+                    // StageData의 additionalData Dictionary 초기화
+                    if (playerData.storyStages != null)
+                    {
+                        foreach (var stageData in playerData.storyStages.Values)
+                        {
+                            stageData.InitializeAdditionalDataFromList();
+                        }
+                    }
+                }
+                
                 Debug.Log($"[FirebaseDatabase] 유저 {userId}의 데이터를 로드했습니다.");
                 return playerData;
             }
@@ -118,7 +137,28 @@ public class FirebaseDatabase : MonoBehaviour
         if (mockDatabase.TryGetValue(userId, out string json))
         {
             Debug.Log($"[FirebaseDatabase] 테스트 데이터 로드: {userId}");
-            return JsonUtility.FromJson<PlayerData>(json);
+            PlayerData playerData = JsonUtility.FromJson<PlayerData>(json);
+            
+            // Dictionary 초기화
+            if (playerData != null)
+            {
+                // 스테이지 데이터 Dictionary 초기화
+                playerData.InitializeStagesFromList();
+                
+                // 아이템 데이터 Dictionary 초기화
+                playerData.InitializeItemsFromList();
+                
+                // StageData의 additionalData Dictionary 초기화
+                if (playerData.storyStages != null)
+                {
+                    foreach (var stageData in playerData.storyStages.Values)
+                    {
+                        stageData.InitializeAdditionalDataFromList();
+                    }
+                }
+            }
+            
+            return playerData;
         }
         
         Debug.Log($"[FirebaseDatabase] 테스트 데이터 없음: {userId}");
@@ -146,6 +186,19 @@ public class FirebaseDatabase : MonoBehaviour
         
         try
         {
+            // Dictionary를 직렬화 가능한 List로 변환
+            data.UpdateListFromDictionary();
+            data.UpdateItemsListFromDictionary();
+            
+            // StageData의 additionalData 업데이트
+            if (data.storyStages != null)
+            {
+                foreach (var stageData in data.storyStages.Values)
+                {
+                    stageData.UpdateAdditionalDataListFromDictionary();
+                }
+            }
+            
             // PlayerData 객체를 JSON으로 변환
             string json = JsonUtility.ToJson(data);
             
@@ -163,6 +216,19 @@ public class FirebaseDatabase : MonoBehaviour
 #else
         // 테스트용 더미 저장
         await Task.Delay(200); // 네트워크 지연 시뮬레이션
+        
+        // Dictionary를 직렬화 가능한 List로 변환
+        data.UpdateListFromDictionary();
+        data.UpdateItemsListFromDictionary();
+        
+        // StageData의 additionalData 업데이트
+        if (data.storyStages != null)
+        {
+            foreach (var stageData in data.storyStages.Values)
+            {
+                stageData.UpdateAdditionalDataListFromDictionary();
+            }
+        }
         
         string json = JsonUtility.ToJson(data);
         mockDatabase[userId] = json;

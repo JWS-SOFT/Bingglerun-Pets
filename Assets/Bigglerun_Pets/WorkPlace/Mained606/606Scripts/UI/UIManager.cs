@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using System.Linq; // LINQ 기능 사용을 위해 추가
+using System.Collections;
 
 /// <summary>
 /// UI 제어를 담당하는 매니저 (로비, 타이틀 등 상태별로 처리)
@@ -40,9 +43,41 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // 씬 로드 이벤트 구독
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         // 페이더 참조 설정
         if (fader == null)
             fader = FindObjectOfType<SceneFader>();
+    }
+
+    private void OnDestroy()
+    {
+        // 이벤트 구독 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // 씬 로드 이벤트 핸들러
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log($"[UIManager] 씬 전환 감지: {scene.name}");
+        
+        // 인게임 씬인 경우 StageSelectUI 참조 명시적으로 초기화
+        if (scene.name.Contains("GameScene"))
+        {
+            stageSelectUI = null;
+            stageSelectUIController = null;
+            Debug.Log("[UIManager] 인게임 씬 감지 - StageSelectUI 참조 초기화");
+        }
+        
+        // UI 초기화 호출
+        Invoke("UIInitialize", 0.2f);
+        
+        // 스테이지 선택 씬 + 게임 상태가 스테이지 셀렉트일 때만 특별 처리
+        if ((scene.name.Contains("StageSelect") || scene.name.Contains("StoryStage")) && IsStageSelectState())
+        {
+            StartCoroutine(DelayedStageSelectUISearch());
+        }
     }
 
     private void Start()
@@ -52,22 +87,33 @@ public class UIManager : MonoBehaviour
 
     private void UIInitialize()
     {
+        Debug.Log("[UIManager] UI 요소 초기화 시작");
+        
         // 캔버스 찾기
+        canvas = null; // 씬 전환 시 이전 참조 제거
         if (canvas == null)
         {
             Canvas[] canvases = FindObjectsOfType<Canvas>();
             foreach (Canvas c in canvases)
             {
-                if (c.gameObject.name.Contains("Canvas"))
+                if (c.gameObject.name.Contains("Canvas") && c.transform.root == c.transform)
                 {
                     canvas = c.transform;
                     Debug.Log("[UIManager] 캔버스 자동 찾기 성공: " + canvas.name);
                     break;
                 }
             }
+            
+            // 아직도 못 찾았으면 모든 캔버스 검사
+            if (canvas == null && canvases.Length > 0)
+            {
+                canvas = canvases[0].transform;
+                Debug.Log("[UIManager] 첫 번째 캔버스로 설정: " + canvas.name);
+            }
         }
 
-        // HUD 찾기
+        // HUD 찾기 (이전 참조 제거)
+        hud = null;
         if (hud == null)
         {
             hud = GameObject.Find("HUD")?.transform;
@@ -101,7 +147,8 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // popup 없을 경우 자동으로 찾기
+        // popup 없을 경우 자동으로 찾기 (이전 참조 제거)
+        popup = null;
         if (popup == null)
         {
             popup = GameObject.Find("PopupUI")?.transform;
@@ -124,7 +171,8 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // UIController 찾기
+        // UIController 찾기 (이전 참조 제거)
+        uiController = null;
         if (uiController == null)
         {
             uiController = FindObjectOfType<UIController>();
@@ -132,39 +180,68 @@ public class UIManager : MonoBehaviour
             {
                 Debug.Log("[UIManager] UIController 자동 찾기 성공");
             }
+            else
+            {
+                // 설정된 UI 요소들을 확인
+                if (canvas != null)
+                {
+                    // Canvas의 자식에서 UIController를 찾음
+                    UIController[] controllers = canvas.GetComponentsInChildren<UIController>(true);
+                    if (controllers.Length > 0)
+                    {
+                        uiController = controllers[0];
+                        Debug.Log("[UIManager] Canvas의 자식에서 UIController 찾음: " + uiController.name);
+                    }
+                    else
+                    {
+                        // LobbyUI나 UIController가 포함된 이름의 오브젝트 찾기
+                        Transform[] allTransforms = FindObjectsOfType<Transform>();
+                        foreach (Transform t in allTransforms)
+                        {
+                            if (t.name.Contains("LobbyUI") || t.name.Contains("UIController"))
+                            {
+                                UIController controller = t.GetComponent<UIController>();
+                                if (controller != null)
+                                {
+                                    uiController = controller;
+                                    Debug.Log("[UIManager] 이름으로 UIController 찾음: " + uiController.name);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (uiController == null)
+                {
+                    Debug.LogWarning("[UIManager] UIController를 찾을 수 없습니다.");
+                }
+            }
         }
 
-        // StageSelectUI 찾기
-        if (stageSelectUI == null)
+        // StageSelectUI 찾기 - 항상 이전 참조 초기화
+        stageSelectUI = null;
+        stageSelectUIController = null;
+        
+        // 게임 스테이트가 스테이지 셀렉트일 때만 검색
+        if (IsStageSelectState())
         {
-            stageSelectUI = GameObject.Find("StageSelectUI");
-            if (stageSelectUI == null)
+            // 스테이지 선택 UI 검색
+            if (GameObject.Find("StageSelectUI") != null)
             {
-                // 이름에 "StageSelect"가 포함된 오브젝트 찾기
-                GameObject[] allObjects = FindObjectsOfType<GameObject>();
-                foreach (GameObject obj in allObjects)
+                stageSelectUI = GameObject.Find("StageSelectUI");
+                Debug.Log("[UIManager] StageSelectUI 자동 찾기 성공: " + stageSelectUI.name);
+                
+                // StageSelectUIController 찾기
+                stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
+                if (stageSelectUIController != null)
                 {
-                    if (obj.name.Contains("StageSelect"))
-                    {
-                        stageSelectUI = obj;
-                        Debug.Log("[UIManager] StageSelectUI 자동 찾기 성공: " + stageSelectUI.name);
-                        break;
-                    }
+                    Debug.Log("[UIManager] StageSelectUIController 자동 찾기 성공");
                 }
             }
             else
             {
-                Debug.Log("[UIManager] StageSelectUI 자동 찾기 성공: " + stageSelectUI.name);
-            }
-        }
-
-        // StageSelectUIController 찾기
-        if (stageSelectUIController == null && stageSelectUI != null)
-        {
-            stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
-            if (stageSelectUIController != null)
-            {
-                Debug.Log("[UIManager] StageSelectUIController 자동 찾기 성공");
+                Debug.LogWarning("[UIManager] StageSelectUI를 찾지 못했습니다. 필요할 때 다시 시도합니다.");
             }
         }
 
@@ -400,32 +477,19 @@ public class UIManager : MonoBehaviour
         // 다른 UI 숨기기
         HideAll();
         
-        // 스테이지 선택 UI 표시
-        if (stageSelectUI != null)
+        // 이미 찾은 참조가 유효한 경우 바로 표시
+        if (stageSelectUI != null && stageSelectUI.scene.isLoaded)
         {
             stageSelectUI.SetActive(true);
-            
-            // 데이터 갱신
             if (stageSelectUIController != null)
             {
                 stageSelectUIController.RefreshAllStageButtons();
             }
-            else
-            {
-                stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
-                if (stageSelectUIController != null)
-                {
-                    stageSelectUIController.RefreshAllStageButtons();
-                }
-                else
-                {
-                    Debug.LogWarning("[UIManager] StageSelectUIController를 찾을 수 없습니다.");
-                }
-            }
         }
         else
         {
-            Debug.LogError("[UIManager] StageSelectUI가 설정되지 않았습니다.");
+            // 지연 실행으로 UI 찾기
+            StartCoroutine(DelayedStageSelectUISearch());
         }
     }
 
@@ -505,5 +569,134 @@ public class UIManager : MonoBehaviour
             // 기본적으로 비활성화
             loadingObj.SetActive(false);
         }
+    }
+
+    // 간결한 지연 검색 코루틴
+    private IEnumerator DelayedStageSelectUISearch()
+    {
+        // 씬 전환이 완료될 때까지 잠시 대기
+        yield return new WaitForSeconds(0.3f);
+        
+        // 현재 씬 이름 확인 - 인게임 씬에서 잘못 호출되는 경우 방지
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (!(currentScene.name.Contains("StageSelect") || currentScene.name.Contains("StoryStage")))
+        {
+            Debug.LogWarning($"[UIManager] DelayedStageSelectUISearch가 잘못된 씬({currentScene.name})에서 호출되었습니다. 코루틴을 중단합니다.");
+            yield break;
+        }
+        
+        // 데이터 로딩 여부 확인 및 대기
+        bool waitingForData = false;
+        
+        if (PlayerDataManager.Instance != null)
+        {
+            if (PlayerDataManager.Instance.IsLoading)
+            {
+                Debug.Log("[UIManager] 플레이어 데이터 로딩 중... 대기합니다.");
+                waitingForData = true;
+                
+                // 데이터 로드 완료 이벤트를 일회성으로 구독
+                System.Action dataLoadedHandler = null;
+                dataLoadedHandler = () => {
+                    Debug.Log("[UIManager] 플레이어 데이터 로드 완료 이벤트 수신");
+                    waitingForData = false;
+                    PlayerDataManager.Instance.OnDataLoaded -= dataLoadedHandler;
+                };
+                
+                PlayerDataManager.Instance.OnDataLoaded += dataLoadedHandler;
+                
+                // 최대 3초 동안만 대기
+                float waitTime = 0f;
+                while (waitingForData && waitTime < 3f)
+                {
+                    yield return new WaitForSeconds(0.1f);
+                    waitTime += 0.1f;
+                }
+                
+                Debug.Log($"[UIManager] 플레이어 데이터 로딩 대기 완료. 총 대기 시간: {waitTime}초");
+            }
+            else if (!PlayerDataManager.Instance.IsDataLoaded)
+            {
+                Debug.LogWarning("[UIManager] 플레이어 데이터가 로드되지 않았습니다. UI는 기본 상태로 초기화됩니다.");
+            }
+        }
+        
+        if (FindStageSelectUI())
+        {
+            Debug.Log($"[UIManager] StageSelectUI 찾음: {stageSelectUI.name}");
+            
+            // StageSelectUIController 찾기
+            stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
+            if (stageSelectUIController == null)
+            {
+                stageSelectUIController = stageSelectUI.GetComponentInChildren<StageSelectUIController>(true);
+            }
+            
+            // UI 표시
+            stageSelectUI.SetActive(true);
+            
+            // 데이터 갱신
+            if (stageSelectUIController != null)
+            {
+                Debug.Log("[UIManager] 스테이지 UI 데이터 갱신 (RefreshAllStageButtons 호출)");
+                stageSelectUIController.RefreshAllStageButtons();
+            }
+            else
+            {
+                Debug.LogWarning("[UIManager] StageSelectUIController를 찾을 수 없습니다.");
+            }
+        }
+        else
+        {
+            // 디버깅 정보 제공
+            GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
+            string rootNames = string.Join(", ", roots.Select(r => r.name));
+            Debug.LogError($"[UIManager] StageSelectUI를 찾을 수 없습니다. 씬({SceneManager.GetActiveScene().name})에 있는 루트 오브젝트: {rootNames}");
+        }
+    }
+    
+    // 효율적인 StageSelectUI 검색
+    private bool FindStageSelectUI()
+    {
+        // 기존 참조 제거
+        stageSelectUI = null;
+        
+        // 1. 직접 이름으로 찾기
+        stageSelectUI = GameObject.Find("StageSelectUI");
+        if (stageSelectUI != null) return true;
+        
+        // 2. 비활성화된 오브젝트도 검색 (Resources.FindObjectsOfTypeAll)
+        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        foreach (GameObject obj in allObjects)
+        {
+            // 씬에 속한 오브젝트인지 확인
+            if (obj.scene.isLoaded && (obj.name == "StageSelectUI" || obj.name.Contains("StageSelect")))
+            {
+                stageSelectUI = obj;
+                return true;
+            }
+        }
+        
+        // 3. 컨트롤러로 찾기
+        StageSelectUIController[] controllers = FindObjectsOfType<StageSelectUIController>(true);
+        if (controllers.Length > 0)
+        {
+            stageSelectUI = controllers[0].gameObject;
+            stageSelectUIController = controllers[0];
+            return true;
+        }
+        
+        return false;
+    }
+
+    // 게임 스테이트가 스테이지 셀렉트 상태인지 확인
+    private bool IsStageSelectState()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.StateMachine != null)
+        {
+            // GameState가 StoryStageSelect인지 확인
+            return GameManager.Instance.StateMachine.CurrentState == GameState.StoryStageSelect;
+        }
+        return false;
     }
 }
