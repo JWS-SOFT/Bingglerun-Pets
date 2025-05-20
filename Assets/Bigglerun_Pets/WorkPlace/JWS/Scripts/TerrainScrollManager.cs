@@ -62,6 +62,7 @@ public class TerrainScrollManager : MonoBehaviour
     private void Update()
     {
         if (!PlayerManager.Instance.isGameStartReady) return;
+        if (PlayerManager.GetStageDistance <= terrainDistance) return;
         
         float delta = scrollSpeed * Time.deltaTime;
         terrainDistance += delta;
