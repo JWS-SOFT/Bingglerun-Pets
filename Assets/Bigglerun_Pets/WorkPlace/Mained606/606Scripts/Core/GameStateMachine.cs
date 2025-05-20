@@ -54,7 +54,6 @@ public class GameStateMachine : MonoBehaviour
 
             case GameState.InGame:
                 UIManager.Instance.HideAll();
-                GameManager.Instance.SceneFader.LoadScene("InGame");
                 break;
 
             case GameState.Result:
