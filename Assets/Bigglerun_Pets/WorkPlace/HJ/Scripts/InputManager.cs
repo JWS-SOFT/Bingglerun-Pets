@@ -49,7 +49,8 @@ public class InputManager : MonoBehaviour
         // 게임 상태가 InGame이 아니면 입력 처리를 하지 않음
         if (GameManager.Instance == null || 
             GameManager.Instance.StateMachine == null || 
-            GameManager.Instance.StateMachine.CurrentState != GameState.InGame)
+            GameManager.Instance.StateMachine.CurrentState != GameState.StoryInGame &&
+            GameManager.Instance.StateMachine.CurrentState != GameState.CompetitionInGame)
         {
             return;
         }
