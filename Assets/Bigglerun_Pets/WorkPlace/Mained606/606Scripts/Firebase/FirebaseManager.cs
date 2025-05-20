@@ -80,36 +80,8 @@ public class FirebaseManager : MonoBehaviour
                         // 갱신이 성공하면 계정이 유효함
                         if (auth.CurrentUser != null) // 갱신 후 사용자가 여전히 존재하는지 확인
                         {
-                            // 로그인 타입 확인
-                            bool refreshedLogin = false;
-                            
-                            // 익명 계정인 경우 - 새로 로그인하여 날짜 갱신
-                            if (auth.CurrentUser.IsAnonymous)
-                            {
-                                try
-                                {
-                                    Debug.Log("[FirebaseManager] 익명 계정 재로그인 시도 (날짜 갱신용)");
-                                    var result = await auth.SignInAnonymouslyAsync();
-                                    if (result != null && result.User != null)
-                                    {
-                                        UpdateUserInfo(result.User);
-                                        refreshedLogin = true;
-                                        Debug.Log("[FirebaseManager] 익명 계정 재로그인 성공 (날짜 갱신됨)");
-                                    }
-                                }
-                                catch (Exception innerEx)
-                                {
-                                    Debug.LogWarning($"[FirebaseManager] 익명 계정 재로그인 실패 (기존 세션 유지): {innerEx.Message}");
-                                }
-                            }
-                            
-                            // 재로그인이 실패하거나 다른 유형의 계정인 경우에는 기존 정보 사용
-                            if (!refreshedLogin)
-                            {
-                                UpdateUserInfo(auth.CurrentUser);
-                                Debug.Log($"[FirebaseManager] 기존 로그인 정보 발견 및 확인됨: {UserId}");
-                            }
-                            
+                            UpdateUserInfo(auth.CurrentUser);
+                            Debug.Log($"[FirebaseManager] 기존 로그인 정보 발견 및 확인됨: {UserId}");
                             return true;
                         }
                         else
