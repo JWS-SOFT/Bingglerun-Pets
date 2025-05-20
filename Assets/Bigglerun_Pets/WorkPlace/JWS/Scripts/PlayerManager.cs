@@ -157,6 +157,7 @@ public class PlayerManager : MonoBehaviour
     {
         Instance.currentPlayerCoin++;
         Instance.coinText.text = "Coin\n" + Instance.currentPlayerCoin;
+        ScoreManager.Instance.AddCoin(); // 추가
     }
 
     public static bool ActionTImerCheck()

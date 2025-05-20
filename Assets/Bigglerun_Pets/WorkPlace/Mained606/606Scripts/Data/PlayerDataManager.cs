@@ -499,6 +499,10 @@ public class PlayerDataManager : MonoBehaviour
         return stageData != null && stageData.isUnlocked;
     }
 
+    /// <summary>
+    /// 경쟁모드 최고점수 업데이트
+    /// </summary>
+    /// <param name="score"></param>
     public void UpdateCompetitiveBestScore(int score)
     {
         Debug.Log("UpdateScore");
@@ -510,6 +514,7 @@ public class PlayerDataManager : MonoBehaviour
         {
             CurrentPlayerData.competitiveBestScore = score;
         }
+        _ = SavePlayerDataAsync();
     }
     #endregion
 

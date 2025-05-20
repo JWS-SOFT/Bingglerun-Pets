@@ -9,6 +9,7 @@ public class ScoreManager : MonoBehaviour
     private int score;
     private int stepCount;           // 계단 수, 중복 계산 방지용
     private float horizontalDistance; // 이동 거리 누적값
+    private int coin;
 
     [Header("Score Settings")]
     public int scorePerStep = 5;     // 계단 한 층당 점수
@@ -31,6 +32,7 @@ public class ScoreManager : MonoBehaviour
         score = 0;
         stepCount = 0;
         horizontalDistance = 0f;
+        coin = 0;
     }
 
     // 계단 한 층 오를 때마다 호출
@@ -49,6 +51,11 @@ public class ScoreManager : MonoBehaviour
         score += earnedScore;
         horizontalDistance -= earnedScore / (float)scorePerMeter; // 이미 계산된 부분 제거
     }
+    
+    public void AddCoin()
+    {
+        coin++;
+    }
 
     public int GetScore()
     {
@@ -63,5 +70,10 @@ public class ScoreManager : MonoBehaviour
     public float GetHorizontalDistance()
     {
         return horizontalDistance;
+    }
+
+    public int GetCoin()
+    {
+        return coin;
     }
 }

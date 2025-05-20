@@ -5,6 +5,7 @@ public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI totalScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
+    [SerializeField] private TextMeshProUGUI getGoldText;
 
     [SerializeField] private float totalScore;
 
@@ -23,5 +24,10 @@ public class GameOverUI : MonoBehaviour
         PlayerDataManager.Instance.UpdateCompetitiveBestScore((int)totalScore);
         totalScoreText.text = totalScore.ToString();
         bestScoreText.text = PlayerDataManager.Instance.CurrentPlayerData.competitiveBestScore.ToString();
+
+        getGoldText.text = ScoreManager.Instance.GetCoin().ToString();
+
+        // 획득 재화 추가
+        PlayerDataManager.Instance.AddGold(ScoreManager.Instance.GetCoin());
     }
 }
