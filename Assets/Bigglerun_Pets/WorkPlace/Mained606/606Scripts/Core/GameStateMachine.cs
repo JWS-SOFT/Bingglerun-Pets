@@ -6,14 +6,7 @@ using System.Threading.Tasks;
 /// </summary>
 public class GameStateMachine : MonoBehaviour
 {
-    [SerializeField, Tooltip("현재 게임 상태 (인스펙터에서 확인용, 직접 수정하지 마세요)")]
-    private GameState _currentState = GameState.None;
-
-    public GameState CurrentState 
-    { 
-        get { return _currentState; }
-        private set { _currentState = value; }
-    }
+    public GameState CurrentState { get; private set; } = GameState.None;
 
     public void ChangeState(GameState newState)
     {
