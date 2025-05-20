@@ -287,10 +287,19 @@ public class StageButtonUI : MonoBehaviour
     /// </summary>
     public void RefreshData()
     {
+        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 시작");
+        
+        // 데이터가 로드되지 않았거나 로딩 중이면 무시
+        if (PlayerDataManager.Instance == null || !PlayerDataManager.Instance.IsDataLoaded || PlayerDataManager.Instance.IsLoading)
+        {
+            Debug.LogWarning($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 실패: 데이터가 로드되지 않았거나 로딩 중입니다.");
+            return;
+        }
+        
         // 파이어베이스에서 최신 데이터 로드
         LoadStageData();
         
         // UI가 제대로 갱신되었는지 확인 로그
-        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 - 별 개수: {stars}, 잠금 상태: {isUnlocked}");
+        Debug.Log($"[StageButtonUI] 스테이지 {stageId} 데이터 새로고침 완료 - 별 개수: {stars}, 잠금 상태: {isUnlocked}");
     }
 } 

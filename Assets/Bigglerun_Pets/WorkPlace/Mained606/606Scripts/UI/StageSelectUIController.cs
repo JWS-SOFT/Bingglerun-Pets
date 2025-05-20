@@ -42,6 +42,21 @@ public class StageSelectUIController : MonoBehaviour
         // 뒤로가기 버튼 이벤트 설정
         if (backButton != null)
             backButton.onClick.AddListener(OnBackButtonClicked);
+            
+        // PlayerDataManager의 OnDataLoaded 이벤트 구독
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.OnDataLoaded += OnPlayerDataLoaded;
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        // 이벤트 구독 해제
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.OnDataLoaded -= OnPlayerDataLoaded;
+        }
     }
     
     /// <summary>
@@ -342,5 +357,24 @@ public class StageSelectUIController : MonoBehaviour
         
         UpdateTotalStars();
         Debug.Log("[StageSelectUIController] 모든 스테이지 버튼 새로고침 완료");
+    }
+    
+    // 플레이어 데이터 로드 완료 시 호출될 이벤트 핸들러
+    private void OnPlayerDataLoaded()
+    {
+        Debug.Log("[StageSelectUIController] 플레이어 데이터 로드 완료 이벤트 수신");
+        
+        // Dictionary 초기화 확인
+        EnsureDictionariesInitialized();
+        
+        // UI 초기화 또는 새로고침
+        if (!isInitialized)
+        {
+            InitializeUI();
+        }
+        else
+        {
+            RefreshAllStageButtons();
+        }
     }
 } 

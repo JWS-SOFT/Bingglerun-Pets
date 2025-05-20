@@ -567,6 +567,42 @@ public class UIManager : MonoBehaviour
         // 씬 전환이 완료될 때까지 잠시 대기
         yield return new WaitForSeconds(0.3f);
         
+        // 데이터 로딩 여부 확인 및 대기
+        bool waitingForData = false;
+        
+        if (PlayerDataManager.Instance != null)
+        {
+            if (PlayerDataManager.Instance.IsLoading)
+            {
+                Debug.Log("[UIManager] 플레이어 데이터 로딩 중... 대기합니다.");
+                waitingForData = true;
+                
+                // 데이터 로드 완료 이벤트를 일회성으로 구독
+                System.Action dataLoadedHandler = null;
+                dataLoadedHandler = () => {
+                    Debug.Log("[UIManager] 플레이어 데이터 로드 완료 이벤트 수신");
+                    waitingForData = false;
+                    PlayerDataManager.Instance.OnDataLoaded -= dataLoadedHandler;
+                };
+                
+                PlayerDataManager.Instance.OnDataLoaded += dataLoadedHandler;
+                
+                // 최대 3초 동안만 대기
+                float waitTime = 0f;
+                while (waitingForData && waitTime < 3f)
+                {
+                    yield return new WaitForSeconds(0.1f);
+                    waitTime += 0.1f;
+                }
+                
+                Debug.Log($"[UIManager] 플레이어 데이터 로딩 대기 완료. 총 대기 시간: {waitTime}초");
+            }
+            else if (!PlayerDataManager.Instance.IsDataLoaded)
+            {
+                Debug.LogWarning("[UIManager] 플레이어 데이터가 로드되지 않았습니다. UI는 기본 상태로 초기화됩니다.");
+            }
+        }
+        
         if (FindStageSelectUI())
         {
             Debug.Log($"[UIManager] StageSelectUI 찾음: {stageSelectUI.name}");
@@ -584,6 +620,7 @@ public class UIManager : MonoBehaviour
             // 데이터 갱신
             if (stageSelectUIController != null)
             {
+                Debug.Log("[UIManager] 스테이지 UI 데이터 갱신 (RefreshAllStageButtons 호출)");
                 stageSelectUIController.RefreshAllStageButtons();
             }
             else
