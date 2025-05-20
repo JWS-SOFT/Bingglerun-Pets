@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour
         // 아이템 관련 매니저
         gameObject.AddComponent<ItemManager>();
         gameObject.AddComponent<ShopManager>();
+
+        gameObject.AddComponent<ScoreManager>();
     }
 
     private void Start()
