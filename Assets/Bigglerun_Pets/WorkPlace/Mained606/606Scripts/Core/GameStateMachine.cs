@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 /// </summary>
 public class GameStateMachine : MonoBehaviour
 {
-    public GameState CurrentState { get; private set; } = GameState.None;
+    [SerializeField] private GameState currentState = GameState.None;
+
+    public GameState CurrentState 
+    { 
+        get { return currentState; } 
+        private set { currentState = value; }
+    }
 
     public void ChangeState(GameState newState)
     {
