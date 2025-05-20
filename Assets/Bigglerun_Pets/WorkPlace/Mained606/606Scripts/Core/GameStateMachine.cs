@@ -40,9 +40,9 @@ public class GameStateMachine : MonoBehaviour
                 PlayBGM(BGMType.Lobby);
                 break;
 
-            case GameState.ModeSelect:
-                UIManager.Instance.ShowModeSelectUI();
-                break;
+            // case GameState.ModeSelect:
+            //     UIManager.Instance.ShowModeSelectUI();
+            //     break;
 
             case GameState.StoryStageSelect:
                 UIManager.Instance.ShowStoryStageSelectUI();
@@ -54,7 +54,6 @@ public class GameStateMachine : MonoBehaviour
 
             case GameState.InGame:
                 UIManager.Instance.HideAll();
-                GameManager.Instance.SceneFader.LoadScene("InGame");
                 break;
 
             case GameState.Result:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject loadingScreen;
     [SerializeField] private TextMeshProUGUI loadingText;
 
+    // StageSelectUI 참조
+    [SerializeField] private GameObject stageSelectUI;
+    [SerializeField] private StageSelectUIController stageSelectUIController;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -34,53 +39,222 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // 페이더 참조 설정
+        if (fader == null)
+            fader = FindObjectOfType<SceneFader>();
     }
 
     private void Start()
     {
-        fader = FindAnyObjectByType<SceneFader>();
-        
-        // UI 초기화 호출
         UIInitialize();
-        
-        // 로딩 스크린이 없으면 자동으로 생성
-        CreateLoadingScreenIfNeeded();
     }
 
     private void UIInitialize()
     {
-        var canvasObj = FindAnyObjectByType<Canvas>();
-        if (canvasObj != null)
+        // 캔버스 찾기
+        if (canvas == null)
         {
-            canvas = canvasObj.transform;
-            
-            if (canvas.childCount > 0)
+            Canvas[] canvases = FindObjectsOfType<Canvas>();
+            foreach (Canvas c in canvases)
             {
-                hud = canvas.GetChild(0);
-                uiController = canvas.GetComponent<UIController>();
-            }
-            
-            // CanvasGroup 컴포넌트 찾기 (null 체크 추가)
-            var canvasGroup = FindAnyObjectByType<CanvasGroup>();
-            if (canvasGroup != null)
-            {
-                popup = canvasGroup.transform;
-            }
-            
-            // 로딩 화면 찾기
-            GameObject loadingObj = GameObject.Find("LoadingScreen");
-            if (loadingObj != null)
-            {
-                loadingScreen = loadingObj;
-                loadingText = loadingObj.GetComponentInChildren<TextMeshProUGUI>();
-                loadingScreen.SetActive(false);
+                if (c.gameObject.name.Contains("Canvas"))
+                {
+                    canvas = c.transform;
+                    Debug.Log("[UIManager] 캔버스 자동 찾기 성공: " + canvas.name);
+                    break;
+                }
             }
         }
 
-        // popup이 null이 아닐 때만 초기화
-        if (popup != null)
+        // HUD 찾기
+        if (hud == null)
         {
-            PopupGroupInit();
+            hud = GameObject.Find("HUD")?.transform;
+            if (hud == null)
+            {
+                // StageSelectHUD 또는 다른 HUD 변형을 찾음
+                hud = GameObject.Find("StageSelectHUD")?.transform;
+                
+                if (hud == null)
+                {
+                    // 이름에 "HUD"가 포함된 오브젝트를 찾음
+                    Transform[] allTransforms = FindObjectsOfType<Transform>();
+                    foreach (Transform t in allTransforms)
+                    {
+                        if (t.name.Contains("HUD") || t.name.Contains("Hud"))
+                        {
+                            hud = t;
+                            Debug.Log("[UIManager] HUD 자동 찾기 성공: " + hud.name);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.Log("[UIManager] HUD 자동 찾기 성공: " + hud.name);
+                }
+            }
+            else
+            {
+                Debug.Log("[UIManager] HUD 자동 찾기 성공: " + hud.name);
+            }
+        }
+
+        // popup 없을 경우 자동으로 찾기
+        if (popup == null)
+        {
+            popup = GameObject.Find("PopupUI")?.transform;
+            if (popup == null)
+            {
+                Transform[] allTransforms = FindObjectsOfType<Transform>();
+                foreach (Transform t in allTransforms)
+                {
+                    if (t.name.Contains("PopupUI") || t.name.Contains("Popup"))
+                    {
+                        popup = t;
+                        Debug.Log("[UIManager] 팝업 UI 자동 찾기 성공: " + popup.name);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("[UIManager] 팝업 UI 자동 찾기 성공: " + popup.name);
+            }
+        }
+
+        // UIController 찾기
+        if (uiController == null)
+        {
+            uiController = FindObjectOfType<UIController>();
+            if (uiController != null)
+            {
+                Debug.Log("[UIManager] UIController 자동 찾기 성공");
+            }
+        }
+
+        // StageSelectUI 찾기
+        if (stageSelectUI == null)
+        {
+            stageSelectUI = GameObject.Find("StageSelectUI");
+            if (stageSelectUI == null)
+            {
+                // 이름에 "StageSelect"가 포함된 오브젝트 찾기
+                GameObject[] allObjects = FindObjectsOfType<GameObject>();
+                foreach (GameObject obj in allObjects)
+                {
+                    if (obj.name.Contains("StageSelect"))
+                    {
+                        stageSelectUI = obj;
+                        Debug.Log("[UIManager] StageSelectUI 자동 찾기 성공: " + stageSelectUI.name);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("[UIManager] StageSelectUI 자동 찾기 성공: " + stageSelectUI.name);
+            }
+        }
+
+        // StageSelectUIController 찾기
+        if (stageSelectUIController == null && stageSelectUI != null)
+        {
+            stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
+            if (stageSelectUIController != null)
+            {
+                Debug.Log("[UIManager] StageSelectUIController 자동 찾기 성공");
+            }
+        }
+
+        PopupGroupInit();
+
+        // 로딩 스크린 찾기 및 초기화
+        if (loadingScreen == null)
+        {
+            // 이름에 "LoadingScreen"이 포함된 오브젝트 찾기
+            loadingScreen = GameObject.Find("LoadingScreen");
+            if (loadingScreen == null)
+            {
+                GameObject[] allObjects = FindObjectsOfType<GameObject>();
+                foreach (GameObject obj in allObjects)
+                {
+                    if (obj.name.Contains("Loading") && obj.name.Contains("Screen"))
+                    {
+                        loadingScreen = obj;
+                        Debug.Log("[UIManager] LoadingScreen 자동 찾기 성공: " + loadingScreen.name);
+                        
+                        // LoadingText 찾기
+                        if (loadingText == null)
+                        {
+                            Transform textTransform = loadingScreen.transform.Find("LoadingText");
+                            if (textTransform != null)
+                            {
+                                loadingText = textTransform.GetComponent<TextMeshProUGUI>();
+                                if (loadingText != null)
+                                {
+                                    Debug.Log("[UIManager] LoadingText 자동 찾기 성공");
+                                }
+                            }
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("[UIManager] LoadingScreen 자동 찾기 성공: " + loadingScreen.name);
+                
+                // LoadingText 찾기
+                if (loadingText == null)
+                {
+                    Transform textTransform = loadingScreen.transform.Find("LoadingText");
+                    if (textTransform != null)
+                    {
+                        loadingText = textTransform.GetComponent<TextMeshProUGUI>();
+                        if (loadingText != null)
+                        {
+                            Debug.Log("[UIManager] LoadingText 자동 찾기 성공");
+                        }
+                    }
+                }
+            }
+            
+            // 로딩 스크린을 못 찾은 경우 생성
+            if (loadingScreen == null)
+            {
+                CreateLoadingScreenIfNeeded();
+            }
+            else
+            {
+                loadingScreen.SetActive(false);
+            }
+        }
+        else
+        {
+            loadingScreen.SetActive(false);
+        }
+
+        // 팝업 초기화 (팝업 그룹이 비어있지 않은 경우에만 실행)
+        if (popupGroup != null && popupGroup.Count > 0)
+        {
+            foreach (Transform popupItem in popupGroup)
+            {
+                if (popupItem != null)
+                    popupItem.gameObject.SetActive(false);
+            }
+        }
+
+        // 페이더 참조 설정
+        if (fader == null)
+        {
+            fader = FindObjectOfType<SceneFader>();
+            if (fader != null)
+            {
+                Debug.Log("[UIManager] SceneFader 자동 찾기 성공");
+            }
         }
     }
 
@@ -88,18 +262,23 @@ public class UIManager : MonoBehaviour
     {
         popupGroup.Clear();
 
-        for(int i = 0; i < popup.childCount; i++)
+        if (popup != null)
         {
-            popupGroup.Add(popup.GetChild(i));
+            foreach (Transform child in popup)
+            {
+                popupGroup.Add(child);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[UIManager] Popup 그룹이 없습니다.");
         }
     }
 
     public void SceneChange()
     {
+        // 씬 전환 시마다 UI 요소들을 다시 찾음
         UIInitialize();
-        
-        // 씬 변경 시에도 로딩 스크린 확인
-        CreateLoadingScreenIfNeeded();
     }
     
     /// <summary>
@@ -217,6 +396,37 @@ public class UIManager : MonoBehaviour
     public void ShowStoryStageSelectUI()
     {
         Debug.Log("스토리 스테이지 선택 UI 표시");
+        
+        // 다른 UI 숨기기
+        HideAll();
+        
+        // 스테이지 선택 UI 표시
+        if (stageSelectUI != null)
+        {
+            stageSelectUI.SetActive(true);
+            
+            // 데이터 갱신
+            if (stageSelectUIController != null)
+            {
+                stageSelectUIController.RefreshAllStageButtons();
+            }
+            else
+            {
+                stageSelectUIController = stageSelectUI.GetComponent<StageSelectUIController>();
+                if (stageSelectUIController != null)
+                {
+                    stageSelectUIController.RefreshAllStageButtons();
+                }
+                else
+                {
+                    Debug.LogWarning("[UIManager] StageSelectUIController를 찾을 수 없습니다.");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("[UIManager] StageSelectUI가 설정되지 않았습니다.");
+        }
     }
 
     public void ShowCompetitiveSetupUI()
