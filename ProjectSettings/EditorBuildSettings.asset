@@ -5,21 +5,24 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Bigglerun_Pets/Scenes/TitleScene.unity
-    guid: 88d16256239914bd69938befdca17f9b
-  - enabled: 0
+    guid: 161e00126d825954cb41cc56200d89b5
+  - enabled: 1
     path: Assets/Bigglerun_Pets/Scenes/LobbyScene.unity
-    guid: 2f00c751c2fdc4975b50ce3120017dc2
-  - enabled: 0
-    path: Assets/Bigglerun_Pets/Scenes/GameScene01.unity
-    guid: a9323aed205cc42a5a373303a710c94e
+    guid: 27f5dbd0be314b8428082b34e3b25a95
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/Scenes/StoryStageSelectScene.unity
+    guid: 56b4d85eef84c994ea2fd36ebe82ccfd
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/Scenes/StoryGameScene01.unity
+    guid: 12d4298fd114fa840bef3ba05f43745c
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/Mained606/606Scene/606TestTitleLogin.unity
     guid: efee8af6cc264ed47a6c4d823d4c4a1f
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/Mained606/606Scene/606TestLobby.unity
-    guid: b32cec8c341668c46b743d78e6306d32
+    guid: eef8644306cd67d4e84dac1cc9acf443
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/SH/Scenes/TestLobby.unity
     guid: ed3c9343def02d043ba8b1798721dbcd

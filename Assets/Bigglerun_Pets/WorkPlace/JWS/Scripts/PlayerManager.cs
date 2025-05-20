@@ -154,7 +154,7 @@ public class PlayerManager : MonoBehaviour
         Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
         Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
         float movedDistance = 5f * Time.deltaTime; // 추가
-        // ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
+        ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
         if (GetStageDistance <= Instance.currentPlayerDistance)
         {
               Instance.playerController.GameStageClear();
