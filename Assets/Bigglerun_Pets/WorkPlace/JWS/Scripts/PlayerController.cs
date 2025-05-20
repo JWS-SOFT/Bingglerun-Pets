@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour
         moving = false;
         enabled = false;
         isGameOver = true;
-        // if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
+        if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         Debug.Log("Game Stage Clear!");
         Time.timeScale = 0f;
     }
