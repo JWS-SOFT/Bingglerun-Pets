@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Bigglerun_Pets/WorkPlace/JWS/Scenes/GameScene01.unity
     guid: 4316b7614e329344c9aa9fff788bc711
+  - enabled: 1
+    path: Assets/Bigglerun_Pets/WorkPlace/SH/Scenes/TestGameScene01.unity
+    guid: ea3ab11a3614b5e42a9920a8e3cabf13
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
