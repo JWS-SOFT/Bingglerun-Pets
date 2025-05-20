@@ -62,6 +62,14 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log($"[UIManager] 씬 전환 감지: {scene.name}");
         
+        // 인게임 씬인 경우 StageSelectUI 참조 명시적으로 초기화
+        if (scene.name.Contains("GameScene"))
+        {
+            stageSelectUI = null;
+            stageSelectUIController = null;
+            Debug.Log("[UIManager] 인게임 씬 감지 - StageSelectUI 참조 초기화");
+        }
+        
         // UI 초기화 호출
         Invoke("UIInitialize", 0.2f);
         
@@ -211,11 +219,13 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // StageSelectUI 찾기 - 게임 스테이트가 스테이지 셀렉트일 때만 검색
+        // StageSelectUI 찾기 - 항상 이전 참조 초기화
+        stageSelectUI = null;
+        stageSelectUIController = null;
+        
+        // 게임 스테이트가 스테이지 셀렉트일 때만 검색
         if (IsStageSelectState())
         {
-            stageSelectUI = null;
-            
             // 스테이지 선택 UI 검색
             if (GameObject.Find("StageSelectUI") != null)
             {
@@ -566,6 +576,14 @@ public class UIManager : MonoBehaviour
     {
         // 씬 전환이 완료될 때까지 잠시 대기
         yield return new WaitForSeconds(0.3f);
+        
+        // 현재 씬 이름 확인 - 인게임 씬에서 잘못 호출되는 경우 방지
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (!(currentScene.name.Contains("StageSelect") || currentScene.name.Contains("StoryStage")))
+        {
+            Debug.LogWarning($"[UIManager] DelayedStageSelectUISearch가 잘못된 씬({currentScene.name})에서 호출되었습니다. 코루틴을 중단합니다.");
+            yield break;
+        }
         
         // 데이터 로딩 여부 확인 및 대기
         bool waitingForData = false;

@@ -30,6 +30,12 @@ public class UIController : MonoBehaviour
         GameManager.Instance.SceneFader.LoadScene(sceneName);
         switch(sceneName)
         {
+            case "TitleScene":
+                GameManager.Instance.StateMachine.ChangeState(GameState.Title);
+                break;
+            case "LobbyScene":
+                GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+                break;
             case "StoryStageSelectScene":
                 GameManager.Instance.StateMachine.ChangeState(GameState.StoryStageSelect);
                 break;
