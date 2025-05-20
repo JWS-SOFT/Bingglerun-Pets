@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public SceneFader SceneFader { get; private set; }
 
     [SerializeField] private String LobbySceneName;
+    [SerializeField] private String GameSceneName;
 
     private void Awake()
     {
@@ -121,5 +122,25 @@ public class GameManager : MonoBehaviour
             Debug.LogError("[GameManager] 플레이어 데이터 로드 실패");
             // 오류 메시지 표시 또는 재시도 로직 추가
         }
+    }
+    
+    /// <summary>
+    /// 게임 씬을 로드하고 게임 상태로 전환
+    /// </summary>
+    public void LoadGameScene(string stageId)
+    {
+        if (string.IsNullOrEmpty(stageId))
+        {
+            Debug.LogError("[GameManager] 스테이지 ID가 없습니다.");
+            return;
+        }
+        
+        // 게임 데이터 저장
+        GameDataManager.SetSelectedStageId(stageId);
+        
+        // 게임 씬 로드
+        Debug.Log($"[GameManager] 게임 씬 로드 시작: 스테이지 {stageId}");
+        SceneFader.LoadScene(GameSceneName);
+        StateMachine.ChangeState(GameState.InGame);
     }
 }

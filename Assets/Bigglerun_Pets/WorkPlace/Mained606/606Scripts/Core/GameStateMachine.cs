@@ -40,9 +40,9 @@ public class GameStateMachine : MonoBehaviour
                 PlayBGM(BGMType.Lobby);
                 break;
 
-            case GameState.ModeSelect:
-                UIManager.Instance.ShowModeSelectUI();
-                break;
+            // case GameState.ModeSelect:
+            //     UIManager.Instance.ShowModeSelectUI();
+            //     break;
 
             case GameState.StoryStageSelect:
                 UIManager.Instance.ShowStoryStageSelectUI();
