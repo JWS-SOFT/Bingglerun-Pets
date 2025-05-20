@@ -20,7 +20,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private StairManager stairManager;
     [SerializeField] private int stageLevel = 1;
     [SerializeField] private int stairBaseCount = 20;
+    [SerializeField] private int baseDistance = 50;
     public static int GetStageStair;
+    public static int GetStageDistance;
     [SerializeField] private TerrainScrollManager terrainScrollManager;
     [SerializeField] private Button[] actionButton = new Button[3];
     private PlayerData playerData;
@@ -64,6 +66,7 @@ public class PlayerManager : MonoBehaviour
 
         actionTimer = new BasicTimer(timeAction);
         GetStageStair = ((stageLevel * 10) + stairBaseCount);
+        GetStageDistance = ((stageLevel * 10) + baseDistance);
     }
 
     private void Start()
@@ -136,7 +139,7 @@ public class PlayerManager : MonoBehaviour
 
     public static void ChangeFloor(int floor)
     {
-        Debug.Log("현재층: " + (floor + 1).ToString());
+        if (GetStageStair != ((Instance.stageLevel * 10) + Instance.stairBaseCount)) GetStageStair = ((Instance.stageLevel * 10) + Instance.stairBaseCount);
         Instance.currentPlayerFloor = floor;
         Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
             "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
@@ -146,11 +149,16 @@ public class PlayerManager : MonoBehaviour
 
     public static void ChangeDistance(float distance)
     {
+        if (GetStageDistance != ((Instance.stageLevel * 50) + Instance.baseDistance)) GetStageDistance = ((Instance.stageLevel * 50) + Instance.baseDistance);
         Instance.currentPlayerDistance = distance;
         Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
         Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
         float movedDistance = 5f * Time.deltaTime; // 추가
-        ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
+        // ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
+        if (GetStageDistance <= Instance.currentPlayerDistance)
+        {
+              Instance.playerController.GameStageClear();
+        }
     }
 
     public static void ChangeCoin()

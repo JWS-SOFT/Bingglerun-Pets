@@ -249,6 +249,16 @@ public class PlayerController : MonoBehaviour
         JumpButtonClick();
     }
 
+    public void GameStageClear()
+    {
+        moving = false;
+        enabled = false;
+        isGameOver = true;
+        // if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
+        Debug.Log("Game Stage Clear!");
+        Time.timeScale = 0f;
+    }
+
 
     //05.17 HJ 추가
     //다음 계단 위치로 캐릭터 방향 자동 조정
