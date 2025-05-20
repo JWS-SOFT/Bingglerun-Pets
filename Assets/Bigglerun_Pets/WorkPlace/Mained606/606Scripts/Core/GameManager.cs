@@ -141,19 +141,6 @@ public class GameManager : MonoBehaviour
         // 게임 씬 로드
         Debug.Log($"[GameManager] 게임 씬 로드 시작: 스테이지 {stageId}");
         SceneFader.LoadScene(GameSceneName);
-        
-        // 스테이지 ID에 따라 게임 상태 전환
-        if (stageId.StartsWith("Competitive") || stageId.Contains("Competition"))
-        {
-            // 경쟁 모드
-            Debug.Log("[GameManager] 경쟁 모드로 전환합니다.");
-            StateMachine.ChangeState(GameState.CompetitionInGame);
-        }
-        else
-        {
-            // 스토리 모드
-            Debug.Log("[GameManager] 스토리 모드로 전환합니다.");
-            StateMachine.ChangeState(GameState.StoryInGame);
-        }
+        StateMachine.ChangeState(GameState.InGame);
     }
 }

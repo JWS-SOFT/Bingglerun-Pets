@@ -7,8 +7,7 @@ public enum GameState
     // ModeSelect,
     StoryStageSelect,
     CompetitiveSetup,
-    StoryInGame,
-    CompetitionInGame,
+    InGame,
     Result,
     Pause,
     Loading
