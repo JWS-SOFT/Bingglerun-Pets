@@ -284,11 +284,62 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("복귀, 직전 계단으로 위치 초기화");
 
-        if (stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
+        //if (stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
+        //{
+        //    //복귀 애니메이션 추가
+        //    transform.position = stairPos;
+        //}
+
+        StartCoroutine(RecoverLastStairRoutine());
+    }
+
+    private IEnumerator RecoverLastStairRoutine()
+    {
+        isRecovering = true;
+        moving = true;
+
+        //계단 위치 가져오기
+        if (!stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairCenter))
         {
-            //복귀 애니메이션 추가
-            transform.position = stairPos;
+            isRecovering = false;
+            moving = false;
+            yield break;
         }
+
+        //계단의 SpriteRenderer 높이
+        GameObject stair = stairManager.GetStairObject(currentStairIndex);
+        float stairTopY = stair.transform.position.y + stair.GetComponent<SpriteRenderer>().bounds.size.y / 2f;
+
+        //캐릭터의 Collider2D 높이
+        float playerHeight = GetComponent<Collider2D>().bounds.size.y;
+
+        //복귀 지점 (계단 윗면 + 캐릭터 키 절반)
+        Vector2 returnTarget = new Vector2(stairCenter.x, stairTopY + playerHeight / 2f);
+
+        Vector2 start = transform.position;
+        Vector2 fakeTarget = start + Vector2.right * moveDirection * 2f;    //점프 거리
+
+        float halfDuration = 0.3f;  //점프 시간
+
+        //점프 포물선 이동 함수
+        IEnumerator Jump(Vector2 from, Vector2 to)
+        {
+            float t = 0f;
+            while (t < 1f)
+            {
+                float height = Mathf.Sin(t * Mathf.PI) * 1.5f;  //점프 높이
+                transform.position = Vector2.Lerp(from, to, t) + Vector2.up * height;
+                t += Time.deltaTime / halfDuration;
+                yield return null;
+            }
+        }
+
+        yield return StartCoroutine(Jump(start, fakeTarget));           //점프했다가
+        yield return StartCoroutine(Jump(fakeTarget, returnTarget));    //돌아오기
+
+        transform.position = returnTarget;
+        isRecovering = false;
+        moving = false;
     }
 
     //런게임 앞에 있는 땅으로 복귀

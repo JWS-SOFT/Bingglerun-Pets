@@ -69,6 +69,12 @@ public class PlayerManager : MonoBehaviour
         GetStageDistance = ((stageLevel * 10) + baseDistance);
     }
 
+    private void OnEnable()
+    {
+        InitializeLife();
+        InitializeSkillCount();
+    }
+
     private void Start()
     {
         SetPlayMode(false);

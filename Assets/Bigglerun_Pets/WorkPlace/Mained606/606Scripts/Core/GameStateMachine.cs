@@ -54,8 +54,6 @@ public class GameStateMachine : MonoBehaviour
 
             case GameState.InGame:
                 UIManager.Instance.HideAll();
-                //PlayerManager.Instance.InitializeLife();
-                //PlayerManager.Instance.InitializeSkillCount();
                 break;
 
             case GameState.Result:
