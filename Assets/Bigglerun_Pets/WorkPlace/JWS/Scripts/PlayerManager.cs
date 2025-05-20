@@ -232,6 +232,8 @@ public class PlayerManager : MonoBehaviour
         }
 
         currentLife--;
+        // 별 감소도 함께 처리
+        ScoreManager.Instance.DecreaseStar();
         Debug.Log($"현재 생명력: {currentLife}");
 
         if(currentLife <= 0)
