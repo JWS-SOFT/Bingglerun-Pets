@@ -31,24 +31,7 @@ public class StageSelectUIController : MonoBehaviour
         // StageInfoUI 참조가 없는 경우 자동 찾기
         if (stageInfoUI == null)
         {
-            stageInfoUI = FindObjectOfType<StageInfoUI>();
-            if (stageInfoUI != null)
-            {
-                Debug.Log("[StageSelectUIController] Start에서 StageInfoUI 참조를 자동으로 찾았습니다.");
-            }
-            else
-            {
-                GameObject infoUI = GameObject.Find("StageInfoUI");
-                if (infoUI != null)
-                {
-                    stageInfoUI = infoUI.GetComponent<StageInfoUI>();
-                    Debug.Log("[StageSelectUIController] StageInfoUI 게임오브젝트를 찾아 참조 설정");
-                }
-                else
-                {
-                    Debug.LogWarning("[StageSelectUIController] StageInfoUI를 찾을 수 없습니다!");
-                }
-            }
+            stageInfoUI = FindStageInfoUI();
         }
         
         // StageInfoUI가 있으면 처음에는 비활성화
@@ -67,6 +50,66 @@ public class StageSelectUIController : MonoBehaviour
         
         // 스테이지 버튼 초기화
         InitializeStageButtons();
+    }
+    
+    /// <summary>
+    /// StageInfoUI 컴포넌트 찾기
+    /// </summary>
+    private StageInfoUI FindStageInfoUI()
+    {
+        // 1. FindObjectOfType으로 찾기 시도
+        StageInfoUI infoUI = FindObjectOfType<StageInfoUI>();
+        if (infoUI != null)
+        {
+            return infoUI;
+        }
+        
+        // 2. 이름으로 게임오브젝트 찾기
+        GameObject infoUIObj = GameObject.Find("StageInfoUI");
+        if (infoUIObj != null)
+        {
+            infoUI = infoUIObj.GetComponent<StageInfoUI>();
+            if (infoUI != null)
+            {
+                return infoUI;
+            }
+        }
+        
+        // 3. Canvas 하위에서 찾기 시도 (성능 개선)
+        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        foreach (Canvas canvas in canvases)
+        {
+            // Canvas의 직접적인 자식들 중에서 찾기
+            for (int i = 0; i < canvas.transform.childCount; i++)
+            {
+                Transform child = canvas.transform.GetChild(i);
+                if (child.name.Contains("StageInfo"))
+                {
+                    infoUI = child.GetComponent<StageInfoUI>();
+                    if (infoUI != null)
+                    {
+                        return infoUI;
+                    }
+                }
+                
+                // 자식의 자식 중에서 찾기
+                for (int j = 0; j < child.childCount; j++)
+                {
+                    Transform grandchild = child.GetChild(j);
+                    if (grandchild.name.Contains("StageInfo"))
+                    {
+                        infoUI = grandchild.GetComponent<StageInfoUI>();
+                        if (infoUI != null)
+                        {
+                            return infoUI;
+                        }
+                    }
+                }
+            }
+        }
+        
+        Debug.LogWarning("[StageSelectUIController] StageInfoUI를 찾을 수 없습니다!");
+        return null;
     }
     
     /// <summary>
@@ -107,39 +150,7 @@ public class StageSelectUIController : MonoBehaviour
         // 스테이지 정보 UI가 없으면 자동으로 찾기
         if (stageInfoUI == null)
         {
-            stageInfoUI = FindObjectOfType<StageInfoUI>();
-            
-            if (stageInfoUI == null)
-            {
-                // 씬에서 StageInfoUI 오브젝트 찾기
-                GameObject infoUIObj = GameObject.Find("StageInfoUI");
-                if (infoUIObj == null)
-                {
-                    // 이름에 StageInfo가 포함된 오브젝트 찾기
-                    GameObject[] allObjects = FindObjectsOfType<GameObject>();
-                    foreach (GameObject obj in allObjects)
-                    {
-                        if (obj.name.Contains("StageInfo"))
-                        {
-                            infoUIObj = obj;
-                            break;
-                        }
-                    }
-                }
-                
-                if (infoUIObj != null)
-                {
-                    stageInfoUI = infoUIObj.GetComponent<StageInfoUI>();
-                    if (stageInfoUI != null)
-                    {
-                        Debug.Log($"[StageSelectUIController] StageInfoUI를 자동으로 찾았습니다: {infoUIObj.name}");
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("[StageSelectUIController] StageInfoUI 컴포넌트를 자동으로 찾았습니다.");
-            }
+            stageInfoUI = FindStageInfoUI();
         }
         
         // 스테이지 정보 UI 표시

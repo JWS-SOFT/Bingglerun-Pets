@@ -28,16 +28,6 @@ public class StageInfoUI : MonoBehaviour
             
         if (closeButton != null)
             closeButton.onClick.AddListener(OnCloseButtonClicked);
-            
-        // stageTitleText 상태 확인
-        if (stageTitleText != null)
-        {
-            Debug.Log($"[StageInfoUI] Awake에서 stageTitleText 상태: 컴포넌트={stageTitleText != null}, 활성화={stageTitleText.gameObject.activeSelf}, 현재 텍스트='{stageTitleText.text}'");
-        }
-        else
-        {
-            Debug.LogError("[StageInfoUI] Awake에서 stageTitleText가 할당되지 않았습니다.");
-        }
     }
     
     /// <summary>
@@ -45,7 +35,6 @@ public class StageInfoUI : MonoBehaviour
     /// </summary>
     public void ShowStageInfo(string stageId)
     {
-        Debug.Log($"[StageInfoUI] ShowStageInfo 호출됨: stageId={stageId}");
         selectedStageId = stageId;
         
         if (PlayerDataManager.Instance == null || !PlayerDataManager.Instance.IsDataLoaded)
@@ -60,9 +49,7 @@ public class StageInfoUI : MonoBehaviour
         // 스테이지 번호 표시
         if (stageTitleText != null)
         {
-            Debug.Log($"[StageInfoUI] 타이틀 텍스트 변경 전: '{(stageTitleText.text)}', GameObject 활성화 상태: {stageTitleText.gameObject.activeSelf}");
             stageTitleText.text = $"Stage Name : {stageId}";
-            Debug.Log($"[StageInfoUI] 타이틀 텍스트 변경 후: '{stageTitleText.text}', 색상: {stageTitleText.color}, 알파값: {stageTitleText.color.a}");
         }
         else
         {
@@ -119,7 +106,6 @@ public class StageInfoUI : MonoBehaviour
         
         // UI 표시
         gameObject.SetActive(true);
-        Debug.Log($"[StageInfoUI] UI 활성화 완료. 게임오브젝트 활성화 상태: {gameObject.activeSelf}, stageTitleText 상태: {(stageTitleText != null ? stageTitleText.gameObject.activeSelf.ToString() : "할당되지 않음")}");
     }
     
     /// <summary>
@@ -127,8 +113,6 @@ public class StageInfoUI : MonoBehaviour
     /// </summary>
     private void OnStartButtonClicked()
     {
-        Debug.Log($"[StageInfoUI] 스테이지 {selectedStageId} 시작, 타이틀 텍스트 상태: {(stageTitleText != null ? stageTitleText.text : "null")}");
-        
         // 게임 데이터 저장
         GameDataManager.SetSelectedStageId(selectedStageId);
         
