@@ -58,8 +58,18 @@ public class GameStateMachine : MonoBehaviour
                 UIManager.Instance.ShowCompetitiveSetupUI();
                 break;
 
-            case GameState.InGame:
+            // 스토리 모드 인게임
+            case GameState.StoryInGame:
                 UIManager.Instance.HideAll();
+                // 스토리 모드 인게임 관련 초기화 작업
+                PlayBGM(BGMType.StoryInGame);
+                break;
+
+            // 경쟁 모드 인게임
+            case GameState.CompetitionInGame:
+                UIManager.Instance.HideAll();
+                // 경쟁 모드 인게임 관련 초기화 작업
+                PlayBGM(BGMType.CompetitionInGame);
                 break;
 
             case GameState.Result:

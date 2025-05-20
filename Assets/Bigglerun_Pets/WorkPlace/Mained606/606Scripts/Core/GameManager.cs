@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 게임 씬을 로드하고 게임 상태로 전환
     /// </summary>
-    public void LoadGameScene(string stageId)
+    public void LoadGameScene(string stageId, bool isCompetitionMode = false)
     {
         if (string.IsNullOrEmpty(stageId))
         {
@@ -139,8 +139,17 @@ public class GameManager : MonoBehaviour
         GameDataManager.SetSelectedStageId(stageId);
         
         // 게임 씬 로드
-        Debug.Log($"[GameManager] 게임 씬 로드 시작: 스테이지 {stageId}");
+        Debug.Log($"[GameManager] 게임 씬 로드 시작: 스테이지 {stageId}, 경쟁 모드: {isCompetitionMode}");
         SceneFader.LoadScene(GameSceneName);
-        StateMachine.ChangeState(GameState.InGame);
+        
+        // 모드에 따라 다른 게임 상태로 전환
+        if (isCompetitionMode)
+        {
+            StateMachine.ChangeState(GameState.CompetitionInGame);
+        }
+        else
+        {
+            StateMachine.ChangeState(GameState.StoryInGame);
+        }
     }
 }

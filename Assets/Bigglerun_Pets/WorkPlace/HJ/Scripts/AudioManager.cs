@@ -28,8 +28,8 @@ public enum BGMType
 {
     Title,          //타이틀
     Lobby,          //로비
-    InGame_Stairs,  //인게임 계단
-    InGame_Run,     //인게임 런
+    StoryInGame,    //스토리 모드 인게임
+    CompetitionInGame, //경쟁 모드 인게임
     Result          //결과
 }
 

@@ -116,9 +116,9 @@ public class StageInfoUI : MonoBehaviour
         // 게임 데이터 저장
         GameDataManager.SetSelectedStageId(selectedStageId);
         
-        // 인게임 씬으로 전환
+        // 인게임 씬으로 전환 (스토리 모드)
         UIManager.Instance.ShowLoadingScreen(true, "Loading Game...");
-        GameManager.Instance.LoadGameScene(selectedStageId);
+        GameManager.Instance.LoadGameScene(selectedStageId, false); // false = 스토리 모드
         
         // UI 닫기
         gameObject.SetActive(false);
