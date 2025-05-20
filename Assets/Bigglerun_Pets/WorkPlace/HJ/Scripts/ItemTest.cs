@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ItemTest : MonoBehaviour
 {
+    [SerializeField] private string itemId = "item001";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,10 +15,13 @@ public class ItemTest : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) //아이템 필터링 테스트
         {
-            var shopItems = ShopManager.Instance.GetFilteredUsableItems();
-            Debug.Log("[상점 - 전체 소모 아이템 목록]");
-            foreach (var item in shopItems)
-                Debug.Log($"{item.itemName} | Gold: {item.goldPrice}, Cash: {item.cashPrice}");
+            //var shopItems = ShopManager.Instance.GetFilteredUsableItems();
+            //Debug.Log("[상점 - 전체 소모 아이템 목록]");
+            //foreach (var item in shopItems)
+            //    Debug.Log($"{item.itemName} | Gold: {item.goldPrice}, Cash: {item.cashPrice}");
+
+            ItemManager.Instance.SelectPreGameItem(itemId);
+            Debug.Log($"{itemId} 초기 아이템 설정");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2)) //골드 구매 테스트
@@ -34,7 +38,8 @@ public class ItemTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha4)) //아이템 사용 테스트
         {
-            ItemManager.Instance.UseUsableItem("item001");
+            //ItemManager.Instance.UseUsableItem("item001");
+            Debug.Log(ItemManager.Instance.GetSelectedPreGameItem().itemName);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha5)) //인벤토리 내 아이템 필터링
