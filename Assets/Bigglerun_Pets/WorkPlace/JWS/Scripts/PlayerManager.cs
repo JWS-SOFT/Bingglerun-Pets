@@ -69,12 +69,6 @@ public class PlayerManager : MonoBehaviour
         GetStageDistance = ((stageLevel * 10) + baseDistance);
     }
 
-    private void OnEnable()
-    {
-        InitializeLife();
-        InitializeSkillCount();
-    }
-
     private void Start()
     {
         SetPlayMode(false);
@@ -94,11 +88,18 @@ public class PlayerManager : MonoBehaviour
             coinText.text = "Coin\n" + currentPlayerCoin;
             timerText.text = "";
         }
+
+        //05.20 HJ 추가
+        playerController = Player_Transform?.GetComponent<PlayerController>();
+
+        InitializeLife();
+        InitializeSkillCount();
+        ItemManager.Instance.UseSelectedPreGameItem();
     }
 
     private void Update()
     {
-        if (Player_Transform != null && playerController == null) playerController = Player_Transform.GetComponent<PlayerController>();
+        //if (Player_Transform != null && playerController == null) playerController = Player_Transform.GetComponent<PlayerController>();
         if (/*!PlayMode &&*/ actionTimer.IsRunning)
         {
             timerSlider.value = actionTimer.RemainingTime;

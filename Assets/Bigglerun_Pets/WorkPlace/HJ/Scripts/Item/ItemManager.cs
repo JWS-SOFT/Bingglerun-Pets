@@ -156,9 +156,13 @@ public class ItemManager : MonoBehaviour
     //선택된 스타트 아이템 사용(게임 스타트시 호출함)
     public void UseSelectedPreGameItem()
     {
-        if(selectedPreGameItem == null) return;
+        if(selectedPreGameItem != null)
+        {
+            UseUsableItem(selectedPreGameItem.itemId);
 
-        UseUsableItem(selectedPreGameItem.itemId);
+            selectedPreGameItem = null;
+            PlayerDataManager.Instance.SelectPreGameItem(null);
+        }
     }
 
     //현재 선택된 아이템 가져오기
@@ -181,12 +185,15 @@ public class ItemManager : MonoBehaviour
 
         if(item.useTiming == ItemUseTiming.PreGame)
         {
-            ownedUsableItems[itemId]--;
-
-            // PlayerDataManager에서도 아이템 사용
-            if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+            if(ownedUsableItems.ContainsKey(itemId))
             {
-                PlayerDataManager.Instance.TryUseItem(itemId);
+                ownedUsableItems[itemId]--;
+
+                // PlayerDataManager에서도 아이템 사용
+                if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+                {
+                    PlayerDataManager.Instance.TryUseItem(itemId);
+                }
             }
         }
 
