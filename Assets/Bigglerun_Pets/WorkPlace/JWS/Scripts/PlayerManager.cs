@@ -141,6 +141,7 @@ public class PlayerManager : MonoBehaviour
         Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
             "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
         ActionTImeStart();
+        ScoreManager.Instance.AddStep(); // 추가
     }
 
     public static void ChangeDistance(float distance)
@@ -148,12 +149,15 @@ public class PlayerManager : MonoBehaviour
         Instance.currentPlayerDistance = distance;
         Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
         Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
+        float movedDistance = 5f * Time.deltaTime; // 추가
+        ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
     }
 
     public static void ChangeCoin()
     {
         Instance.currentPlayerCoin++;
         Instance.coinText.text = "Coin\n" + Instance.currentPlayerCoin;
+        ScoreManager.Instance.AddCoin(); // 추가
     }
 
     public static bool ActionTImerCheck()
