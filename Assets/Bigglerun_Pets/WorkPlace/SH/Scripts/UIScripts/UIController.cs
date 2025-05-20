@@ -18,13 +18,7 @@ public class UIController : MonoBehaviour
     public void TogglePopup(string uiName = "")
     {
         UIManager.Instance.TogglePopupUI(uiName);
-
-        //스토리모드 셀렉트 상태일 땐 그대로 스토리모드 셀렉트 상태로 두고
-        //경쟁모드 셀렉트 상태일 땐 경쟁모드 셀렉트 상태로 둔다.
-        if(GameManager.Instance.StateMachine.CurrentState != GameState.StoryStageSelect)
-        {
-            GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
-        }
+        GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
     }
 
     public void ExitButton()
@@ -40,12 +34,7 @@ public class UIController : MonoBehaviour
 
     public void CompetitiveGameMoveScene(string sceneName)
     {
-        GameManager.Instance.StateMachine.ChangeState(GameState.CompetitionInGame);
-        GameManager.Instance.SceneFader.LoadScene(sceneName);
-    }
-
-    public void MoveScene(string sceneName)
-    {
+        GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
         GameManager.Instance.SceneFader.LoadScene(sceneName);
     }
 
