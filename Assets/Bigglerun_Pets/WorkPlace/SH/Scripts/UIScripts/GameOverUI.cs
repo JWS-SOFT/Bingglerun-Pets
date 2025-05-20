@@ -10,14 +10,15 @@ public class GameOverUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (PlayerManager.PlayMode)
-        {
-            totalScore = PlayerManager.Instance.currentPlayerDistance;
-        }
-        else
-        {
-            totalScore = PlayerManager.Instance.currentPlayerFloor;
-        }
+        //if (PlayerManager.PlayMode)
+        //{
+        //    totalScore = PlayerManager.Instance.currentPlayerDistance;
+        //}
+        //else
+        //{
+        //    totalScore = PlayerManager.Instance.currentPlayerFloor;
+        //}
+        totalScore = ScoreManager.Instance.GetScore();
 
         PlayerDataManager.Instance.UpdateCompetitiveBestScore((int)totalScore);
         totalScoreText.text = totalScore.ToString();
