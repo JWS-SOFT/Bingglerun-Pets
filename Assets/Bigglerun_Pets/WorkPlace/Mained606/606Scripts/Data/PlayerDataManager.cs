@@ -75,6 +75,11 @@ public class PlayerDataManager : MonoBehaviour
                 // 생성한 기본 데이터 저장
                 await FirebaseDatabase.Instance.SavePlayerDataAsync(userId, CurrentPlayerData);
             }
+            else
+            {
+                // Dictionary 초기화 상태 재확인
+                EnsureDictionariesInitialized();
+            }
             
             IsDataLoaded = true;
             OnDataLoaded?.Invoke();
@@ -94,6 +99,71 @@ public class PlayerDataManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Dictionary 초기화 상태 확인 및 재초기화
+    /// </summary>
+    private void EnsureDictionariesInitialized()
+    {
+        if (CurrentPlayerData == null) return;
+        
+        Debug.Log("[PlayerDataManager] Dictionary 초기화 상태 확인 중...");
+        
+        // 스테이지 데이터 Dictionary 확인
+        if (CurrentPlayerData.storyStages == null)
+        {
+            Debug.Log("[PlayerDataManager] 스테이지 데이터 Dictionary 초기화");
+            CurrentPlayerData.InitializeStagesFromList();
+            
+            // 여전히 초기화되지 않은 경우 새로 생성
+            if (CurrentPlayerData.storyStages == null)
+            {
+                CurrentPlayerData.storyStages = new Dictionary<string, StageData>();
+                
+                // 스테이지 1은 기본적으로 해금
+                if (!CurrentPlayerData.storyStages.ContainsKey("1"))
+                {
+                    CurrentPlayerData.storyStages["1"] = new StageData
+                    {
+                        stageId = "1",
+                        stars = 0,
+                        highScore = 0,
+                        isUnlocked = true
+                    };
+                }
+                
+                // List 업데이트
+                CurrentPlayerData.UpdateListFromDictionary();
+            }
+        }
+        
+        // 아이템 데이터 Dictionary 확인
+        if (CurrentPlayerData.items == null)
+        {
+            Debug.Log("[PlayerDataManager] 아이템 데이터 Dictionary 초기화");
+            CurrentPlayerData.InitializeItemsFromList();
+            
+            if (CurrentPlayerData.items == null)
+            {
+                CurrentPlayerData.items = new Dictionary<string, int>();
+                CurrentPlayerData.UpdateItemsListFromDictionary();
+            }
+        }
+        
+        // 스테이지 데이터 추가 검증
+        if (CurrentPlayerData.storyStages != null)
+        {
+            foreach (var stageData in CurrentPlayerData.storyStages.Values)
+            {
+                if (stageData.additionalData == null)
+                {
+                    stageData.InitializeAdditionalDataFromList();
+                }
+            }
+        }
+        
+        Debug.Log($"[PlayerDataManager] Dictionary 초기화 완료 - 스테이지 데이터: {(CurrentPlayerData.storyStages != null ? CurrentPlayerData.storyStages.Count : 0)}개");
+    }
+    
+    /// <summary>
     /// Firebase에 플레이어 데이터 저장
     /// </summary>
     public async Task<bool> SavePlayerDataAsync()
@@ -106,6 +176,18 @@ public class PlayerDataManager : MonoBehaviour
         
         // 타임스탬프 업데이트
         CurrentPlayerData.lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        
+        // Dictionary에서 List 업데이트 확인
+        CurrentPlayerData.UpdateListFromDictionary();
+        CurrentPlayerData.UpdateItemsListFromDictionary();
+        
+        if (CurrentPlayerData.storyStages != null)
+        {
+            foreach (var stageData in CurrentPlayerData.storyStages.Values)
+            {
+                stageData.UpdateAdditionalDataListFromDictionary();
+            }
+        }
         
         try
         {
