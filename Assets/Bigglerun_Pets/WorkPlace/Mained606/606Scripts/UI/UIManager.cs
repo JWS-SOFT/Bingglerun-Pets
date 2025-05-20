@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// UI 제어를 담당하는 매니저 (로비, 타이틀 등 상태별로 처리)
@@ -40,9 +41,26 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // 씬 로드 이벤트 구독
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         // 페이더 참조 설정
         if (fader == null)
             fader = FindObjectOfType<SceneFader>();
+    }
+
+    private void OnDestroy()
+    {
+        // 이벤트 구독 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // 씬 로드 이벤트 핸들러
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log($"[UIManager] 씬 전환 감지: {scene.name}");
+        // 씬 로드 후 약간의 지연을 두고 UI 초기화 (오브젝트가 모두 생성될 시간 확보)
+        Invoke("UIInitialize", 0.1f);
     }
 
     private void Start()
@@ -52,22 +70,33 @@ public class UIManager : MonoBehaviour
 
     private void UIInitialize()
     {
+        Debug.Log("[UIManager] UI 요소 초기화 시작");
+        
         // 캔버스 찾기
+        canvas = null; // 씬 전환 시 이전 참조 제거
         if (canvas == null)
         {
             Canvas[] canvases = FindObjectsOfType<Canvas>();
             foreach (Canvas c in canvases)
             {
-                if (c.gameObject.name.Contains("Canvas"))
+                if (c.gameObject.name.Contains("Canvas") && c.transform.root == c.transform)
                 {
                     canvas = c.transform;
                     Debug.Log("[UIManager] 캔버스 자동 찾기 성공: " + canvas.name);
                     break;
                 }
             }
+            
+            // 아직도 못 찾았으면 모든 캔버스 검사
+            if (canvas == null && canvases.Length > 0)
+            {
+                canvas = canvases[0].transform;
+                Debug.Log("[UIManager] 첫 번째 캔버스로 설정: " + canvas.name);
+            }
         }
 
-        // HUD 찾기
+        // HUD 찾기 (이전 참조 제거)
+        hud = null;
         if (hud == null)
         {
             hud = GameObject.Find("HUD")?.transform;
@@ -101,7 +130,8 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // popup 없을 경우 자동으로 찾기
+        // popup 없을 경우 자동으로 찾기 (이전 참조 제거)
+        popup = null;
         if (popup == null)
         {
             popup = GameObject.Find("PopupUI")?.transform;
@@ -124,7 +154,8 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // UIController 찾기
+        // UIController 찾기 (이전 참조 제거)
+        uiController = null;
         if (uiController == null)
         {
             uiController = FindObjectOfType<UIController>();
@@ -132,9 +163,47 @@ public class UIManager : MonoBehaviour
             {
                 Debug.Log("[UIManager] UIController 자동 찾기 성공");
             }
+            else
+            {
+                // 설정된 UI 요소들을 확인
+                if (canvas != null)
+                {
+                    // Canvas의 자식에서 UIController를 찾음
+                    UIController[] controllers = canvas.GetComponentsInChildren<UIController>(true);
+                    if (controllers.Length > 0)
+                    {
+                        uiController = controllers[0];
+                        Debug.Log("[UIManager] Canvas의 자식에서 UIController 찾음: " + uiController.name);
+                    }
+                    else
+                    {
+                        // LobbyUI나 UIController가 포함된 이름의 오브젝트 찾기
+                        Transform[] allTransforms = FindObjectsOfType<Transform>();
+                        foreach (Transform t in allTransforms)
+                        {
+                            if (t.name.Contains("LobbyUI") || t.name.Contains("UIController"))
+                            {
+                                UIController controller = t.GetComponent<UIController>();
+                                if (controller != null)
+                                {
+                                    uiController = controller;
+                                    Debug.Log("[UIManager] 이름으로 UIController 찾음: " + uiController.name);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (uiController == null)
+                {
+                    Debug.LogWarning("[UIManager] UIController를 찾을 수 없습니다.");
+                }
+            }
         }
 
-        // StageSelectUI 찾기
+        // StageSelectUI 찾기 (이전 참조 제거)
+        stageSelectUI = null;
         if (stageSelectUI == null)
         {
             stageSelectUI = GameObject.Find("StageSelectUI");
