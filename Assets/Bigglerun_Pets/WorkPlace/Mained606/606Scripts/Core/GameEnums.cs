@@ -4,7 +4,7 @@ public enum GameState
     Init,
     Title,
     Lobby,
-    ModeSelect,
+    // ModeSelect,
     StoryStageSelect,
     CompetitiveSetup,
     InGame,

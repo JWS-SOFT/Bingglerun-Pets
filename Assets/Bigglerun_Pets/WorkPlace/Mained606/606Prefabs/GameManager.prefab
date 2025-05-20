@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LobbySceneName: 606TestLobby
+  GameSceneName: TestGameScene01
 --- !u!114 &8054717451114348862
 MonoBehaviour:
   m_ObjectHideFlags: 0
