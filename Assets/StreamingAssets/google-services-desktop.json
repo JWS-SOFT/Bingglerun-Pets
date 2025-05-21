@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "592024879509",
+    "firebase_url": "https://bigglerun-pets-default-rtdb.firebaseio.com",
     "project_id": "bigglerun-pets",
     "storage_bucket": "bigglerun-pets.firebasestorage.app"
   },
