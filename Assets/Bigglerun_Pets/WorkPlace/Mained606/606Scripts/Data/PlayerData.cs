@@ -24,6 +24,16 @@ public class SerializableAdditionalData
 }
 
 /// <summary>
+/// 직렬화 가능한 아이템 데이터 키-값 쌍
+/// </summary>
+[Serializable]
+public class SerializableItemData
+{
+    public string key;   // 아이템 ID
+    public int value;    // 아이템 수량
+}
+
+/// <summary>
 /// 플레이어 데이터를 저장하는 구조체 (Firebase 직렬화용)
 /// </summary>
 [Serializable]
@@ -51,7 +61,13 @@ public class PlayerData
     // 아이템 및 장식
     [NonSerialized]
     public Dictionary<string, int> items; // 메모리에서만 사용됨
-    public List<KeyValuePair<string, int>> itemsList = new List<KeyValuePair<string, int>>(); // 직렬화용
+    
+    // 아이템 리스트 (직렬화용) - 새 형식으로 변경
+    public List<SerializableItemData> itemsList = new List<SerializableItemData>();
+    
+    // 이전 형식 아이템 리스트 (하위 호환성 유지용)
+    [Obsolete("이전 형식의 아이템 리스트, 새 형식으로 마이그레이션 필요")]
+    private List<KeyValuePair<string, int>> oldItemsList = new List<KeyValuePair<string, int>>();
     
     public List<string> unlockedDecorations; // 해금된 장식 ID 목록
     
@@ -144,20 +160,44 @@ public class PlayerData
     public void InitializeItemsFromList()
     {
         items = new Dictionary<string, int>();
-        Debug.Log($"[PlayerData] 아이템 데이터 Dictionary 초기화 시작 - 리스트 항목 수: {(itemsList != null ? itemsList.Count : 0)}");
+        Debug.Log($"[PlayerData] 아이템 데이터 Dictionary 초기화 시작");
         
+        // 새 형식 아이템 리스트 처리
         if (itemsList != null && itemsList.Count > 0)
         {
+            Debug.Log($"[PlayerData] 새 형식 아이템 리스트에서 불러오기 - 항목 수: {itemsList.Count}");
             foreach (var item in itemsList)
             {
-                items[item.Key] = item.Value;
+                if (!string.IsNullOrEmpty(item.key))
+                {
+                    items[item.key] = item.value;
+                    Debug.Log($"[PlayerData] 아이템 {item.key} 변환 완료 - 수량: {item.value}");
+                }
             }
-            Debug.Log($"[PlayerData] 아이템 데이터 Dictionary 초기화 완료 - {items.Count}개 항목");
+        }
+        // 이전 형식 아이템 리스트 처리 (하위 호환성)
+        else if (oldItemsList != null && oldItemsList.Count > 0)
+        {
+            Debug.Log($"[PlayerData] 이전 형식 아이템 리스트에서 불러오기 - 항목 수: {oldItemsList.Count}");
+            foreach (var item in oldItemsList)
+            {
+                if (!string.IsNullOrEmpty(item.Key))
+                {
+                    items[item.Key] = item.Value;
+                    // 새 형식으로 마이그레이션
+                    itemsList.Add(new SerializableItemData { key = item.Key, value = item.Value });
+                }
+            }
+            // 이전 형식은 이제 비움
+            oldItemsList.Clear();
+            Debug.Log("[PlayerData] 이전 형식에서 새 형식으로 아이템 데이터 마이그레이션 완료");
         }
         else
         {
             Debug.LogWarning("[PlayerData] 변환할 아이템 리스트가 비어있거나 null입니다.");
         }
+        
+        Debug.Log($"[PlayerData] 아이템 데이터 Dictionary 초기화 완료 - {items.Count}개 항목");
     }
     
     /// <summary>
@@ -166,17 +206,29 @@ public class PlayerData
     public void UpdateItemsListFromDictionary()
     {
         if (itemsList == null)
-            itemsList = new List<KeyValuePair<string, int>>();
+            itemsList = new List<SerializableItemData>();
         else
             itemsList.Clear();
             
-        if (items != null)
+        Debug.Log($"[PlayerData] 아이템 List 업데이트 시작 - Dictionary 항목 수: {(items != null ? items.Count : 0)}");
+            
+        if (items != null && items.Count > 0)
         {
             foreach (var pair in items)
             {
-                itemsList.Add(new KeyValuePair<string, int>(pair.Key, pair.Value));
+                if (!string.IsNullOrEmpty(pair.Key))
+                {
+                    itemsList.Add(new SerializableItemData { key = pair.Key, value = pair.Value });
+                    Debug.Log($"[PlayerData] 아이템 {pair.Key} 리스트에 추가 - 수량: {pair.Value}");
+                }
             }
         }
+        else
+        {
+            Debug.LogWarning("[PlayerData] 변환할 아이템 Dictionary가 비어있거나 null입니다.");
+        }
+        
+        Debug.Log($"[PlayerData] 아이템 List 업데이트 완료 - {itemsList.Count}개 항목");
     }
     
     /// <summary>
