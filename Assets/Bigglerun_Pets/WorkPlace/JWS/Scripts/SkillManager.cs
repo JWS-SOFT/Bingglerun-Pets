@@ -34,7 +34,7 @@ public class SkillManager : MonoBehaviour
                     description = "높게 점프하고 무적 상태가 됩니다.",
                     duration = 5f,
                     cooldown = 7f,
-                    power = 15f, // 점프력
+                    power = /*15f*/5f, // 점프력
                     isInvincibleDuringSkill = true
                 };
                 break;
@@ -69,7 +69,7 @@ public class SkillManager : MonoBehaviour
                 DestroyObstacles(currentSkill.power);
                 break;
             case PlayerSkillType.CatSuperJumpInvincible:
-                ApplyJump(/*currentSkill.power*/100f);
+                ApplyJump(currentSkill.power);
                 SetInvincibility(currentSkill.duration);
                 break;
             case PlayerSkillType.HamsterRollInvincible:
@@ -87,7 +87,8 @@ public class SkillManager : MonoBehaviour
         Debug.Log($"장애물 {range} 범위로 파괴!");
     }
 
-    //점프(고양이)
+    //슈퍼점프(고양이)
+    //애니메이션 등 추가 필요
     private void ApplyJump(float jumpForce)
     {
         Debug.Log($"점프력 {jumpForce} 만큼 점프!");
@@ -96,27 +97,49 @@ public class SkillManager : MonoBehaviour
 
         if(player != null && !player.IsRecovering)
         {
-            StartCoroutine(SuperJumpRoutine(player, jumpForce));
+            StartCoroutine(SuperJumpRoutine(player, jumpForce, 3f));
         }
     }
 
-    private IEnumerator SuperJumpRoutine(PlayerController player, float jumpForce)
+    private IEnumerator SuperJumpRoutine(PlayerController player, float jumpForce, float distance)
     {
-        player.JumpButtonClick();
-
-        float duration = 0.5f;
+        float duration = 0.5f;  //점프시간
         float elapsed = 0f;
-        Vector3 originalPosition = player.transform.position;
 
-        while(elapsed < duration)
+        //위치, 방향
+        Vector2 start = player.transform.position;
+        Vector2 direction = player.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+        Vector2 end = start + direction * distance;
+
+        //카메라 오프셋
+        Vector3 cameraInitialOffset = Camera.main.transform.position - player.transform.position;
+
+        //카메라 y,z 축 고정 (현재 카메라 높이 유지)
+        float fixedCameraY = Camera.main.transform.position.y;
+        float fixedCameraZ = Camera.main.transform.position.z;
+
+        player.enabled = false; //점프 시간동안 입력방지
+
+        while (elapsed < duration)
         {
             float t = elapsed / duration;
-            float height = Mathf.Sin(t * Mathf.PI) * jumpForce;
-            Vector3 position = originalPosition + Vector3.up * height;
+
+            float x = Mathf.Lerp(start.x, end.x, t);    //수펑 이동 보간
+            float y = start.y + Mathf.Sin(t * Mathf.PI) * jumpForce;    //포물선 점프
+
+            Vector2 pos = new Vector2(x, y);
+            player.transform.position = pos;
+
+            //카메라 x축 이동, y,z축 고정
+            float cameraX = player.transform.position.x + cameraInitialOffset.x;
+            Camera.main.transform.position = new Vector3(cameraX, fixedCameraY, fixedCameraZ);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
+
+        player.transform.position = end;
+        player.enabled = true;
     }
 
     //구르기(햄스터)
