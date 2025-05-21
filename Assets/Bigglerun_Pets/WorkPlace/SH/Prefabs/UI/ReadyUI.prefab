@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buster
+  m_text: Booster
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}
   m_sharedMaterial: {fileID: 913401800013230857, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}
@@ -2624,7 +2624,7 @@ GameObject:
   - component: {fileID: 4602006766798129723}
   - component: {fileID: 7468415658377810308}
   m_Layer: 5
-  m_Name: Buster
+  m_Name: Booster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2794,9 +2794,13 @@ MonoBehaviour:
   - {fileID: 3798171550735856974}
   - {fileID: 5499164911826795352}
   itemNames:
-  - Buster
-  - Heart
-  - SkillUp
+  - item001
+  - item002
+  - item003
+  itemCounts:
+  - {fileID: 945105916909907766}
+  - {fileID: 4225263851607241412}
+  - {fileID: 6573062053761512966}
 --- !u!1 &8976226533302536990
 GameObject:
   m_ObjectHideFlags: 0

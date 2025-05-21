@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class ReadyUI : MonoBehaviour
 {
     [SerializeField] private List<Toggle> itemToggles; // 각 아이템에 연결된 Toggle
     [SerializeField] private List<string> itemNames;   // 토글과 순서 일치하는 아이템 이름들
+    [SerializeField] private List<TextMeshProUGUI> itemCounts;
 
     public string SelectedItemName { get; private set; } = null;
 
@@ -22,6 +24,7 @@ public class ReadyUI : MonoBehaviour
     private void OnEnable()
     {
         GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
+        SetItemCount();
     }
 
     //비활성화 될 때 게임 스테이트 변경
@@ -40,18 +43,15 @@ public class ReadyUI : MonoBehaviour
                 if (i != changedIndex)
                     itemToggles[i].isOn = false;
             }
-
-            SelectedItemName = itemNames[changedIndex];
         }
         else
         {
             // 선택 해제된 경우: 아무 것도 선택 안 됨
-            if (IsAllToggleOff())
-                SelectedItemName = null;
-        }
-        ItemManager.Instance.SelectPreGameItem(SelectedItemName);
+            //if (IsAllToggleOff())
 
-        Debug.Log("선택된 아이템: " + (SelectedItemName ?? "없음"));
+        }
+        SelectedItemName = itemNames[changedIndex];
+        ItemManager.Instance.SelectPreGameItem(SelectedItemName);
     }
 
     private bool IsAllToggleOff()
@@ -62,5 +62,13 @@ public class ReadyUI : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    private void SetItemCount()
+    { 
+        for(int i = 0; i < itemCounts.Count; i++)
+        {
+            itemCounts[i].text = ItemManager.Instance.GetUsableItemCount(itemNames[i]).ToString();
+        }
     }
 }
