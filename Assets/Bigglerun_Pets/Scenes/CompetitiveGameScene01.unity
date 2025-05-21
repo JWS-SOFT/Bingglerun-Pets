@@ -662,7 +662,7 @@ MonoBehaviour:
   stairWidth: 1
   stairHeight: 0.5
   SpawnItemPercent: 20
-  invincibleItemChance: 0
+  invincibleItemChance: 0.5
   changeDirectionChance: 0.2
 --- !u!4 &487118650
 Transform:
@@ -1899,6 +1899,7 @@ MonoBehaviour:
   obstacleHeightOffset: 1
   spawnItem: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
   spawnPercent: 0.8
+  invincibleItemChance: 0.2
   maxTilesBetweenEmpty: 3
 --- !u!1 &1079569709
 GameObject:
