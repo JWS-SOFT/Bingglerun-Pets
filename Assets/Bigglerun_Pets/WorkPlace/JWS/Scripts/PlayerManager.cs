@@ -101,7 +101,7 @@ public class PlayerManager : MonoBehaviour
 
         InitializeLife();
         InitializeSkillCount();
-        //ItemManager.Instance.UseSelectedPreGameItem();
+        ItemManager.Instance.UseSelectedPreGameItem();
     }
 
     private void Update()
