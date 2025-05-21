@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class ItemManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class ItemManager : MonoBehaviour
     private Dictionary<DecorationType, string> equippedDecorationIds = new Dictionary<DecorationType, string>();
 
     //선택된 스타트 아이템
-    private ItemData selectedPreGameItem = null;
+    [SerializeField] private ItemData selectedPreGameItem = null;
 
     //아이템 이펙트
     private Dictionary<ItemEffectType, Action> itemEffectActions;
@@ -146,6 +147,17 @@ public class ItemManager : MonoBehaviour
         else
             selectedPreGameItem = item;
 
+        // PlayerDataManager에 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            PlayerDataManager.Instance.SelectPreGameItem(selectedPreGameItem?.itemId ?? "");
+        }
+    }
+
+    //초기 아이템 해제(창이 꺼지는 경우)
+    public void PreGameItemInit()
+    {
+        selectedPreGameItem = null;
         // PlayerDataManager에 저장
         if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
         {
