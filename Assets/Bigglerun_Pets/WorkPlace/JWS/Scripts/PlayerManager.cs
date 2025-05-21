@@ -35,6 +35,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private Slider timerSlider;
 
     public bool isGameStartReady = false;
+    public bool isBattleMode = false;
 
     public static bool IsSettingPlayer()
     {
@@ -94,7 +95,7 @@ public class PlayerManager : MonoBehaviour
 
         InitializeLife();
         InitializeSkillCount();
-        ItemManager.Instance.UseSelectedPreGameItem();
+        //ItemManager.Instance.UseSelectedPreGameItem();
     }
 
     private void Update()
@@ -120,7 +121,7 @@ public class PlayerManager : MonoBehaviour
             actionButton[1].gameObject.SetActive(false);
             actionButton[2].gameObject.SetActive(true);
             ActionTImeStop();
-            actionTimer = new BasicTimer(prepareTimeInterval);
+            actionTimer = isBattleMode ? new BasicTimer(1f) : new BasicTimer(prepareTimeInterval);
             ActionTImeStart();
             stairManager.ResetStiar();
             SetTerrain(stairManager.GetStairObject(currentPlayerFloor).transform.position);
@@ -151,7 +152,7 @@ public class PlayerManager : MonoBehaviour
         Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
             "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
         ActionTImeStart();
-        ScoreManager.Instance.AddStep(); // 추가
+        // ScoreManager.Instance.AddStep(); // 추가
     }
 
     public static void ChangeDistance(float distance)
