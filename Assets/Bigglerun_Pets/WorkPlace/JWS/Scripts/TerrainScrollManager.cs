@@ -15,6 +15,8 @@ public class TerrainScrollManager : MonoBehaviour
     [Header("아이템 설정")]
     [SerializeField] private GameObject spawnItem;
     [Range(0f, 1f)][SerializeField] private float spawnPercent = 0.5f;
+    [Range(0f, 1f)][SerializeField] private float invincibleItemChance = 0.1f;    //05.20 HJ 추가
+
 
     [Header("패턴 설정")]
     [SerializeField] private int maxTilesBetweenEmpty = 1;
@@ -240,10 +242,10 @@ public class TerrainScrollManager : MonoBehaviour
         spitem.transform.localScale = new Vector3(0.25f, 0.75f, 0);
         if (Random.value < spawnPercent)
         {
-            if (Random.value < 0.5f)
+            if (Random.value > invincibleItemChance)
                 spitem.SetItemType("Coin");
             else
-                spitem.SetItemType("Gem");
+                spitem.SetItemType("Wing");
         }
     }
 
