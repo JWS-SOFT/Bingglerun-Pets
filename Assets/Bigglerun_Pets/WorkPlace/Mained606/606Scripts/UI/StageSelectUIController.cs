@@ -200,7 +200,7 @@ public class StageSelectUIController : MonoBehaviour
     private StageInfoUI FindStageInfoUI()
     {
         // 1. FindObjectOfType으로 찾기 시도
-        StageInfoUI infoUI = FindObjectOfType<StageInfoUI>();
+        StageInfoUI infoUI = FindFirstObjectByType<StageInfoUI>();
         if (infoUI != null)
         {
             return infoUI;
@@ -218,7 +218,7 @@ public class StageSelectUIController : MonoBehaviour
         }
         
         // 3. Canvas 하위에서 찾기 시도 (성능 개선)
-        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
         foreach (Canvas canvas in canvases)
         {
             // Canvas의 직접적인 자식들 중에서 찾기

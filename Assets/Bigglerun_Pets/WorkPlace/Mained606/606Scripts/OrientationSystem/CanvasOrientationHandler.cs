@@ -43,7 +43,7 @@ namespace OrientationSystem
             if (canvasScaler == null)
             {
                 Debug.LogWarning("CanvasOrientationHandler: CanvasScaler를 찾을 수 없습니다. Canvas가 UI 컴포넌트인지 확인하세요.");
-                Canvas[] canvases = FindObjectsOfType<Canvas>();
+                Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (Canvas canvas in canvases)
                 {
                     CanvasScaler cs = canvas.GetComponent<CanvasScaler>();

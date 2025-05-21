@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class GameDataDebugDisplay : MonoBehaviour
 {
     private Vector2 scrollPosition;
     private Rect windowRect = new Rect(10, 10, 450, 600); // 기본 크기
-    private bool showDetails = true;
     private bool showItems = true;
     private bool showStages = true;
     private bool showDecorations = true;
@@ -385,7 +385,7 @@ public class GameDataDebugDisplay : MonoBehaviour
     }
     
     // 테스트용 데이터 생성 버튼 클릭 시
-    private void CreateTestData()
+    private async void CreateTestData()
     {
         if (FirebaseManager.Instance == null || !FirebaseManager.Instance.IsAuthenticated)
         {
@@ -395,7 +395,7 @@ public class GameDataDebugDisplay : MonoBehaviour
         
         if (PlayerDataManager.Instance != null)
         {
-            PlayerDataManager.Instance.LoadPlayerDataAsync(FirebaseManager.Instance.UserId);
+            await PlayerDataManager.Instance.LoadPlayerDataAsync(FirebaseManager.Instance.UserId);
         }
     }
 } 

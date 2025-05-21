@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
 
         // 페이더 참조 설정
         if (fader == null)
-            fader = FindObjectOfType<SceneFader>();
+            fader = FindFirstObjectByType<SceneFader>();
     }
 
     private void OnDestroy()
@@ -93,7 +93,7 @@ public class UIManager : MonoBehaviour
         canvas = null; // 씬 전환 시 이전 참조 제거
         if (canvas == null)
         {
-            Canvas[] canvases = FindObjectsOfType<Canvas>();
+            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             foreach (Canvas c in canvases)
             {
                 if (c.gameObject.name.Contains("Canvas") && c.transform.root == c.transform)
@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour
                 if (hud == null)
                 {
                     // 이름에 "HUD"가 포함된 오브젝트를 찾음
-                    Transform[] allTransforms = FindObjectsOfType<Transform>();
+                    Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsSortMode.None);
                     foreach (Transform t in allTransforms)
                     {
                         if (t.name.Contains("HUD") || t.name.Contains("Hud"))
@@ -154,7 +154,7 @@ public class UIManager : MonoBehaviour
             popup = GameObject.Find("PopupUI")?.transform;
             if (popup == null)
             {
-                Transform[] allTransforms = FindObjectsOfType<Transform>();
+                Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsSortMode.None);
                 foreach (Transform t in allTransforms)
                 {
                     if (t.name.Contains("PopupUI") || t.name.Contains("Popup"))
@@ -175,7 +175,7 @@ public class UIManager : MonoBehaviour
         uiController = null;
         if (uiController == null)
         {
-            uiController = FindObjectOfType<UIController>();
+            uiController = FindFirstObjectByType<UIController>();
             if (uiController != null)
             {
                 Debug.Log("[UIManager] UIController 자동 찾기 성공");
@@ -195,7 +195,7 @@ public class UIManager : MonoBehaviour
                     else
                     {
                         // LobbyUI나 UIController가 포함된 이름의 오브젝트 찾기
-                        Transform[] allTransforms = FindObjectsOfType<Transform>();
+                        Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsSortMode.None);
                         foreach (Transform t in allTransforms)
                         {
                             if (t.name.Contains("LobbyUI") || t.name.Contains("UIController"))
@@ -254,7 +254,7 @@ public class UIManager : MonoBehaviour
             loadingScreen = GameObject.Find("LoadingScreen");
             if (loadingScreen == null)
             {
-                GameObject[] allObjects = FindObjectsOfType<GameObject>();
+                GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
                 foreach (GameObject obj in allObjects)
                 {
                     if (obj.name.Contains("Loading") && obj.name.Contains("Screen"))
@@ -327,7 +327,7 @@ public class UIManager : MonoBehaviour
         // 페이더 참조 설정
         if (fader == null)
         {
-            fader = FindObjectOfType<SceneFader>();
+            fader = FindFirstObjectByType<SceneFader>();
             if (fader != null)
             {
                 Debug.Log("[UIManager] SceneFader 자동 찾기 성공");
@@ -678,7 +678,7 @@ public class UIManager : MonoBehaviour
         }
         
         // 3. 컨트롤러로 찾기
-        StageSelectUIController[] controllers = FindObjectsOfType<StageSelectUIController>(true);
+        StageSelectUIController[] controllers = FindObjectsByType<StageSelectUIController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         if (controllers.Length > 0)
         {
             stageSelectUI = controllers[0].gameObject;
