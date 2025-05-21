@@ -49,6 +49,7 @@ public class ReadyUI : MonoBehaviour
             if (IsAllToggleOff())
                 SelectedItemName = null;
         }
+        ItemManager.Instance.SelectPreGameItem(SelectedItemName);
 
         Debug.Log("선택된 아이템: " + (SelectedItemName ?? "없음"));
     }

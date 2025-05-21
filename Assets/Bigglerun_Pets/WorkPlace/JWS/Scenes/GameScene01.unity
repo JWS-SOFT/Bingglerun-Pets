@@ -2624,7 +2624,7 @@ GameObject:
   - component: {fileID: 7338965521923535066}
   - component: {fileID: 65943493263029916}
   m_Layer: 5
-  m_Name: Button Circle - Blue
+  m_Name: RetryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2745,9 +2745,9 @@ RectTransform:
   - {fileID: 2432565917743746248}
   m_Father: {fileID: 2249943609044173957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -65}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 130, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &104886096502484136
@@ -4581,7 +4581,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &2249943609030360523
 GameObject:
   m_ObjectHideFlags: 0
@@ -4820,8 +4820,8 @@ RectTransform:
   - {fileID: 2537164851867659205}
   - {fileID: 2249943609044241117}
   - {fileID: 6441473156284169883}
-  - {fileID: 1229339094694405780}
   - {fileID: 2563415156030462920}
+  - {fileID: 1229339094694405780}
   - {fileID: 987743375010191644}
   - {fileID: 8629480492772346186}
   - {fileID: 443253031873865810}
@@ -5696,7 +5696,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2537164851867659205}
   m_Layer: 5
-  m_Name: Popup - Basic
+  m_Name: Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5996,7 +5996,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4676883152591687814}
   m_Layer: 5
-  m_Name: Reward
+  m_Name: GoldReward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12226,9 +12226,9 @@ RectTransform:
   - {fileID: 4798762131148952070}
   m_Father: {fileID: 443253031873865810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 113.333336, y: -80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &4784865689996498011
@@ -12678,7 +12678,7 @@ GameObject:
   - component: {fileID: 3360232391390810523}
   - component: {fileID: 5445565039718946781}
   m_Layer: 5
-  m_Name: Button Circle - Purple
+  m_Name: LobbyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12702,9 +12702,9 @@ RectTransform:
   - {fileID: 7690734315635584393}
   m_Father: {fileID: 2249943609044173957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83.333336, y: -65}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 130, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &5445565039718946781
@@ -13006,7 +13006,7 @@ GameObject:
   - component: {fileID: 1642014009586810522}
   - component: {fileID: 7657269603015881340}
   m_Layer: 5
-  m_Name: Score
+  m_Name: ScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13658,12 +13658,12 @@ GameObject:
   - component: {fileID: 4275772234590777157}
   - component: {fileID: 6802090420255156483}
   m_Layer: 5
-  m_Name: Button Circle - Green
+  m_Name: MenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &6802090421125496660
 GameObject:
   m_ObjectHideFlags: 0
@@ -13881,7 +13881,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7169589312982562317
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14611,12 +14611,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8960488742587337379}
   m_Layer: 5
-  m_Name: Reward
+  m_Name: DiamondReward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &8140005855840399436
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14961,7 +14961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -80}
+  m_AnchoredPosition: {x: 440, y: -80}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9046562053437999952
@@ -15062,7 +15062,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Loby
+  m_text: Lobby
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9fa5016cb7e534c0aa0c0adb2ecf9124, type: 2}
   m_sharedMaterial: {fileID: 6098576539282327867, guid: 9fa5016cb7e534c0aa0c0adb2ecf9124, type: 2}
@@ -15089,7 +15089,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.75
+  m_fontSize: 33.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
