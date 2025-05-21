@@ -60,7 +60,7 @@ public class StairManager : MonoBehaviour
                     if (Random.value > invincibleItemChance)
                         stairScript.SetItemPrefab("Coin");
                     else
-                        stairScript.SetItemPrefab("Gem");
+                        stairScript.SetItemPrefab("Wing");
                 }
                 stairs.Add(stairScript);
             }

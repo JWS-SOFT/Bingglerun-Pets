@@ -77,7 +77,7 @@ public class SpawnItem : MonoBehaviour
                     //05.14 HJ 추가
                     if (currentItemType == spriteNameType.Coin)
                         PlayerManager.ChangeCoin();
-                    else if (currentItemType == spriteNameType.Gem)
+                    else if (currentItemType == spriteNameType.Wing)
                         ItemManager.Instance.UseUsableItem("item004");
                     //Debug.Log("플레이어와 접촉");
                 }
