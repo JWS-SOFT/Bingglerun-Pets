@@ -137,14 +137,14 @@ public class ItemManager : MonoBehaviour
     public void SelectPreGameItem(string itemId)
     {
         if (!ownedUsableItems.TryGetValue(itemId, out int count) || count <= 0) return;
-
+        
         ItemData item = GetUsableItemById(itemId);
         if (item == null || item.useTiming != ItemUseTiming.PreGame) return;
 
         if (selectedPreGameItem?.itemId == itemId)
             selectedPreGameItem = null; //기존 아이템 선택시 해제
         else
-            selectedPreGameItem = item;     
+            selectedPreGameItem = item;
 
         // PlayerDataManager에 저장
         if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)

@@ -49,7 +49,6 @@ public class ConfirmUI : MonoBehaviour
                 break;
             case ItemType.UsableItem:
                 result = ShopManager.Instance.TryBuyItem(itemData.itemId, useCash: useDiamondsToggle.isOn);
-                Debug.Log($"{itemData.itemName} : {ItemManager.Instance.GetUsableItemCount(itemData.itemId)}개");
                 break;
             default:
                 result = false;
