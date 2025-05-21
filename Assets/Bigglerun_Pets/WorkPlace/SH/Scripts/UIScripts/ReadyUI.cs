@@ -25,6 +25,7 @@ public class ReadyUI : MonoBehaviour
     {
         GameManager.Instance.StateMachine.ChangeState(GameState.CompetitiveSetup);
         SetItemCount();
+        SetInit();
     }
 
     //비활성화 될 때 게임 스테이트 변경
@@ -70,5 +71,14 @@ public class ReadyUI : MonoBehaviour
         {
             itemCounts[i].text = ItemManager.Instance.GetUsableItemCount(itemNames[i]).ToString();
         }
+    }
+
+    private void SetInit()
+    {
+        foreach (var toggle in itemToggles)
+        {
+            toggle.isOn = false;
+        }
+        ItemManager.Instance.PreGameItemInit();
     }
 }

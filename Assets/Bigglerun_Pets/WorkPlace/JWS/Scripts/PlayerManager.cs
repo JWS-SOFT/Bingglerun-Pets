@@ -95,7 +95,11 @@ public class PlayerManager : MonoBehaviour
 
         InitializeLife();
         InitializeSkillCount();
-        ItemManager.Instance.UseSelectedPreGameItem();
+        if (GameManager.Instance.StateMachine.CurrentState == GameState.CompetitionInGame)
+        {
+            ItemManager.Instance.UseSelectedPreGameItem();
+        }
+
     }
 
     private void Update()
