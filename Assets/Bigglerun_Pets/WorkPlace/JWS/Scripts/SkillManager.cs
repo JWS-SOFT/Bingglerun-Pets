@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -68,7 +69,7 @@ public class SkillManager : MonoBehaviour
                 DestroyObstacles(currentSkill.power);
                 break;
             case PlayerSkillType.CatSuperJumpInvincible:
-                ApplyJump(currentSkill.power);
+                ApplyJump(/*currentSkill.power*/100f);
                 SetInvincibility(currentSkill.duration);
                 break;
             case PlayerSkillType.HamsterRollInvincible:
@@ -78,20 +79,52 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    //05.21 HJ 수정
+    //강아지(장애물 파괴)
     private void DestroyObstacles(float range)
     {
         // 전방 범위 내 장애물 제거 처리
         Debug.Log($"장애물 {range} 범위로 파괴!");
     }
 
+    //점프(고양이)
     private void ApplyJump(float jumpForce)
     {
         Debug.Log($"점프력 {jumpForce} 만큼 점프!");
+
+        var player = PlayerManager.Instance.PlayerController;
+
+        if(player != null && !player.IsRecovering)
+        {
+            StartCoroutine(SuperJumpRoutine(player, jumpForce));
+        }
     }
 
+    private IEnumerator SuperJumpRoutine(PlayerController player, float jumpForce)
+    {
+        player.JumpButtonClick();
+
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Vector3 originalPosition = player.transform.position;
+
+        while(elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float height = Mathf.Sin(t * Mathf.PI) * jumpForce;
+            Vector3 position = originalPosition + Vector3.up * height;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    //구르기(햄스터)
     private void StartRolling(float speed)
     {
         Debug.Log($"속도 {speed}로 굴러가는 중!");
+
+
     }
 
     private void SetInvincibility(float seconds)
