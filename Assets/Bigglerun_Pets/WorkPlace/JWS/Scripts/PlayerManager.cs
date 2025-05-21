@@ -44,12 +44,18 @@ public class PlayerManager : MonoBehaviour
 
     //05.15 HJ 추가
     private PlayerController playerController;
+    public PlayerController PlayerController => playerController;
 
     [SerializeField] private int maxLife = 3;
     private int currentLife = 0;
 
     [SerializeField] private int maxSkillCount = 3;
     private int currentSkillCount = 0;
+    public int CurrentSkillCount
+    {
+        get => currentSkillCount;
+        private set => currentSkillCount = value;
+    }
 
     private bool isInvincible = false;
 
@@ -203,7 +209,12 @@ public class PlayerManager : MonoBehaviour
 
     public static void ActiveSkill()
     {
+        if (Instance.CurrentSkillCount <= 0) return;
+
         Instance.skillManager.ActivateSkill(Instance.playerData.playerId);
+
+        Instance.CurrentSkillCount--;
+        Debug.Log($"현재 스킬 횟수: {Instance.CurrentSkillCount}");
     }
 
 

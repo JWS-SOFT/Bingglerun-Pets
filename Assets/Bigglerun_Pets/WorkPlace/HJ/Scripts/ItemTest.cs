@@ -20,20 +20,27 @@ public class ItemTest : MonoBehaviour
             //foreach (var item in shopItems)
             //    Debug.Log($"{item.itemName} | Gold: {item.goldPrice}, Cash: {item.cashPrice}");
 
-            ItemManager.Instance.SelectPreGameItem(itemId);
-            Debug.Log($"{itemId} 초기 아이템 설정");
+            //ItemManager.Instance.SelectPreGameItem(itemId);
+            //Debug.Log($"{itemId} 초기 아이템 설정");
+
+            PlayerDataManager.Instance.UnlockCharacter(itemId);
+            Debug.Log($"{itemId} 해금");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2)) //골드 구매 테스트
         {
-            bool result = ShopManager.Instance.TryBuyItem("item001", useCash: false);
-            Debug.Log("골드 구매 성공 여부: " + result);
+            //bool result = ShopManager.Instance.TryBuyItem("item001", useCash: false);
+            //Debug.Log("골드 구매 성공 여부: " + result);
+
+            Debug.Log($"{itemId} 해금여부 : " + PlayerDataManager.Instance.IsCharacterUnlocked(itemId));
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3)) //캐시 구매 테스트
         {
-            bool result = ShopManager.Instance.TryBuyItem("item002", useCash: true);
-            Debug.Log("캐시 구매 성공 여부: " + result);
+            //bool result = ShopManager.Instance.TryBuyItem("item002", useCash: true);
+            //Debug.Log("캐시 구매 성공 여부: " + result);
+
+            Debug.Log($"현재 캐릭터: {PlayerDataManager.Instance.CurrentPlayerData.currentCharacter}");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha4)) //아이템 사용 테스트
