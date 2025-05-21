@@ -49,3 +49,10 @@ public enum DecorationType
     Body,
     Shoes
 }
+
+public enum ItemType
+{
+    Decoration,
+    Skin,
+    UsableItem
+}

@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c86f3c805e695498fbb67ce0c7b1fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemType: 1
   decoItemData:
     itemId: 
     itemName: 
