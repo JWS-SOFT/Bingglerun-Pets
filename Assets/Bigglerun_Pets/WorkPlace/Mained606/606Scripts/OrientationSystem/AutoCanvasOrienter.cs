@@ -85,7 +85,7 @@ namespace OrientationSystem
         {
             if (canvasesToAdjust == null || canvasesToAdjust.Length == 0 || findAllCanvasesIfEmpty)
             {
-                canvasesToAdjust = FindObjectsOfType<Canvas>();
+                canvasesToAdjust = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
                 Debug.Log($"AutoCanvasOrienter: {canvasesToAdjust.Length}개의 캔버스를 자동 발견");
             }
 
