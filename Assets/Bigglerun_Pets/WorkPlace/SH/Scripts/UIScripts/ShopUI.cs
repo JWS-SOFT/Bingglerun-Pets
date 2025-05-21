@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class ShopUI : MonoBehaviour
 
     [SerializeField] private GameObject accessaryPrefab;
     [SerializeField] private GameObject skinPrefab;
+    [SerializeField] private GameObject startItemPrefab;
     [SerializeField] private Transform contents;
     public Image itemImage;
     public TextMeshProUGUI itemName;
@@ -64,7 +66,7 @@ public class ShopUI : MonoBehaviour
         // 구매/사용한 아이템이 목록에 표시되는 아이템일 때 새로고침
         if (ItemManager.Instance.IsUsableItem(itemId) && mainTab[0].gameObject.activeSelf)
         {
-            RefreshItemList();
+            RefreshDecorationList();
         }
     }
 
@@ -83,7 +85,7 @@ public class ShopUI : MonoBehaviour
     {
         // 기존 목록 클리어 후 다시 로드
         ContentsClear();
-        AccessaryListLoad();
+        ItemListLoad();
     }
 
     // 장식 아이템 목록 새로고침
@@ -120,12 +122,20 @@ public class ShopUI : MonoBehaviour
             case 0:
                 mainTab[0].gameObject.SetActive(true);
                 mainTab[1].gameObject.SetActive(false);
-                RefreshItemList();
+                mainTab[2].gameObject.SetActive(false);
+                RefreshDecorationList();
                 break;
             case 1:
                 mainTab[0].gameObject.SetActive(false);
                 mainTab[1].gameObject.SetActive(true);
-                RefreshDecorationList();
+                mainTab[2].gameObject.SetActive(false);
+                //RefreshDecorationList();
+                break;
+            case 2:
+                mainTab[0].gameObject.SetActive(false);
+                mainTab[1].gameObject.SetActive(false);
+                mainTab[2].gameObject.SetActive(true);
+                RefreshItemList();
                 break;
         }
     }
@@ -142,23 +152,66 @@ public class ShopUI : MonoBehaviour
         selectedItemIndex = clickedObj.transform.GetSiblingIndex();
 
         //Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
-        var item = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>();
-        GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
-        confirm.SetActive(true);
-        confirm.GetComponent<ConfirmUI>().decoItemData = item.decoItemData;
+        //var item = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>();
+
+        //GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
+        //confirm.SetActive(true);
+        //confirm.GetComponent<ConfirmUI>().decoItemData = item.decoItemData;
         //Debug.Log($"confirmUI.decoItemData.itemName = {confirm.GetComponent<ConfirmUI>().decoItemData?.itemName}");
+
+        if (ShopManager.Instance.accessaryItemList.Count > selectedItemIndex && ShopManager.Instance.accessaryItemList[selectedItemIndex] != null)
+        {
+            var go = ShopManager.Instance.accessaryItemList[selectedItemIndex];
+            if (go != null)
+            {
+                AccessaryItem accessaryItem = go.GetComponent<AccessaryItem>();
+                if (accessaryItem != null)
+                {
+                    GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
+                    confirm.SetActive(true);
+                    confirm.GetComponent<ConfirmUI>().decoItemData = accessaryItem.decoItemData;
+                    confirm.GetComponent<ConfirmUI>().itemType = ItemType.Decoration;
+                    return;
+                }
+            }
+        }
+
+        if (ShopManager.Instance.startItemList.Count > selectedItemIndex && ShopManager.Instance.startItemList[selectedItemIndex] != null)
+        {
+            var go = ShopManager.Instance.startItemList[selectedItemIndex];
+            if (go != null)
+            {
+                StartItem startItem = go.GetComponent<StartItem>();
+                if (startItem != null)
+                {
+                    GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
+                    confirm.SetActive(true);
+                    confirm.GetComponent<ConfirmUI>().itemData = startItem.itemData;
+                    confirm.GetComponent<ConfirmUI>().itemType = ItemType.UsableItem;
+                    return;
+                }
+            }
+        }
+
     }
 
     private void ContentsClear()
     {
-        // 기존 아이템 리스트 제거
+        // 액세서리 아이템 리스트 정리
         foreach (var item in ShopManager.Instance.accessaryItemList)
         {
             Destroy(item);
         }
         ShopManager.Instance.accessaryItemList.Clear();
-        
-        // 컨텐츠 영역의 모든 자식 오브젝트 제거
+
+        // 스타트 아이템 리스트 정리
+        foreach (var item in ShopManager.Instance.startItemList)
+        {
+            Destroy(item);
+        }
+        ShopManager.Instance.startItemList.Clear();
+
+        // 콘텐츠 영역 자식 오브젝트 정리
         for (int i = contents.childCount - 1; i >= 0; i--)
         {
             Destroy(contents.GetChild(i).gameObject);
@@ -178,5 +231,16 @@ public class ShopUI : MonoBehaviour
     private void SkinListLoad()
     {
         // TODO
+    }
+
+    private void ItemListLoad()
+    {
+        var itemList = ItemManager.Instance.GetFilteredUsableItems(showInShopOnly: true);
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            GameObject itemPrefab = Instantiate(startItemPrefab, contents);
+            itemPrefab.GetComponent<StartItem>().itemData = itemList[i];
+            ShopManager.Instance.startItemList.Add(itemPrefab);
+        }
     }
 }
