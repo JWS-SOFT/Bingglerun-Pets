@@ -97,7 +97,8 @@ public class SkillManager : MonoBehaviour
     private void SetInvincibility(float seconds)
     {
         Debug.Log($"무적 상태 {seconds}초 동안 유지");
-        // 실제 무적 로직 연결
+
+        PlayerManager.Instance.SetInvincible(seconds);
     }
 }
 
