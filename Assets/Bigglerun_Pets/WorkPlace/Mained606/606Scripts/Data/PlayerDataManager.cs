@@ -139,13 +139,23 @@ public class PlayerDataManager : MonoBehaviour
         if (CurrentPlayerData.items == null)
         {
             Debug.Log("[PlayerDataManager] 아이템 데이터 Dictionary 초기화");
+            
+            // 새 버전의 InitializeItemsFromList 호출 (새 형식과 이전 형식 모두 처리)
             CurrentPlayerData.InitializeItemsFromList();
             
+            // 여전히 초기화되지 않은 경우 새로 생성
             if (CurrentPlayerData.items == null)
             {
                 CurrentPlayerData.items = new Dictionary<string, int>();
+                
+                // List 업데이트 - 이제 새 SerializableItemData 형식을 사용
                 CurrentPlayerData.UpdateItemsListFromDictionary();
+                Debug.Log("[PlayerDataManager] 빈 아이템 Dictionary와 List 생성 완료");
             }
+            
+            // 아이템 리스트 형식 검증 (세이브/로드 직후 강제 업데이트)
+            CurrentPlayerData.UpdateItemsListFromDictionary();
+            Debug.Log($"[PlayerDataManager] 아이템 리스트 형식 확인 및 업데이트 완료 - 항목 수: {CurrentPlayerData.itemsList.Count}");
         }
         
         // 스테이지 데이터 추가 검증
@@ -160,7 +170,7 @@ public class PlayerDataManager : MonoBehaviour
             }
         }
         
-        Debug.Log($"[PlayerDataManager] Dictionary 초기화 완료 - 스테이지 데이터: {(CurrentPlayerData.storyStages != null ? CurrentPlayerData.storyStages.Count : 0)}개");
+        Debug.Log($"[PlayerDataManager] Dictionary 초기화 완료 - 스테이지 데이터: {(CurrentPlayerData.storyStages != null ? CurrentPlayerData.storyStages.Count : 0)}개, 아이템 데이터: {(CurrentPlayerData.items != null ? CurrentPlayerData.items.Count : 0)}개");
     }
     
     /// <summary>
@@ -177,9 +187,28 @@ public class PlayerDataManager : MonoBehaviour
         // 타임스탬프 업데이트
         CurrentPlayerData.lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         
+        // 데이터 상태 확인 및 누락된 Dictionary 초기화
+        if (CurrentPlayerData.storyStages == null)
+        {
+            Debug.LogWarning("[PlayerDataManager] 저장 전 스테이지 Dictionary가 null입니다. 초기화합니다.");
+            CurrentPlayerData.storyStages = new Dictionary<string, StageData>();
+        }
+        
+        if (CurrentPlayerData.items == null)
+        {
+            Debug.LogWarning("[PlayerDataManager] 저장 전 아이템 Dictionary가 null입니다. 초기화합니다.");
+            CurrentPlayerData.items = new Dictionary<string, int>();
+        }
+        
+        // 로그 추가
+        Debug.Log($"[PlayerDataManager] 저장 전 데이터 상태 - 아이템 수: {CurrentPlayerData.items.Count}, 스테이지 수: {CurrentPlayerData.storyStages.Count}");
+        
         // Dictionary에서 List 업데이트 확인
         CurrentPlayerData.UpdateListFromDictionary();
         CurrentPlayerData.UpdateItemsListFromDictionary();
+        
+        // 로그 추가
+        Debug.Log($"[PlayerDataManager] Dictionary→List 변환 완료 - 아이템 리스트 수: {CurrentPlayerData.itemsList.Count}, 스테이지 리스트 수: {CurrentPlayerData.storyStagesList.Count}");
         
         if (CurrentPlayerData.storyStages != null)
         {
