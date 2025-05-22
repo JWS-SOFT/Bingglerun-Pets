@@ -150,7 +150,6 @@ public class GameDataDebugDisplay : MonoBehaviour
             
             // 통계 데이터
             GUILayout.Label("통계", headerStyle);
-            GUILayout.Label($"최고 점수: {data.bestScore}", labelStyle);
             GUILayout.Label($"총 플레이 횟수: {data.totalPlayCount}", labelStyle);
             GUILayout.Label($"최고 스테이지: {data.highestStage}", labelStyle);
             GUILayout.Label($"총 별 개수: {data.totalStars}", labelStyle);

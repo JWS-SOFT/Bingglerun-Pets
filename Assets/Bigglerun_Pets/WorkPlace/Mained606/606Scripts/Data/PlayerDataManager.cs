@@ -545,77 +545,76 @@ public class PlayerDataManager : MonoBehaviour
     /// </summary>
     public void UpdateStageResult(string stageId, int score, int stars)
     {
-        if (!IsDataLoaded || string.IsNullOrEmpty(stageId)) return;
+        Debug.Log($"[PlayerDataManager] 스테이지 결과 업데이트: {stageId}, 점수: {score}, 별: {stars}");
         
-        Debug.Log($"UpdateStageResult 호출: 스테이지 {stageId}, 점수 {score}, 별 {stars}개");
-        
-        if (CurrentPlayerData.storyStages == null)
-            CurrentPlayerData.storyStages = new Dictionary<string, StageData>();
-            
-        if (!CurrentPlayerData.storyStages.ContainsKey(stageId))
+        if (!IsDataLoaded || string.IsNullOrEmpty(stageId))
         {
-            Debug.Log($"새 스테이지 데이터 생성: {stageId}");
-            CurrentPlayerData.storyStages[stageId] = new StageData
+            Debug.LogError("[PlayerDataManager] 데이터가 로드되지 않았거나 스테이지 ID가 유효하지 않습니다.");
+            return;
+        }
+        
+        EnsureDictionariesInitialized();
+        
+        // 스테이지 데이터 가져오기 또는 생성
+        if (!CurrentPlayerData.storyStages.TryGetValue(stageId, out StageData stageData))
+        {
+            stageData = new StageData
             {
                 stageId = stageId,
-                stars = stars,
-                highScore = score,
-                isUnlocked = true,
-                completedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                stars = 0,
+                highScore = 0,
+                isUnlocked = false
             };
+            CurrentPlayerData.storyStages[stageId] = stageData;
+            Debug.Log($"[PlayerDataManager] 새 스테이지 데이터 생성: {stageId}");
+        }
+        
+        // 스테이지별 베스트 스코어 업데이트 (스토리모드 전용)
+        if (score > stageData.highScore)
+        {
+            Debug.Log($"스테이지 {stageId} 최고점수 갱신: {stageData.highScore} -> {score}");
+            stageData.highScore = score;
+        }
             
-            // 새 스테이지의 별은 무조건 총 별 개수에 추가
-            CurrentPlayerData.totalStars += stars;
-            Debug.Log($"새 스테이지의 별 {stars}개 추가, 총 별 개수: {CurrentPlayerData.totalStars}");
+        // 별 개수 업데이트 로직
+        if (stars > stageData.stars)
+        {
+            // 새로 획득한 별 수 계산
+            int newStars = stars - stageData.stars;
+            
+            Debug.Log($"별 개수 갱신: {stageData.stars} -> {stars} (신규 {newStars}개)");
+            
+            // 별 업데이트
+            stageData.stars = stars;
+            
+            // 총 별 개수 업데이트
+            CurrentPlayerData.totalStars += newStars;
+            Debug.Log($"총 별 개수 업데이트: {CurrentPlayerData.totalStars}");
             OnTotalStarsChanged?.Invoke(CurrentPlayerData.totalStars);
         }
         else
         {
-            StageData stageData = CurrentPlayerData.storyStages[stageId];
-            Debug.Log($"기존 스테이지 데이터: 별 {stageData.stars}개, 최고점수 {stageData.highScore}");
-            
-            // 더 높은 점수만 저장
-            if (score > stageData.highScore)
-            {
-                Debug.Log($"최고점수 갱신: {stageData.highScore} -> {score}");
-                stageData.highScore = score;
-            }
-                
-            // 별 개수 업데이트 로직
-            if (stars > stageData.stars)
-            {
-                // 새로 획득한 별 수 계산
-                int newStars = stars - stageData.stars;
-                
-                Debug.Log($"별 개수 갱신: {stageData.stars} -> {stars} (신규 {newStars}개)");
-                
-                // 별 업데이트
-                stageData.stars = stars;
-                
-                // 총 별 개수 업데이트
-                CurrentPlayerData.totalStars += newStars;
-                Debug.Log($"총 별 개수 업데이트: {CurrentPlayerData.totalStars}");
-                OnTotalStarsChanged?.Invoke(CurrentPlayerData.totalStars);
-            }
-            else
-            {
-                Debug.Log($"별 개수 유지: {stageData.stars}개 (획득 {stars}개)");
-            }
-            
-            stageData.completedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            Debug.Log($"별 개수 유지: {stageData.stars}개 (획득 {stars}개)");
         }
         
-        // 전체 통계 업데이트
-        if (score > CurrentPlayerData.bestScore)
-        {
-            Debug.Log($"전체 최고점수 갱신: {CurrentPlayerData.bestScore} -> {score}");
-            CurrentPlayerData.bestScore = score;
-        }
+        stageData.completedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        
+        // 스토리모드에서는 전체 베스트 스코어 업데이트하지 않음
+        // 경쟁모드는 별도 메서드 사용
             
         CurrentPlayerData.totalPlayCount++;
         
         // 저장
         _ = SavePlayerDataAsync();
+    }
+    
+    /// <summary>
+    /// 스테이지별 베스트 스코어 가져오기 (스토리모드용)
+    /// </summary>
+    public int GetStageBestScore(string stageId)
+    {
+        StageData stageData = GetStageData(stageId);
+        return stageData?.highScore ?? 0;
     }
     
     /// <summary>
