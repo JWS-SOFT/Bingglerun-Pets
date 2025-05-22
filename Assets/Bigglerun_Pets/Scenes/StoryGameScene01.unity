@@ -719,65 +719,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1918118696205118173, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1918118696205118173, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1918118696205118173, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 375
-      objectReference: {fileID: 0}
-    - target: {fileID: 1918118696205118173, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -65
-      objectReference: {fileID: 0}
     - target: {fileID: 2246461604754610448, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 977117877}
-    - target: {fileID: 5724006799209693036, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5724006799209693036, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5724006799209693036, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 125
-      objectReference: {fileID: 0}
-    - target: {fileID: 5724006799209693036, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -65
-      objectReference: {fileID: 0}
-    - target: {fileID: 6222356153719884426, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6222356153719884426, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6222356153719884426, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 6222356153719884426, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -80
-      objectReference: {fileID: 0}
     - target: {fileID: 8039773777952522118, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
       propertyPath: m_Name
       value: GameOverUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 8039773777952522118, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8127618660243310232, guid: 445e6ed9401154a4883134fd5b4bde43, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target

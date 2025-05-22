@@ -11,6 +11,16 @@ public class GameOverUITest : MonoBehaviour
 
     private int currentStars, currentCoins;
 
+    private void OnValidate()
+    {
+        Animator[] animators = GetComponentsInChildren<Animator>(true);
+        foreach (var animator in animators)
+        {
+            if (animator.updateMode != AnimatorUpdateMode.UnscaledTime)
+                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+    }
+
     private void OnEnable()
     {
         totalScore = ScoreManager.Instance.GetScore();
