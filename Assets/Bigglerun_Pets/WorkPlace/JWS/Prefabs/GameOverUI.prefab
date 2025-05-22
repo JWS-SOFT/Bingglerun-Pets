@@ -434,6 +434,18 @@ MonoBehaviour:
           m_StringArgument: LobbyScene
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3950110767106004811}
+        m_TargetAssemblyTypeName: GameOverUITest, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &5882736632181658507
 Animator:
   serializedVersion: 7
@@ -2424,6 +2436,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: StoryGameScene01
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3950110767106004811}
+        m_TargetAssemblyTypeName: GameOverUITest, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!95 &7486664494060103187
@@ -7943,6 +7967,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: LobbyScene
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3950110767106004811}
+        m_TargetAssemblyTypeName: GameOverUITest, Assembly-CSharp
+        m_MethodName: ResetScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!95 &8835892705743768936
