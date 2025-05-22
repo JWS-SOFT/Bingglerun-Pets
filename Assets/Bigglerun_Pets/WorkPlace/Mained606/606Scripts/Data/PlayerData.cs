@@ -88,9 +88,8 @@ public class PlayerData
     
     // 통계 데이터
     public int totalPlayCount;
-    public int bestScore;
     public int totalCoinsCollected;
-    public int competitiveBestScore;
+    public int competitiveBestScore; // 경쟁모드 전용 베스트 스코어
     
     // 마지막 업데이트 시간
     public long lastUpdateTimestamp;
@@ -263,8 +262,8 @@ public class PlayerData
             soundEnabled = true,
             vibrationEnabled = true,
             totalPlayCount = 0,
-            bestScore = 0,
             totalCoinsCollected = 0,
+            competitiveBestScore = 0,
             lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         };
         
