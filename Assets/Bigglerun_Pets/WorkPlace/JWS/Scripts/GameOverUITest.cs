@@ -67,4 +67,9 @@ public class GameOverUITest : MonoBehaviour
             rewardItems[0].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentCoins.ToString();
         }
     }
+
+    public void ResetScore()
+    {
+        ScoreManager.Instance.ResetScore();
+    }
 }
