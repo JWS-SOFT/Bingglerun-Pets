@@ -6,7 +6,7 @@ public class StageClearUITest : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI totalScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
-    [SerializeField] private Transform[] rewardStars;
+    [SerializeField] private GameObject[] rewardStars;
     [SerializeField] private Sprite goldStar;
     [SerializeField] private GameObject[] rewardItems;
     [SerializeField] private float totalScore;
@@ -29,11 +29,10 @@ public class StageClearUITest : MonoBehaviour
         currentStars = ScoreManager.Instance.GetStars();
         currentCoins = ScoreManager.Instance.GetCoin();
 
-        Debug.Log($"GameOverUI - 점수: {totalScore}, 별: {currentStars}개, 코인: {currentCoins}개");
-
+        Debug.Log($"StageClearUI - 점수: {totalScore}, 별: {currentStars}개, 코인: {currentCoins}개");
         for (int i = 0; i < currentStars; i++)
         {
-            rewardStars[i].GetChild(1).GetComponent<Image>().sprite = goldStar;
+            rewardStars[i].transform.GetChild(1).GetComponent<Image>().sprite = goldStar;
         }
         // 경쟁 모드 점수 업데이트 (기존 점수 시스템)
         PlayerDataManager.Instance.UpdateCompetitiveBestScore((int)totalScore);
@@ -72,5 +71,10 @@ public class StageClearUITest : MonoBehaviour
             rewardItems[0].transform.GetChild(0).GetComponent<Image>().material = null;
             rewardItems[0].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentCoins.ToString();
         }
+    }
+
+    public void ResetScore()
+    {
+        ScoreManager.Instance.ResetScore();
     }
 }
