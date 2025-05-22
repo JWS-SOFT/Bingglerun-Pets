@@ -127,6 +127,7 @@ public class TerrainScrollManager : MonoBehaviour
         foreach (var terrain in terrainPool)
         {
             terrain.SetActive(false);
+            // Destroy(terrain);
         }
 
         // 거리 초기화도 함께 하고 싶으면 추가
