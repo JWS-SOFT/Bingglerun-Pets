@@ -15,11 +15,26 @@ public class CharacterUI : MonoBehaviour
 
     private void OnEnable()
     {
+        // 플레이어 데이터에서 현재캐릭터 로드
         currentCharacter = PlayerDataManager.Instance.CurrentPlayerData.currentCharacter;
-        if(currentCharacter == null)
+
+        // 없거나 비어있으면 기본 캐릭터를 dog로 세팅
+        if (string.IsNullOrEmpty(currentCharacter))
         {
             currentCharacter = "dog";
             PlayerDataManager.Instance.SelectCharacter("dog");
+        }
+
+        // 해당 캐릭터가 인덱스 몇번째인지 검사
+        int index = characterNames.IndexOf(currentCharacter);
+
+        if (index >= 0 && index < toggleList.Count)
+        {
+            // 해당 인덱스의 토글을 On으로 설정하고, 나머지는 Off
+            for (int i = 0; i < toggleList.Count; i++)
+            {
+                toggleList[i].isOn = (i == index);
+            }
         }
     }
 
