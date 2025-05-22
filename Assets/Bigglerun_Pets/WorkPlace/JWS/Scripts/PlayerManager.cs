@@ -79,8 +79,8 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         SetPlayMode(false);
-        //playerData = PlayerDataManager.Instance.CurrentPlayerData;
-        playerData = PlayerData.CreateDefault("cat");
+        playerData = PlayerDataManager.Instance.CurrentPlayerData;
+        //playerData = PlayerData.CreateDefault("hamster");
         if (!PlayMode)
         {
             floorText.text = "Floor\n" + currentPlayerFloor;
@@ -211,10 +211,10 @@ public class PlayerManager : MonoBehaviour
     {
         if (Instance.CurrentSkillCount <= 0) return;
 
-        Instance.skillManager.ActivateSkill(Instance.playerData.playerId);
+        Instance.skillManager.ActivateSkill(Instance.playerData.currentCharacter);
 
         Instance.CurrentSkillCount--;
-        Debug.Log($"현재 스킬 횟수: {Instance.CurrentSkillCount}");
+        Debug.Log($"{Instance.playerData.currentCharacter} 현재 스킬 횟수: {Instance.CurrentSkillCount}");
     }
 
 
