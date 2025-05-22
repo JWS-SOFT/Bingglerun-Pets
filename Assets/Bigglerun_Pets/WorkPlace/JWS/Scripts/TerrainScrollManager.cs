@@ -44,15 +44,24 @@ public class TerrainScrollManager : MonoBehaviour
         for (int i = 0; i < poolSize; i++)
         {
             Vector3 pos = lastTerranPosition + new Vector3(i * terrainWidth, 0, 0);
-            GameObject obj = Instantiate(terrainPrefab, pos, Quaternion.identity, transform);
+            GameObject obj;
+
+            if (terrainPool.Count < poolSize)
+            {
+                // 새로 생성
+                obj = Instantiate(terrainPrefab, pos, Quaternion.identity, transform);
+            }
+            else
+            {
+                // 풀에서 꺼내 재사용
+                obj = terrainPool.Dequeue();
+                obj.transform.position = pos;
+            }
+
             terrainPool.Enqueue(obj);
 
             bool first = i > 5;
-            // 타일/빈공간 설정
             SetTileActive(obj, spawnPattern[i], first);
-
-            // 장애물 생성 (주석 처리된 상태면 유지)
-            // SpawnObstacleOnTerrain(obj, terrainIndex);
 
             if (i == 0)
                 SpawnPlayerOnTerrain(obj);
@@ -77,7 +86,7 @@ public class TerrainScrollManager : MonoBehaviour
         }
 
         GameObject first = terrainPool.Peek();
-        if (first.transform.position.x < -terrainWidth * 5)
+       if (!isTerrainDistanceMax && first.transform.position.x < -terrainWidth * 5)
         {
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
@@ -100,8 +109,22 @@ public class TerrainScrollManager : MonoBehaviour
             // SpawnObstacleOnTerrain(first, terrainIndex);
 
             terrainIndex++;
-            Debug.Log($"[거리 디버그] 스크롤 거리: {terrainDistance:F2}, 터레인 거리: {terrainIndex * terrainWidth:F2}");
             terrainPool.Enqueue(first);
+        }
+    }
+
+    public void RestTerrain()
+    {
+        foreach (var terrain in terrainPool)
+        {
+            terrain.SetActive(false);
+        }
+
+        // 거리 초기화도 함께 하고 싶으면 추가
+        if (!PlayerManager.Instance.isBattleMode)
+        {
+            terrainDistance = 0f;
+            terrainIndex = 0;
         }
     }
 

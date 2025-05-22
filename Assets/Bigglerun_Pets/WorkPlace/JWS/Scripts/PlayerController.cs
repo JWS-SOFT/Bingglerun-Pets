@@ -250,6 +250,7 @@ public class PlayerController : MonoBehaviour
         PlayerManager.Instance.SetPlayMode(true);
         transform.localScale = new Vector3(0.5f, 0.5f, 1);
         JumpButtonClick();
+        currentStairIndex = -1;
     }
 
     public void GameStageClear()
