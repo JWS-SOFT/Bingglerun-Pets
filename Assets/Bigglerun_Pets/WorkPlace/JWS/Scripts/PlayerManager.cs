@@ -113,6 +113,7 @@ public class PlayerManager : MonoBehaviour
         //if (Player_Transform != null && playerController == null) playerController = Player_Transform.GetComponent<PlayerController>();
         if (/*!PlayMode &&*/ actionTimer.IsRunning)
         {
+            timerSlider.maxValue = timeAction;
             timerSlider.value = actionTimer.RemainingTime;
             timerText.text = actionTimer.RemainingTime.ToString("N1");
         }
@@ -133,13 +134,15 @@ public class PlayerManager : MonoBehaviour
             ActionTImeStart();
             SetTerrain(stairManager.GetStairObject(currentPlayerFloor).transform.position);
             stairManager.ResetStiar();
+            currentPlayerFloor = 0;
         }
         else
         {
             actionButton[1].gameObject.SetActive(true);
             actionButton[2].gameObject.SetActive(false);
-            isGameStartReady = false;
             terrainScrollManager.RestTerrain();
+            isGameStartReady = false;
+            actionTimer = new BasicTimer(timeAction);
             stairManager.StartStairs();
         }
         PlayMode = mode;
@@ -168,8 +171,11 @@ public class PlayerManager : MonoBehaviour
         Instance.currentPlayerDistance = distance;
         Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
         Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
+        Instance.timerSlider.maxValue = GetStageDistance;
+        Instance.timerSlider.value = Instance.currentPlayerDistance;
+
         float movedDistance = 5f * Time.deltaTime; // 추가
-        ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
+        if (ScoreManager.Instance!=null) ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
         if (GetStageDistance <= Instance.currentPlayerDistance)
         {
             if (!Instance.isBattleMode)
@@ -179,6 +185,8 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 Instance.stageLevel++;
+                GetStageStair = ((Instance.stageLevel * 10) + Instance.stairBaseCount);
+                GetStageDistance = ((Instance.stageLevel * 50) + Instance.baseDistance);
                 Instance.SetPlayMode(false);
             }
         }
@@ -255,7 +263,7 @@ public class PlayerManager : MonoBehaviour
 
         currentLife--;
         // 별 감소도 함께 처리
-        ScoreManager.Instance.DecreaseStar();
+        if (ScoreManager.Instance!=null ) ScoreManager.Instance.DecreaseStar();
         Debug.Log($"현재 생명력: {currentLife}");
 
         if(currentLife <= 0)

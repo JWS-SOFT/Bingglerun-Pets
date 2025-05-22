@@ -18,7 +18,7 @@ public class StairManager : MonoBehaviour
 
     private int lastDirection = 1;
     private Vector2 currentPos = Vector2.zero;
-    private List<Stair> stairs = new List<Stair>();
+    [SerializeField] private List<Stair> stairs = new List<Stair>();
     private int currentIndex = -1;
     private int xIndex = 0;
 
