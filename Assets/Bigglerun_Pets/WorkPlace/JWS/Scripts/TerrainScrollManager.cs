@@ -70,8 +70,11 @@ public class TerrainScrollManager : MonoBehaviour
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
 
+        bool isTerrainDistanceMax = PlayerManager.GetStageDistance <= terrainIndex * terrainWidth;
         foreach (var obj in terrainPool)
+        {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
+        }
 
         GameObject first = terrainPool.Peek();
         if (first.transform.position.x < -terrainWidth * 5)
@@ -83,10 +86,7 @@ public class TerrainScrollManager : MonoBehaviour
             // 기존 장애물 제거
             if (first.transform.childCount > 1)
             {
-                foreach (Transform child in first.transform)
-                {
-                    if (!child.CompareTag("Ground")) Destroy(child.gameObject);
-                }
+                Destroy(first.transform.GetChild(first.transform.childCount - 1).gameObject);
             }
 
             // 다음 타일 패턴 적용
@@ -100,6 +100,7 @@ public class TerrainScrollManager : MonoBehaviour
             // SpawnObstacleOnTerrain(first, terrainIndex);
 
             terrainIndex++;
+            Debug.Log($"[거리 디버그] 스크롤 거리: {terrainDistance:F2}, 터레인 거리: {terrainIndex * terrainWidth:F2}");
             terrainPool.Enqueue(first);
         }
     }
@@ -243,6 +244,7 @@ public class TerrainScrollManager : MonoBehaviour
 
         SpawnItem spitem = Instantiate(spawnItem, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform).GetComponent<SpawnItem>();
         spitem.transform.localScale = new Vector3(0.25f, 0.75f, 0);
+        spitem.transform.SetSiblingIndex(terrain.transform.childCount - 1);
         if (Random.value < spawnPercent)
         {
             if (Random.value > invincibleItemChance)
