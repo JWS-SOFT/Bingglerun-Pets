@@ -126,24 +126,21 @@ public class PlayerManager : MonoBehaviour
     {
         if (mode)
         {
-            // stairManager.enabled = false;
-            // terrainScrollManager.enabled = true;
             actionButton[1].gameObject.SetActive(false);
             actionButton[2].gameObject.SetActive(true);
             ActionTImeStop();
             actionTimer = isBattleMode ? new BasicTimer(1f) : new BasicTimer(prepareTimeInterval);
             ActionTImeStart();
-            stairManager.ResetStiar();
             SetTerrain(stairManager.GetStairObject(currentPlayerFloor).transform.position);
-            stairManager.gameObject.SetActive(false);
+            stairManager.ResetStiar();
         }
         else
         {
-            // stairManager.enabled = true;
-            // terrainScrollManager.enabled = false;
             actionButton[1].gameObject.SetActive(true);
             actionButton[2].gameObject.SetActive(false);
             isGameStartReady = false;
+            terrainScrollManager.RestTerrain();
+            stairManager.StartStairs();
         }
         PlayMode = mode;
     }
@@ -181,7 +178,8 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
-                
+                Instance.stageLevel++;
+                Instance.SetPlayMode(false);
             }
         }
     }
