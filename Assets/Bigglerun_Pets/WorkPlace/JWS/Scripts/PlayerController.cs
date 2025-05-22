@@ -61,7 +61,12 @@ public class PlayerController : MonoBehaviour
         if (PlayerManager.PlayMode && PlayerManager.Instance.isGameStartReady && !player_Animator.GetBool("Walk"))
         {
             player_Animator.SetBool("Walk", true);
-            player_Animator.speed = 1.5f;
+            player_Animator.speed = 2.5f;
+        }
+        if (!PlayerManager.PlayMode && !PlayerManager.Instance.isGameStartReady && player_Animator.GetBool("Walk"))
+        {
+            player_Animator.SetBool("Walk", false);
+            player_Animator.speed = 1f;
         }
     }
 
@@ -250,7 +255,7 @@ public class PlayerController : MonoBehaviour
         PlayerManager.Instance.SetPlayMode(true);
         transform.localScale = new Vector3(0.5f, 0.5f, 1);
         JumpButtonClick();
-        currentStairIndex = -1;
+        currentStairIndex = 0;
     }
 
     public void GameStageClear()
