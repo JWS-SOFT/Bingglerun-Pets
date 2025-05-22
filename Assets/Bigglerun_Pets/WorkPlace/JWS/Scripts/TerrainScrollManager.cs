@@ -81,9 +81,12 @@ public class TerrainScrollManager : MonoBehaviour
             first.transform.position = new Vector3(lastX + terrainWidth, first.transform.position.y, 0);
 
             // 기존 장애물 제거
-            foreach (Transform child in first.transform)
+            if (first.transform.childCount > 1)
             {
-                Destroy(child.gameObject);
+                foreach (Transform child in first.transform)
+                {
+                    if (!child.CompareTag("Ground")) Destroy(child.gameObject);
+                }
             }
 
             // 다음 타일 패턴 적용

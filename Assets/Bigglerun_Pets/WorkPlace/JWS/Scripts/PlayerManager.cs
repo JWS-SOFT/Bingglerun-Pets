@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
 
         actionTimer = new BasicTimer(timeAction);
         GetStageStair = ((stageLevel * 10) + stairBaseCount);
-        GetStageDistance = ((stageLevel * 10) + baseDistance);
+        GetStageDistance = ((stageLevel * 50) + baseDistance);
     }
 
     private void Start()
@@ -175,7 +175,14 @@ public class PlayerManager : MonoBehaviour
         ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
         if (GetStageDistance <= Instance.currentPlayerDistance)
         {
-              Instance.playerController.GameStageClear();
+            if (!Instance.isBattleMode)
+            {
+                Instance.playerController.GameStageClear();
+            }
+            else
+            {
+                
+            }
         }
     }
 
