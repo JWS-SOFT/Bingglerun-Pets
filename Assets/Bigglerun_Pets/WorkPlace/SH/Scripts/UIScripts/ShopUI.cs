@@ -16,6 +16,9 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private GameObject accessaryPrefab;
     [SerializeField] private GameObject skinPrefab;
     [SerializeField] private GameObject startItemPrefab;
+    [SerializeField] private GameObject characterPrefab;
+    [SerializeField] private int characterCount;
+
     [SerializeField] private Transform contents;
     public Image itemImage;
     public TextMeshProUGUI itemName;
@@ -96,6 +99,12 @@ public class ShopUI : MonoBehaviour
         AccessaryListLoad();
     }
 
+    private void RefreshCharacterList()
+    {
+        ContentsClear();
+        CharacterListLoad();
+    }
+
     // Gold Text 갱신
     private void SetGoldData(int gold)
     {
@@ -117,26 +126,36 @@ public class ShopUI : MonoBehaviour
     // MainTab 카테고리 변경
     public void MainTabSwitch(int index)
     {
+        SwitchingTab(index);
         switch (index)
         {
             case 0:
-                mainTab[0].gameObject.SetActive(true);
-                mainTab[1].gameObject.SetActive(false);
-                mainTab[2].gameObject.SetActive(false);
                 RefreshDecorationList();
                 break;
             case 1:
-                mainTab[0].gameObject.SetActive(false);
-                mainTab[1].gameObject.SetActive(true);
-                mainTab[2].gameObject.SetActive(false);
                 //RefreshDecorationList();
                 break;
             case 2:
-                mainTab[0].gameObject.SetActive(false);
-                mainTab[1].gameObject.SetActive(false);
-                mainTab[2].gameObject.SetActive(true);
                 RefreshItemList();
                 break;
+            case 3:
+                RefreshCharacterList();
+                break;
+        }
+    }
+
+    private void SwitchingTab(int index)
+    {
+        for(int i = 0; i < mainTab.Length; i++)
+        {
+            if (i == index)
+            {
+                mainTab[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                mainTab[i].gameObject.SetActive(false);
+            }
         }
     }
 
@@ -150,14 +169,6 @@ public class ShopUI : MonoBehaviour
 
         // 클릭된 버튼이 Content에서 몇 번째 자식인지 찾기
         selectedItemIndex = clickedObj.transform.GetSiblingIndex();
-
-        //Debug.Log("클릭된 버튼의 인덱스: " + selectedItemIndex);
-        //var item = ShopManager.Instance.accessaryItemList[selectedItemIndex].GetComponent<AccessaryItem>();
-
-        //GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
-        //confirm.SetActive(true);
-        //confirm.GetComponent<ConfirmUI>().decoItemData = item.decoItemData;
-        //Debug.Log($"confirmUI.decoItemData.itemName = {confirm.GetComponent<ConfirmUI>().decoItemData?.itemName}");
 
         if (ShopManager.Instance.accessaryItemList.Count > selectedItemIndex && ShopManager.Instance.accessaryItemList[selectedItemIndex] != null)
         {
@@ -193,6 +204,23 @@ public class ShopUI : MonoBehaviour
             }
         }
 
+        if (ShopManager.Instance.characterItemList.Count > selectedItemIndex && ShopManager.Instance.characterItemList[selectedItemIndex] != null)
+        {
+            var go = ShopManager.Instance.characterItemList[selectedItemIndex];
+            if (go != null)
+            {
+                CharacterItem characterItem = go.GetComponent<CharacterItem>();
+                if (characterItem != null)
+                {
+                    GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
+                    confirm.SetActive(true);
+                    confirm.GetComponent<ConfirmUI>().characterItem = characterItem;
+                    confirm.GetComponent<ConfirmUI>().itemType = ItemType.Character;
+                    return;
+                }
+            }
+        }
+
     }
 
     private void ContentsClear()
@@ -210,6 +238,12 @@ public class ShopUI : MonoBehaviour
             Destroy(item);
         }
         ShopManager.Instance.startItemList.Clear();
+
+        foreach(var item in ShopManager.Instance.characterItemList)
+        {
+            Destroy(item);
+        }
+        ShopManager.Instance.characterItemList.Clear();
 
         // 콘텐츠 영역 자식 오브젝트 정리
         for (int i = contents.childCount - 1; i >= 0; i--)
@@ -241,6 +275,20 @@ public class ShopUI : MonoBehaviour
             GameObject itemPrefab = Instantiate(startItemPrefab, contents);
             itemPrefab.GetComponent<StartItem>().itemData = itemList[i];
             ShopManager.Instance.startItemList.Add(itemPrefab);
+        }
+    }
+
+    // 캐릭터 데이터화 할 필요 있음
+    private void CharacterListLoad()
+    {
+        for(int i = 0; i < characterCount; i++)
+        {
+            GameObject itemPrefab = Instantiate(characterPrefab, contents);
+            CharacterType type = (CharacterType)i;
+            itemPrefab.GetComponent<CharacterItem>().characterId = type.ToString();
+            itemPrefab.GetComponent<CharacterItem>().goldPrice = 100 * i;
+            itemPrefab.GetComponent<CharacterItem>().cashPrice = 50 * i;
+            ShopManager.Instance.characterItemList.Add(itemPrefab);
         }
     }
 }

@@ -7,6 +7,7 @@ public class ConfirmUI : MonoBehaviour
     public ItemType itemType;
     public DecorationItemData decoItemData;
     public ItemData itemData;
+    public CharacterItem characterItem;
 
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemNameText;
@@ -30,6 +31,11 @@ public class ConfirmUI : MonoBehaviour
                 goldPriceText.text = itemData.goldPrice.ToString();
                 diamondPriceText.text = itemData.cashPrice.ToString();
                 break;
+            case ItemType.Character:
+                itemNameText.text = characterItem.characterId;
+                goldPriceText.text = characterItem.goldPrice.ToString();
+                diamondPriceText.text = characterItem.cashPrice.ToString();
+                break;
         }
 
         //Debug.Log($"itemName : {decoItemData.itemName}");
@@ -50,6 +56,9 @@ public class ConfirmUI : MonoBehaviour
             case ItemType.UsableItem:
                 result = ShopManager.Instance.TryBuyItem(itemData.itemId, useCash: useDiamondsToggle.isOn);
                 break;
+            //case ItemType.Character:
+            //    result = ShopManager.Instance.TryBuyItem(characterItem.characterId, useCash: useDiamondsToggle.isOn);
+            //    break;
             default:
                 result = false;
                 break;

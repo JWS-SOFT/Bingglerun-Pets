@@ -16,6 +16,7 @@ public class ShopManager : MonoBehaviour
 
     public List<GameObject> accessaryItemList = new List<GameObject>();
     public List<GameObject> startItemList = new List<GameObject>();
+    public List<GameObject> characterItemList = new List<GameObject>();
 
     #region Singleton
     public static ShopManager Instance { get; private set; }

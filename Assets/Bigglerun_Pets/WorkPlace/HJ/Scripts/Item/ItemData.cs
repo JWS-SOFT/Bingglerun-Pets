@@ -54,5 +54,6 @@ public enum ItemType
 {
     Decoration,
     Skin,
-    UsableItem
+    UsableItem,
+    Character
 }
