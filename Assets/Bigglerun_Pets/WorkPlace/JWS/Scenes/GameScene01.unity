@@ -171,6 +171,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
+      propertyPath: gameOverUI
+      value: 
+      objectReference: {fileID: 2249943609030356869}
+    - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
+      propertyPath: stageClear
+      value: 
+      objectReference: {fileID: 8457949074722831573}
+    - target: {fileID: 2007982584065283207, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
+      propertyPath: stairManager
+      value: 
+      objectReference: {fileID: 487118649}
     - target: {fileID: 5903079175310295873, guid: 241f4a3a4b336ac438bf4615d13a41b8, type: 3}
       propertyPath: m_Name
       value: Player
