@@ -28,6 +28,10 @@ public class TerrainScrollManager : MonoBehaviour
 
     private List<int> spawnPattern;
 
+    //05.22 HJ 추가
+    private int invincibleCooldownCounter = 0;
+    private const int invincibleCooldownLength = 5;
+
     public void StartTest(Vector3 lastTerranPosition)
     {
         if (terrainPrefab == null || PlayerManager.Player_Transform.gameObject == null)
@@ -268,12 +272,45 @@ public class TerrainScrollManager : MonoBehaviour
         SpawnItem spitem = Instantiate(spawnItem, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform).GetComponent<SpawnItem>();
         spitem.transform.localScale = new Vector3(0.25f, 0.75f, 0);
         spitem.transform.SetSiblingIndex(terrain.transform.childCount - 1);
+
+        //05.22 HJ 수정
+        //아이템 스폰 확률 및 쿨다운 반영
         if (Random.value < spawnPercent)
         {
-            if (Random.value > invincibleItemChance)
-                spitem.SetItemType("Coin");
+            string itemToSpawn;
+
+            if (invincibleCooldownCounter > 0)
+            {
+                //쿨다운 중이면 무조건 코인
+                itemToSpawn = "Coin";
+                invincibleCooldownCounter--;
+            }
             else
-                spitem.SetItemType("Wing");
+            {
+                //쿨다운이 없으면 무적 확률 적용
+                if (Random.value < invincibleItemChance)
+                {
+                    itemToSpawn = "Wing";
+                    invincibleCooldownCounter = invincibleCooldownLength;
+                }
+                else
+                {
+                    itemToSpawn = "Coin";
+                }
+            }
+
+            spitem.SetItemType(itemToSpawn);
+
+            //if (Random.value > invincibleItemChance)
+            //    spitem.SetItemType("Coin");
+            //else
+            //    spitem.SetItemType("Wing");
+        }
+        else
+        {
+            //아이템이 안나왔어도 쿨다운 감소
+            if (invincibleCooldownCounter > 0)
+                invincibleCooldownCounter--;
         }
     }
 

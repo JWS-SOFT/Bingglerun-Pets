@@ -27,6 +27,10 @@ public class StairManager : MonoBehaviour
     // 🔁 계단 풀링용 큐
     private Queue<GameObject> stairPool = new Queue<GameObject>();
 
+    //05.22 HJ 추가
+    private int invincibleCooldownCounter = 0;
+    private const int invincibleCooldownLength = 5;
+
     public void StartStairs()
     {
         stairTotalCount = PlayerManager.GetStageStair;
@@ -74,13 +78,46 @@ public class StairManager : MonoBehaviour
             {
                 stairScript.index = i;
 
+                //05.22 HJ 수정
+                //아이템 스폰 확률 및 쿨다운 반영
                 if (i > 0 && Random.Range(0, 100) < SpawnItemPercent)
                 {
-                    if (Random.value > invincibleItemChance)
-                        stairScript.SetItemPrefab("Coin");
+                    string itemToSpawn;
+
+                    if (invincibleCooldownCounter > 0)
+                    {
+                        //쿨다운 중이면 무조건 코인
+                        itemToSpawn = "Coin";
+                        invincibleCooldownCounter--;
+                    }
                     else
-                        stairScript.SetItemPrefab("Wing");
+                    {
+                        //쿨다운이 없으면 무적 확률 적용
+                        if (Random.value < invincibleItemChance)
+                        {
+                            itemToSpawn = "Wing";
+                            invincibleCooldownCounter = invincibleCooldownLength;
+                        }
+                        else
+                        {
+                            itemToSpawn = "Coin";
+                        }
+                    }
+
+                    stairScript.SetItemPrefab(itemToSpawn);
+
+                    //if (Random.value > invincibleItemChance)
+                    //    stairScript.SetItemPrefab("Coin");
+                    //else
+                    //    stairScript.SetItemPrefab("Wing");
                 }
+                else
+                {
+                    //아이템이 안나왔어도 쿨다운 감소
+                    if (invincibleCooldownCounter > 0)
+                        invincibleCooldownCounter--;
+                }
+
 
                 stairs.Add(stairScript);
             }
