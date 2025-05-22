@@ -157,37 +157,63 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    private IEnumerator StartRollingRoutine(PlayerController player, float speed, float duration)
+    private IEnumerator StartRollingRoutine(PlayerController player, float speedMultiplier, float duration)
     {
+        //float elapsed = 0f;
+        //Vector3 direction = Vector3.right;
+
+        ////카메라 오프셋
+        //Vector3 cameraInitialOffset = Camera.main.transform.position - player.transform.position;
+
+        ////카메라 y,z 축 고정 (현재 카메라 높이 유지)
+        //float fixedCameraY = Camera.main.transform.position.y;
+        //float fixedCameraZ = Camera.main.transform.position.z;
+
+        ////플레이어 입력 방지
+        //player.enabled = false;
+        ////구르기 애니메이션 처리
+
+        //while (elapsed < duration)
+        //{
+        //    player.transform.Translate(direction * speed * Time.deltaTime);
+
+        //    //카메라 X축만 이동
+        //    float cameraX = player.transform.position.x + cameraInitialOffset.x;
+        //    Camera.main.transform.position = new Vector3(cameraX, fixedCameraY, fixedCameraZ);
+
+
+        //    elapsed += Time.deltaTime;
+        //    yield return null;
+        //}
+
+        //player.enabled = true;
+        ////구르기 애니메이션 처리
+        ///
+
         float elapsed = 0f;
-        Vector3 direction = Vector3.right;
 
-        //카메라 오프셋
-        Vector3 cameraInitialOffset = Camera.main.transform.position - player.transform.position;
+        TerrainScrollManager terrain = FindFirstObjectByType<TerrainScrollManager>();
+        float originalSpeed = terrain != null ? terrain.ScrollSpeed : 5f;
+        float boostedSpeed = originalSpeed * speedMultiplier;
+        if (terrain != null) terrain.ScrollSpeed = boostedSpeed;
 
-        //카메라 y,z 축 고정 (현재 카메라 높이 유지)
-        float fixedCameraY = Camera.main.transform.position.y;
-        float fixedCameraZ = Camera.main.transform.position.z;
-
-        //플레이어 입력 방지
         player.enabled = false;
-        //구르기 애니메이션 처리
 
         while (elapsed < duration)
         {
-            player.transform.Translate(direction * speed * Time.deltaTime);
+            float deltaTime = Time.deltaTime;
+            float distance = boostedSpeed * deltaTime;
 
-            //카메라 X축만 이동
-            float cameraX = player.transform.position.x + cameraInitialOffset.x;
-            Camera.main.transform.position = new Vector3(cameraX, fixedCameraY, fixedCameraZ);
+            // ✅ 실시간 점수 반영
+            ScoreManager.Instance?.AddHorizontalDistance(distance);
 
-
-            elapsed += Time.deltaTime;
+            elapsed += deltaTime;
             yield return null;
         }
 
         player.enabled = true;
-        //구르기 애니메이션 처리
+
+        if (terrain != null) terrain.ScrollSpeed = originalSpeed;
     }
 
     private void SetInvincibility(float seconds)

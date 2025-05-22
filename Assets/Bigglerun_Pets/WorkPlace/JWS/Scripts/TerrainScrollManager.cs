@@ -7,6 +7,11 @@ public class TerrainScrollManager : MonoBehaviour
     [SerializeField] private GameObject terrainPrefab;
     [SerializeField] private int poolSize = 50;
     [SerializeField] private float scrollSpeed = 5f;
+    public float ScrollSpeed
+    {
+        get => scrollSpeed;
+        set => scrollSpeed = value;
+    }
 
     [Header("장애물 설정")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
