@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private bool isGamemode = false;  // false 계단, true 횡런게임.
     private Rigidbody2D Rigidbody2D;
     private Animator player_Animator;
-    [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject gameOverUI, stageClear;
 
     //05.16 HJ 추가
     private bool isRecovering = false;
@@ -257,8 +257,8 @@ public class PlayerController : MonoBehaviour
         moving = false;
         enabled = false;
         isGameOver = true;
-        if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
-        else gameOverUI.SetActive(true);
+        if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("StageClear");
+        else stageClear.SetActive(true);
         Debug.Log("Game Stage Clear!");
         Time.timeScale = 0f;
     }
