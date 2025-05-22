@@ -87,7 +87,7 @@ public class StairManager : MonoBehaviour
 
         // 플레이어의 SpriteRenderer 높이 계산
         SpriteRenderer playerRenderer = player.GetComponent<SpriteRenderer>();
-        float playerHeight = playerRenderer != null ? playerRenderer.bounds.size.y : 2f;
+        float playerHeight = playerRenderer != null ? playerRenderer.bounds.size.y : 1f;
 
         // 계단 상단에 플레이어 바닥이 닿도록 위치 설정
         float posY = firstStairPos.y + (stairHeight / 2f) + (playerHeight / 2f);
