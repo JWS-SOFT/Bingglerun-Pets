@@ -28,6 +28,8 @@ SpriteAtlas:
       allowAlphaSplitting: 0
       enableRotation: 1
       enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: 98b7f5ce668b6491fb29bf99ed37b74e, type: 3}
@@ -35,8 +37,20 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 97df985422bec45ca9d1ef18df7d0d87, type: 3}
     - {fileID: 2800000, guid: f13dbfd44ed6f476595f5bc74c62ef6e, type: 3}
     - {fileID: 2800000, guid: c08b9734e07f74e60a7e9c176d831eb1, type: 3}
-    totalSpriteSurfaceArea: 2931395
     bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - ad3eb6f19c52746eb984721ece4cec5c: 2247211366510687529
+    - ad3eb6f19c52746eb984721ece4cec5c: 8359930046211358305
+    - c08b9734e07f74e60a7e9c176d831eb1: -4386471524046097439
+    - c08b9734e07f74e60a7e9c176d831eb1: -8339034741654269863
+    - 97df985422bec45ca9d1ef18df7d0d87: -8637594100682359065
+    - 97df985422bec45ca9d1ef18df7d0d87: -2065637495980868709
+    - f13dbfd44ed6f476595f5bc74c62ef6e: 5510650578270524522
+    - f13dbfd44ed6f476595f5bc74c62ef6e: -9094610854209252325
+    - 98b7f5ce668b6491fb29bf99ed37b74e: -1071772442736180341
+    - 98b7f5ce668b6491fb29bf99ed37b74e: 7007463166081673942
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 2247211366510687529, guid: ad3eb6f19c52746eb984721ece4cec5c, type: 3}
@@ -60,5 +74,6 @@ SpriteAtlas:
   - GroundTextures4_0
   - GroundTextures2_1
   - GroundTextures2_0
+  m_RenderDataMap: {}
   m_Tag: Grounds
   m_IsVariant: 0
