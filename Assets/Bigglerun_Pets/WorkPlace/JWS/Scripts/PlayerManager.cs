@@ -162,7 +162,7 @@ public class PlayerManager : MonoBehaviour
         Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
             "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
         ActionTImeStart();
-        // ScoreManager.Instance.AddStep(); // 추가
+        ScoreManager.Instance.AddStep(); // 추가
     }
 
     public static void ChangeDistance(float distance)
