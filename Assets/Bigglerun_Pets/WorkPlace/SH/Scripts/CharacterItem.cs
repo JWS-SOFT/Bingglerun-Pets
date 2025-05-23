@@ -21,5 +21,5 @@ public class CharacterData
     public string characterId;
     public int goldPrice;
     public int cashPrice;
-
+    public string iconPath;
 }
