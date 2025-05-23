@@ -97,49 +97,48 @@ public class SkillManager : MonoBehaviour
 
         if(player != null && !player.IsRecovering)
         {
-            StartCoroutine(SuperJumpRoutine(player, jumpForce, 3f));
+            StartCoroutine(SuperJumpRoutine(player, jumpForce, jumpForce));
         }
     }
 
     private IEnumerator SuperJumpRoutine(PlayerController player, float jumpForce, float distance)
     {
-        float duration = 0.5f;  //점프시간
+        float duration = 0.5f;
         float elapsed = 0f;
 
-        //위치, 방향
+        TerrainScrollManager terrain = PlayerManager.Instance.TerrainScrollManager;
+        float originalSpeed = terrain != null ? terrain.ScrollSpeed : 5f;
+        float boostedSpeed = distance / duration;
+        if (terrain != null) terrain.ScrollSpeed = boostedSpeed;
+
+        player.enabled = false;
         Vector2 start = player.transform.position;
-        Vector2 direction = Vector2.right;
-        Vector2 end = start + direction * distance;
-
-        //카메라 오프셋
-        Vector3 cameraInitialOffset = Camera.main.transform.position - player.transform.position;
-
-        //카메라 y,z 축 고정 (현재 카메라 높이 유지)
-        float fixedCameraY = Camera.main.transform.position.y;
-        float fixedCameraZ = Camera.main.transform.position.z;
-
-        player.enabled = false; //점프 시간동안 입력방지
+        //슈퍼점프 애니메이션 활성화
 
         while (elapsed < duration)
         {
             float t = elapsed / duration;
 
-            float x = Mathf.Lerp(start.x, end.x, t);    //수펑 이동 보간
-            float y = start.y + Mathf.Sin(t * Mathf.PI) * jumpForce;    //포물선 점프
+            //포물선 점프 (y축만 변경)
+            float y = start.y + Mathf.Sin(t * Mathf.PI) * jumpForce;
+            player.transform.position = new Vector2(start.x, y);
 
-            Vector2 pos = new Vector2(x, y);
-            player.transform.position = pos;
+            //실시간 점수 반영
+            float deltaTime = Time.deltaTime;
+            float movedDistance = boostedSpeed * deltaTime;
+            ScoreManager.Instance?.AddHorizontalDistance(movedDistance);
 
-            //카메라 x축 이동, y,z축 고정
-            float cameraX = player.transform.position.x + cameraInitialOffset.x;
-            Camera.main.transform.position = new Vector3(cameraX, fixedCameraY, fixedCameraZ);
-
-            elapsed += Time.deltaTime;
+            elapsed += deltaTime;
             yield return null;
         }
 
-        player.transform.position = end;
+        //슈퍼점프 애니메이션 비활성화
+        //y 위치 원복
+        player.transform.position = start;
         player.enabled = true;
+        
+
+        if (terrain != null) terrain.ScrollSpeed = originalSpeed;
     }
 
     //구르기(햄스터)
@@ -159,58 +158,29 @@ public class SkillManager : MonoBehaviour
 
     private IEnumerator StartRollingRoutine(PlayerController player, float speedMultiplier, float duration)
     {
-        //float elapsed = 0f;
-        //Vector3 direction = Vector3.right;
-
-        ////카메라 오프셋
-        //Vector3 cameraInitialOffset = Camera.main.transform.position - player.transform.position;
-
-        ////카메라 y,z 축 고정 (현재 카메라 높이 유지)
-        //float fixedCameraY = Camera.main.transform.position.y;
-        //float fixedCameraZ = Camera.main.transform.position.z;
-
-        ////플레이어 입력 방지
-        //player.enabled = false;
-        ////구르기 애니메이션 처리
-
-        //while (elapsed < duration)
-        //{
-        //    player.transform.Translate(direction * speed * Time.deltaTime);
-
-        //    //카메라 X축만 이동
-        //    float cameraX = player.transform.position.x + cameraInitialOffset.x;
-        //    Camera.main.transform.position = new Vector3(cameraX, fixedCameraY, fixedCameraZ);
-
-
-        //    elapsed += Time.deltaTime;
-        //    yield return null;
-        //}
-
-        //player.enabled = true;
-        ////구르기 애니메이션 처리
-        ///
-
         float elapsed = 0f;
 
-        TerrainScrollManager terrain = FindFirstObjectByType<TerrainScrollManager>();
+        TerrainScrollManager terrain = PlayerManager.Instance.TerrainScrollManager;
+
         float originalSpeed = terrain != null ? terrain.ScrollSpeed : 5f;
         float boostedSpeed = originalSpeed * speedMultiplier;
         if (terrain != null) terrain.ScrollSpeed = boostedSpeed;
 
         player.enabled = false;
+        //구르기 애니메이션 활성화
 
         while (elapsed < duration)
         {
             float deltaTime = Time.deltaTime;
             float distance = boostedSpeed * deltaTime;
 
-            // ✅ 실시간 점수 반영
             ScoreManager.Instance?.AddHorizontalDistance(distance);
 
             elapsed += deltaTime;
             yield return null;
         }
 
+        //구르기 애니메이션 비활성화
         player.enabled = true;
 
         if (terrain != null) terrain.ScrollSpeed = originalSpeed;

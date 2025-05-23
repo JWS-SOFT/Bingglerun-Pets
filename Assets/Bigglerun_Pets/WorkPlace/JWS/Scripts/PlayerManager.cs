@@ -58,6 +58,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     private bool isInvincible = false;
+    public TerrainScrollManager TerrainScrollManager => terrainScrollManager;
 
 
     private void Awake()
