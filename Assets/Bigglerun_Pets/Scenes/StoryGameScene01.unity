@@ -3443,7 +3443,7 @@ MonoBehaviour:
   stairManager: {fileID: 487118649}
   stageLevel: 1
   stairBaseCount: 1
-  baseDistance: 50
+  baseDistance: 1
   terrainScrollManager: {fileID: 1073473418}
   actionButton:
   - {fileID: 518272088}
