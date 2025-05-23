@@ -105,7 +105,8 @@ public class PlayerManager : MonoBehaviour
         }
 
         //05.20 HJ 추가
-        playerController = Player_Transform?.GetComponent<PlayerController>();
+        //playerController = Player_Transform?.GetComponent<PlayerController>();
+        playerController = FindFirstObjectByType<PlayerController>();
 
         InitializeLife();
         InitializeSkillCount();
