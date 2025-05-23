@@ -34,6 +34,31 @@ public class SerializableItemData
 }
 
 /// <summary>
+/// 캐릭터별 경쟁모드 점수 데이터
+/// </summary>
+[Serializable]
+public class SerializableCharacterScore
+{
+    public string characterName;        // 캐릭터 이름 (Dog, Cat, Hamster 등)
+    public int bestScore;              // 해당 캐릭터로 달성한 최고 점수
+    public long bestScoreTimestamp;    // 최고 점수 달성 시간
+    
+    public SerializableCharacterScore()
+    {
+        characterName = "";
+        bestScore = 0;
+        bestScoreTimestamp = 0;
+    }
+    
+    public SerializableCharacterScore(string character, int score, long timestamp)
+    {
+        characterName = character;
+        bestScore = score;
+        bestScoreTimestamp = timestamp;
+    }
+}
+
+/// <summary>
 /// 플레이어 데이터를 저장하는 구조체 (Firebase 직렬화용)
 /// </summary>
 [Serializable]
@@ -89,11 +114,14 @@ public class PlayerData
     // 통계 데이터
     public int totalPlayCount;
     public int totalCoinsCollected;
-    public int competitiveBestScore; // 경쟁모드 전용 베스트 스코어
+    public int competitiveBestScore; // 경쟁모드 전용 베스트 스코어 (전체 최고점수)
     
     // 경쟁모드 관련 추가 정보
     public string competitiveBestCharacter; // 최고 점수를 기록한 캐릭터
     public long competitiveBestScoreTimestamp; // 최고 점수 기록 시간
+    
+    // 캐릭터별 경쟁모드 점수 (새로운 시스템)
+    public List<SerializableCharacterScore> characterCompetitiveScores = new List<SerializableCharacterScore>();
     
     // 마지막 업데이트 시간
     public long lastUpdateTimestamp;
@@ -270,6 +298,7 @@ public class PlayerData
             competitiveBestScore = 0,
             competitiveBestCharacter = "",
             competitiveBestScoreTimestamp = 0,
+            characterCompetitiveScores = new List<SerializableCharacterScore>(),
             lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         };
         
@@ -278,6 +307,101 @@ public class PlayerData
         playerData.UpdateItemsListFromDictionary();
         
         return playerData;
+    }
+
+    /// <summary>
+    /// 특정 캐릭터의 최고 점수 반환
+    /// </summary>
+    public int GetCharacterBestScore(string characterName)
+    {
+        if (string.IsNullOrEmpty(characterName) || characterCompetitiveScores == null)
+            return 0;
+            
+        var characterScore = characterCompetitiveScores.Find(cs => 
+            string.Equals(cs.characterName, characterName, StringComparison.OrdinalIgnoreCase));
+        
+        return characterScore?.bestScore ?? 0;
+    }
+    
+    /// <summary>
+    /// 특정 캐릭터의 점수 업데이트 (더 높은 점수일 때만)
+    /// </summary>
+    public bool UpdateCharacterScore(string characterName, int newScore)
+    {
+        if (string.IsNullOrEmpty(characterName) || newScore <= 0)
+        {
+            Debug.LogWarning($"[PlayerData] 유효하지 않은 캐릭터 점수 업데이트 시도: {characterName}, 점수: {newScore}");
+            return false;
+        }
+        
+        if (characterCompetitiveScores == null)
+            characterCompetitiveScores = new List<SerializableCharacterScore>();
+        
+        // 기존 캐릭터 점수 찾기
+        var existingScore = characterCompetitiveScores.Find(cs => 
+            string.Equals(cs.characterName, characterName, StringComparison.OrdinalIgnoreCase));
+        
+        bool scoreUpdated = false;
+        long currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        
+        if (existingScore != null)
+        {
+            // 기존 점수보다 높은 경우에만 업데이트
+            if (newScore > existingScore.bestScore)
+            {
+                existingScore.bestScore = newScore;
+                existingScore.bestScoreTimestamp = currentTimestamp;
+                scoreUpdated = true;
+                Debug.Log($"[PlayerData] {characterName} 캐릭터 점수 업데이트: {newScore}");
+            }
+        }
+        else
+        {
+            // 새로운 캐릭터 점수 추가
+            characterCompetitiveScores.Add(new SerializableCharacterScore(characterName, newScore, currentTimestamp));
+            scoreUpdated = true;
+            Debug.Log($"[PlayerData] {characterName} 캐릭터 새로운 점수 추가: {newScore}");
+        }
+        
+        // 전체 최고 점수 업데이트
+        if (scoreUpdated && newScore > competitiveBestScore)
+        {
+            competitiveBestScore = newScore;
+            competitiveBestCharacter = characterName;
+            competitiveBestScoreTimestamp = currentTimestamp;
+            Debug.Log($"[PlayerData] 전체 최고 점수 업데이트: {newScore} ({characterName})");
+        }
+        
+        return scoreUpdated;
+    }
+    
+    /// <summary>
+    /// 모든 캐릭터별 점수 목록 반환
+    /// </summary>
+    public List<SerializableCharacterScore> GetAllCharacterScores()
+    {
+        return characterCompetitiveScores ?? new List<SerializableCharacterScore>();
+    }
+    
+    /// <summary>
+    /// 기존 데이터에서 캐릭터별 점수로 마이그레이션
+    /// </summary>
+    public void MigrateToCharacterScores()
+    {
+        // 기존 competitiveBestScore가 있고 캐릭터별 점수가 없는 경우 마이그레이션
+        if (competitiveBestScore > 0 && 
+            (characterCompetitiveScores == null || characterCompetitiveScores.Count == 0))
+        {
+            if (characterCompetitiveScores == null)
+                characterCompetitiveScores = new List<SerializableCharacterScore>();
+            
+            string character = !string.IsNullOrEmpty(competitiveBestCharacter) ? competitiveBestCharacter : "Dog";
+            long timestamp = competitiveBestScoreTimestamp > 0 ? competitiveBestScoreTimestamp : DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            
+            characterCompetitiveScores.Add(new SerializableCharacterScore(character, competitiveBestScore, timestamp));
+            
+            Debug.Log($"[PlayerData] 기존 점수를 캐릭터별 점수로 마이그레이션: {character} - {competitiveBestScore}");
+        }
     }
 }
 
