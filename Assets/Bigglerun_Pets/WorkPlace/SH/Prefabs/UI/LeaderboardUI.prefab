@@ -4930,6 +4930,7 @@ GameObject:
   - component: {fileID: 5409322184491063305}
   - component: {fileID: 837811006417487309}
   - component: {fileID: 4361403303180436441}
+  - component: {fileID: 5436208709731880244}
   m_Layer: 5
   m_Name: LeaderboardUI
   m_TagString: Untagged
@@ -4999,6 +5000,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5436208709731880244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5748182547314943590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b8f0f0b407b334f939d618025fa39d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentParent: {fileID: 6921132669001139577}
+  leaderboardItemPrefab: {fileID: 0}
+  maxDisplayEntries: 50
+  autoRefresh: 1
+  refreshInterval: 30
+  loadingPanel: {fileID: 0}
+  loadingText: {fileID: 0}
 --- !u!1 &5787215399541341056
 GameObject:
   m_ObjectHideFlags: 0
