@@ -110,7 +110,9 @@ public class LeaderboardManager : MonoBehaviour
                             try
                             {
                                 PlayerData playerData = JsonUtility.FromJson<PlayerData>(json);
-                                if (playerData != null && playerData.competitiveBestScore > 0)
+                                
+                                // 추가 검증: 플레이어 데이터가 유효하고 삭제되지 않았는지 확인
+                                if (await IsValidPlayerData(playerData))
                                 {
                                     // Dictionary 초기화 (필요시)
                                     playerData.InitializeStagesFromList();
@@ -122,7 +124,7 @@ public class LeaderboardManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Debug.Log($"[LeaderboardManager] 플레이어 데이터 스킵 (점수 없음): {playerData?.playerId}, 점수: {playerData?.competitiveBestScore}");
+                                    Debug.Log($"[LeaderboardManager] 플레이어 데이터 스킵 (유효하지 않음 또는 삭제됨): {playerData?.playerId}, 점수: {playerData?.competitiveBestScore}");
                                 }
                             }
                             catch (Exception ex)
@@ -176,6 +178,49 @@ public class LeaderboardManager : MonoBehaviour
         }
         
         return new List<PlayerData>();
+    }
+
+    /// <summary>
+    /// 플레이어 데이터가 유효한지 확인 (삭제되지 않았는지 포함)
+    /// </summary>
+    private async Task<bool> IsValidPlayerData(PlayerData playerData)
+    {
+        if (playerData == null || string.IsNullOrEmpty(playerData.playerId))
+        {
+            return false;
+        }
+
+        // 기본 점수 확인
+        if (playerData.competitiveBestScore <= 0)
+        {
+            return false;
+        }
+
+#if FIREBASE_DATABASE
+        // Firebase에서 해당 플레이어가 실제로 존재하는지 다시 확인
+        try
+        {
+            Firebase.Database.FirebaseDatabase database = 
+                Firebase.Database.FirebaseDatabase.GetInstance("https://bigglerun-pets-default-rtdb.firebaseio.com/");
+            Firebase.Database.DatabaseReference playerRef = database.GetReference($"players/{playerData.playerId}");
+            
+            Firebase.Database.DataSnapshot playerSnapshot = await playerRef.GetValueAsync();
+            
+            // 플레이어가 존재하지 않으면 false 반환
+            if (!playerSnapshot.Exists)
+            {
+                Debug.Log($"[LeaderboardManager] 플레이어 {playerData.playerId}가 DB에서 삭제되어 리더보드에서 제외됩니다.");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[LeaderboardManager] 플레이어 {playerData.playerId} 검증 실패: {ex.Message}");
+            return false;
+        }
+#endif
+
+        return true;
     }
 
     /// <summary>
@@ -273,12 +318,38 @@ public class LeaderboardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 리더보드 캐시 무효화
+    /// 특정 플레이어를 캐시에서 제거
+    /// </summary>
+    public void RemovePlayerFromCache(string playerId)
+    {
+        if (string.IsNullOrEmpty(playerId))
+        {
+            return;
+        }
+
+        int removedCount = cachedLeaderboard.RemoveAll(p => p.playerId == playerId);
+        if (removedCount > 0)
+        {
+            Debug.Log($"[LeaderboardManager] 캐시에서 플레이어 {playerId} 제거됨 (제거된 수: {removedCount})");
+        }
+    }
+
+    /// <summary>
+    /// 리더보드 캐시 무효화 및 강제 새로고침
     /// </summary>
     public void InvalidateCache()
     {
         isLeaderboardLoaded = false;
         cachedLeaderboard.Clear();
-        Debug.Log("[LeaderboardManager] 리더보드 캐시 무효화");
+        Debug.Log("[LeaderboardManager] 리더보드 캐시 무효화 및 클리어 완료");
+    }
+
+    /// <summary>
+    /// 리더보드 강제 새로고침 (캐시 무효화 후 새로 로드)
+    /// </summary>
+    public async Task<List<PlayerData>> ForceRefreshLeaderboardAsync(int limit = 50)
+    {
+        InvalidateCache();
+        return await LoadLeaderboardAsync(limit);
     }
 } 
