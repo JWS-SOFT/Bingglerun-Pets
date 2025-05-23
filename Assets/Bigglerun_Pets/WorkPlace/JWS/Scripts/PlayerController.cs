@@ -239,6 +239,7 @@ public class PlayerController : MonoBehaviour
         moving = false;
         enabled = false;
         isGameOver = true;
+        ScoreManager.Instance.SetStars(0);
         if (!isGamemode) PlayerManager.ActionTImeStop();
         if (UIManager.Instance != null) UIManager.Instance.TogglePopupUI("GameOverUI");
         else gameOverUI.SetActive(true);
