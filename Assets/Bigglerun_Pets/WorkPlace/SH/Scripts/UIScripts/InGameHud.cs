@@ -40,6 +40,13 @@ public class InGameHud : MonoBehaviour
         }
     }
 
+    // 목숨 추가 (이후 광고보고 이어하기 등)
+    private void AddHeart()
+    {
+        int index = PlayerManager.Instance.GetCurrentLife() - 1;
+        heart.transform.GetChild(index).GetComponent<Image>().sprite = fullHeartImage;
+    }
+
     private void LoseHeart()
     {
         int index = PlayerManager.Instance.GetCurrentLife() - 1;

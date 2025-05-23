@@ -22,7 +22,7 @@ public class GameOverUI : MonoBehaviour
         
         if (currentState == GameState.CompetitionInGame)
         {
-            // 경쟁 모드: competitiveBestScore만 업데이트
+            // 경쟁 모드: competitiveBestScore만 업데이트 (자동으로 Firebase에 저장됨)
             PlayerDataManager.Instance.UpdateCompetitiveBestScore((int)totalScore);
             totalScoreText.text = totalScore.ToString();
             bestScoreText.text = PlayerDataManager.Instance.CurrentPlayerData.competitiveBestScore.ToString();

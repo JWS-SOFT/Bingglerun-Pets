@@ -65,6 +65,11 @@ public class ScoreManager : MonoBehaviour
         return currentStars;
     }
 
+    public void SetStars(int count)
+    {
+        currentStars = count;
+    }
+
     // 계단 한 층 오를 때마다 호출
     public void AddStep()
     {

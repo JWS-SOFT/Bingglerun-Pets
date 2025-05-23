@@ -62,10 +62,10 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<FirebaseDatabase>();
         gameObject.AddComponent<PlayerDataManager>();
 
-        // 아이템 관련 매니저
+        // 게임 기능 매니저들
+        gameObject.AddComponent<LeaderboardManager>(); // 리더보드 매니저 추가
         gameObject.AddComponent<ItemManager>();
         gameObject.AddComponent<ShopManager>();
-
         gameObject.AddComponent<ScoreManager>();
     }
 
