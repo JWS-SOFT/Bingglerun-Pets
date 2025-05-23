@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -58,6 +59,8 @@ public class PlayerManager : MonoBehaviour
     }
 
     private bool isInvincible = false;
+
+    public event Action OnTakeDamage;
 
 
     private void Awake()
@@ -261,6 +264,8 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
+        // 이벤트 호출
+        OnTakeDamage?.Invoke();
         currentLife--;
         // 별 감소도 함께 처리
         if (ScoreManager.Instance!=null ) ScoreManager.Instance.DecreaseStar();
@@ -279,6 +284,7 @@ public class PlayerManager : MonoBehaviour
 
             SetInvincible(0.5f);    //0.5초 동안 무적
         }
+        
     }
 
     //무적
@@ -328,6 +334,18 @@ public class PlayerManager : MonoBehaviour
     {
         currentLife += amount;
         Debug.Log($"스타트 목숨: {currentLife}");
+    }
+
+    //최대 목숨
+    public int GetMaxLife()
+    {
+        return maxLife;
+    }
+    
+    //현재 목숨
+    public int GetCurrentLife()
+    {
+        return currentLife;
     }
 
     //스킬 횟수 추가
