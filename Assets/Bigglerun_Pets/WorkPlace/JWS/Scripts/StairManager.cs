@@ -33,7 +33,7 @@ public class StairManager : MonoBehaviour
 
     public void StartStairs()
     {
-        stairTotalCount = PlayerManager.GetStageStair;
+        stairTotalCount = PlayerManager.GetStageStair();
         InitStairPool(stairTotalCount);
         GenerateInitialStairs();
         SetPlayerOnFirstStair();
