@@ -3,12 +3,28 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
+using System.Linq;
+
+// 캐릭터 카테고리 열거형
+public enum CharacterCategory
+{
+    All,
+    Dog,     // 강아지
+    Cat,     // 고양이  
+    Hamster  // 햄스터
+}
 
 public class LeaderboardUIController : MonoBehaviour
 {
     [Header("UI References")]
     public Transform contentParent;              // 스크롤 뷰의 Content 오브젝트
     public GameObject leaderboardItemPrefab;     // 리더보드 항목 프리팹 (없으면 기존 항목 복제)
+    
+    [Header("Category Buttons")]
+    public Button allButton;                     // 전체 버튼
+    public Button dogButton;                     // 강아지 버튼  
+    public Button catButton;                     // 고양이 버튼
+    public Button hamsterButton;                 // 햄스터 버튼
     
     [Header("Settings")]
     public int maxDisplayEntries = 50;           // 표시할 최대 항목 수
@@ -22,6 +38,10 @@ public class LeaderboardUIController : MonoBehaviour
     // 리더보드 항목 UI 요소들
     private List<LeaderboardItemUI> leaderboardItems = new List<LeaderboardItemUI>();
     private bool isRefreshing = false;
+    
+    // 카테고리 필터링 관련
+    private CharacterCategory currentCategory = CharacterCategory.All;
+    private List<PlayerData> allLeaderboardData = new List<PlayerData>();
 
     // 리더보드 항목 UI 구조를 위한 클래스
     [System.Serializable]
@@ -42,6 +62,7 @@ public class LeaderboardUIController : MonoBehaviour
     private void Start()
     {
         InitializeUI();
+        InitializeCategoryButtons();
         
         if (autoRefresh)
         {
@@ -72,6 +93,102 @@ public class LeaderboardUIController : MonoBehaviour
 
         // 기존 리더보드 항목들 찾기 및 설정
         SetupExistingItems();
+    }
+
+    /// <summary>
+    /// 카테고리 버튼들 초기화 및 이벤트 연결
+    /// </summary>
+    private void InitializeCategoryButtons()
+    {
+        // 버튼들이 수동으로 설정되지 않았다면 자동으로 찾기
+        if (allButton == null || dogButton == null || catButton == null || hamsterButton == null)
+        {
+            FindCategoryButtons();
+        }
+        
+        // 이벤트 연결
+        if (allButton != null)
+        {
+            allButton.onClick.AddListener(() => OnCategoryButtonClicked(CharacterCategory.All));
+        }
+        
+        if (dogButton != null)
+        {
+            dogButton.onClick.AddListener(() => OnCategoryButtonClicked(CharacterCategory.Dog));
+        }
+        
+        if (catButton != null)
+        {
+            catButton.onClick.AddListener(() => OnCategoryButtonClicked(CharacterCategory.Cat));
+        }
+        
+        if (hamsterButton != null)
+        {
+            hamsterButton.onClick.AddListener(() => OnCategoryButtonClicked(CharacterCategory.Hamster));
+        }
+        
+        // 초기 상태: All 카테고리로 설정
+        currentCategory = CharacterCategory.All;
+        UpdateCategoryButtonStates();
+        
+        Debug.Log("[LeaderboardUIController] 카테고리 버튼 초기화 완료");
+    }
+    
+    /// <summary>
+    /// 카테고리 버튼들을 자동으로 찾기
+    /// </summary>
+    private void FindCategoryButtons()
+    {
+        // Category/MenuTab 하위에서 버튼들 찾기
+        Transform menuTab = transform.Find("Category/MenuTab");
+        if (menuTab != null)
+        {
+            // 버튼 이름으로 찾기 (실제 오브젝트 이름에 맞게 조정 필요)
+            allButton = FindButtonByName(menuTab, "AllButton");
+            dogButton = FindButtonByName(menuTab, "DogButton");  
+            catButton = FindButtonByName(menuTab, "CatButton");
+            hamsterButton = FindButtonByName(menuTab, "HamsterButton");
+            
+            Debug.Log($"[LeaderboardUIController] 버튼 찾기 결과 - All: {allButton != null}, Dog: {dogButton != null}, Cat: {catButton != null}, Hamster: {hamsterButton != null}");
+        }
+    }
+    
+    /// <summary>
+    /// 이름으로 버튼 찾기 (재귀적으로 검색)
+    /// </summary>
+    private Button FindButtonByName(Transform parent, string buttonName)
+    {
+        // 직접 자식에서 찾기
+        Transform buttonTransform = parent.Find(buttonName);
+        if (buttonTransform != null)
+        {
+            Button button = buttonTransform.GetComponent<Button>();
+            if (button != null) return button;
+        }
+        
+        // 모든 자식 Button 컴포넌트에서 찾기
+        Button[] buttons = parent.GetComponentsInChildren<Button>();
+        foreach (Button button in buttons)
+        {
+            if (button.name.Contains("All") || button.name.ToLower().Contains("all"))
+            {
+                if (buttonName.Contains("All")) return button;
+            }
+            else if (button.name.Contains("Dog") || button.name.ToLower().Contains("dog"))
+            {
+                if (buttonName.Contains("Dog")) return button;
+            }
+            else if (button.name.Contains("Cat") || button.name.ToLower().Contains("cat"))
+            {
+                if (buttonName.Contains("Cat")) return button;
+            }
+            else if (button.name.Contains("Hamster") || button.name.ToLower().Contains("hamster"))
+            {
+                if (buttonName.Contains("Hamster")) return button;
+            }
+        }
+        
+        return null;
     }
 
     /// <summary>
@@ -260,13 +377,17 @@ public class LeaderboardUIController : MonoBehaviour
 
         try
         {
-            // 리더보드 데이터 로드
-            var leaderboardData = await LeaderboardManager.Instance.LoadLeaderboardAsync(maxDisplayEntries);
+            // 전체 리더보드 데이터 로드 (필터링 전)
+            var allData = await LeaderboardManager.Instance.LoadLeaderboardAsync(maxDisplayEntries * 3); // 여유있게 로드
+            allLeaderboardData = allData;
+            
+            // 현재 카테고리에 따라 필터링
+            var filteredData = FilterDataByCategory(allData, currentCategory);
             
             // UI 업데이트
-            UpdateLeaderboardUI(leaderboardData);
+            UpdateLeaderboardUI(filteredData);
             
-            Debug.Log($"[LeaderboardUIController] 리더보드 업데이트 완료: {leaderboardData.Count}개 항목");
+            Debug.Log($"[LeaderboardUIController] 리더보드 업데이트 완료: 전체 {allData.Count}개, 필터링 후 {filteredData.Count}개 항목 (카테고리: {currentCategory})");
         }
         catch (System.Exception ex)
         {
@@ -277,6 +398,155 @@ public class LeaderboardUIController : MonoBehaviour
             // 로딩 UI 숨기기
             ShowLoading(false);
             isRefreshing = false;
+        }
+    }
+
+    /// <summary>
+    /// 강제 새로고침 (캐시 무효화 후 새로 로드)
+    /// </summary>
+    public async void ForceRefreshLeaderboard()
+    {
+        if (isRefreshing) return;
+        if (LeaderboardManager.Instance == null) 
+        {
+            Debug.LogError("[LeaderboardUIController] LeaderboardManager가 없습니다.");
+            return;
+        }
+        
+        isRefreshing = true;
+
+        // 로딩 UI 표시
+        ShowLoading(true);
+
+        try
+        {
+            Debug.Log("[LeaderboardUIController] 강제 새로고침 시작 - 캐시 무효화 후 새로 로드");
+            
+            // 강제 새로고침 (캐시 무효화 포함)
+            var allData = await LeaderboardManager.Instance.ForceRefreshLeaderboardAsync(maxDisplayEntries * 3);
+            allLeaderboardData = allData;
+            
+            // 현재 카테고리에 따라 필터링
+            var filteredData = FilterDataByCategory(allData, currentCategory);
+            
+            // UI 업데이트
+            UpdateLeaderboardUI(filteredData);
+            
+            Debug.Log($"[LeaderboardUIController] 강제 새로고침 완료: 전체 {allData.Count}개, 필터링 후 {filteredData.Count}개 항목 (카테고리: {currentCategory})");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[LeaderboardUIController] 강제 새로고침 실패: {ex.Message}");
+        }
+        finally
+        {
+            // 로딩 UI 숨기기
+            ShowLoading(false);
+            isRefreshing = false;
+        }
+    }
+
+    /// <summary>
+    /// 특정 플레이어를 리더보드에서 제거
+    /// </summary>
+    public void RemovePlayerFromLeaderboard(string playerId)
+    {
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogWarning("[LeaderboardUIController] 플레이어 ID가 비어있습니다.");
+            return;
+        }
+
+        // 캐시된 데이터에서 제거
+        int removedFromCache = allLeaderboardData.RemoveAll(p => p.playerId == playerId);
+        
+        // LeaderboardManager 캐시에서도 제거
+        if (LeaderboardManager.Instance != null)
+        {
+            LeaderboardManager.Instance.RemovePlayerFromCache(playerId);
+        }
+
+        if (removedFromCache > 0)
+        {
+            Debug.Log($"[LeaderboardUIController] 플레이어 {playerId}를 리더보드에서 제거했습니다.");
+            
+            // UI 업데이트
+            var filteredData = FilterDataByCategory(allLeaderboardData, currentCategory);
+            UpdateLeaderboardUI(filteredData);
+        }
+        else
+        {
+            Debug.Log($"[LeaderboardUIController] 플레이어 {playerId}가 현재 리더보드에 없습니다.");
+        }
+    }
+
+    /// <summary>
+    /// 카테고리에 따른 데이터 필터링
+    /// </summary>
+    private List<PlayerData> FilterDataByCategory(List<PlayerData> allData, CharacterCategory category)
+    {
+        if (category == CharacterCategory.All)
+        {
+            return allData.Take(maxDisplayEntries).ToList();
+        }
+        
+        var filteredData = allData
+            .Where(data => IsCharacterInCategory(data.competitiveBestCharacter, category))
+            .Take(maxDisplayEntries)
+            .ToList();
+            
+        Debug.Log($"[LeaderboardUIController] 카테고리 필터링: {category} → {filteredData.Count}개 항목");
+        
+        return filteredData;
+    }
+    
+    /// <summary>
+    /// 캐릭터가 특정 카테고리에 속하는지 확인
+    /// </summary>
+    private bool IsCharacterInCategory(string characterName, CharacterCategory category)
+    {
+        if (string.IsNullOrEmpty(characterName))
+            return false;
+            
+        string lowerCharacterName = characterName.ToLower();
+        
+        switch (category)
+        {
+            case CharacterCategory.Dog:
+                return lowerCharacterName.Contains("puppy") || 
+                       lowerCharacterName.Contains("dog") ||
+                       lowerCharacterName.Contains("강아지");
+                       
+            case CharacterCategory.Cat:
+                return lowerCharacterName.Contains("kitty") || 
+                       lowerCharacterName.Contains("cat") ||
+                       lowerCharacterName.Contains("고양이");
+                       
+            case CharacterCategory.Hamster:
+                return lowerCharacterName.Contains("hamster") ||
+                       lowerCharacterName.Contains("햄스터");
+                       
+            case CharacterCategory.All:
+            default:
+                return true;
+        }
+    }
+    
+    /// <summary>
+    /// 카테고리에 해당하는 캐릭터 필터 문자열 반환 (레거시 지원용)
+    /// </summary>
+    private string GetCharacterFilterString(CharacterCategory category)
+    {
+        switch (category)
+        {
+            case CharacterCategory.Dog:
+                return "dog";
+            case CharacterCategory.Cat:
+                return "cat";
+            case CharacterCategory.Hamster:
+                return "hamster";
+            default:
+                return "";
         }
     }
 
@@ -505,5 +775,64 @@ public class LeaderboardUIController : MonoBehaviour
         {
             Debug.Log("[LeaderboardUIController] 현재 플레이어가 리더보드에 없습니다.");
         }
+    }
+
+    /// <summary>
+    /// 카테고리 버튼 클릭 이벤트 처리
+    /// </summary>
+    private void OnCategoryButtonClicked(CharacterCategory category)
+    {
+        currentCategory = category;
+        UpdateCategoryButtonStates();
+        
+        // 캐시된 데이터가 있으면 빠르게 필터링, 없으면 새로 로드
+        if (allLeaderboardData.Count > 0)
+        {
+            var filteredData = FilterDataByCategory(allLeaderboardData, currentCategory);
+            UpdateLeaderboardUI(filteredData);
+            Debug.Log($"[LeaderboardUIController] 캐시된 데이터로 카테고리 필터링 완료: {filteredData.Count}개 항목");
+        }
+        else
+        {
+            RefreshLeaderboard();
+        }
+    }
+
+    /// <summary>
+    /// 카테고리 버튼 상태 업데이트
+    /// </summary>
+    private void UpdateCategoryButtonStates()
+    {
+        // 버튼들의 상태 업데이트 (선택된 버튼을 시각적으로 표시)
+        if (allButton != null)
+        {
+            // 선택된 버튼인지 확인하여 시각적 표시
+            ColorBlock colors = allButton.colors;
+            colors.normalColor = currentCategory == CharacterCategory.All ? Color.yellow : Color.white;
+            allButton.colors = colors;
+        }
+        
+        if (dogButton != null)
+        {
+            ColorBlock colors = dogButton.colors;
+            colors.normalColor = currentCategory == CharacterCategory.Dog ? Color.yellow : Color.white;
+            dogButton.colors = colors;
+        }
+        
+        if (catButton != null)
+        {
+            ColorBlock colors = catButton.colors;
+            colors.normalColor = currentCategory == CharacterCategory.Cat ? Color.yellow : Color.white;
+            catButton.colors = colors;
+        }
+        
+        if (hamsterButton != null)
+        {
+            ColorBlock colors = hamsterButton.colors;
+            colors.normalColor = currentCategory == CharacterCategory.Hamster ? Color.yellow : Color.white;
+            hamsterButton.colors = colors;
+        }
+        
+        Debug.Log($"[LeaderboardUIController] 카테고리 변경: {currentCategory}");
     }
 } 
