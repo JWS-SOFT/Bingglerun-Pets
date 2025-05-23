@@ -38,12 +38,19 @@ public class GameStateMachine : MonoBehaviour
                 // 타이틀 상태일 때 계정 정보 확인 및 오디오 설정 동기화 후 BGM 재생
                 SyncAudioSettingsBasedOnAccount(BGMType.Title);
                 UIManager.Instance.ShowTitleUI();
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             case GameState.Lobby:
                 UIManager.Instance.ShowLobbyUI();
                 // 로비 BGM 재생
                 PlayBGM(BGMType.Lobby);
+                // 로비 상태 - 리더보드 기능 자동 활성화 (IsInLobbyState에서 체크)
                 break;
 
             // case GameState.ModeSelect:
@@ -76,10 +83,22 @@ public class GameStateMachine : MonoBehaviour
                     // Firebase 인증이 없는 경우 기본 UI만 표시
                     UIManager.Instance.ShowStoryStageSelectUI();
                 }
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             case GameState.CompetitiveSetup:
                 UIManager.Instance.ShowCompetitiveSetupUI();
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             // 스토리 모드 인게임
@@ -87,6 +106,12 @@ public class GameStateMachine : MonoBehaviour
                 UIManager.Instance.HideAll();
                 // 스토리 모드 인게임 관련 초기화 작업
                 PlayBGM(BGMType.StoryInGame);
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             // 경쟁 모드 인게임
@@ -94,18 +119,41 @@ public class GameStateMachine : MonoBehaviour
                 UIManager.Instance.HideAll();
                 // 경쟁 모드 인게임 관련 초기화 작업
                 PlayBGM(BGMType.CompetitionInGame);
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             case GameState.Result:
                 UIManager.Instance.ShowResultUI();
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             case GameState.Loading:
                 // 로딩 처리
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
 
             case GameState.Pause:
                 UIManager.Instance.ShowPauseMenu();
+                
+                // 리더보드 캐시 무효화 (로비가 아닌 상태)
+                if (LeaderboardManager.Instance != null)
+                {
+                    LeaderboardManager.Instance.InvalidateCache();
+                }
                 break;
         }
     }

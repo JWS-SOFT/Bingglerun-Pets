@@ -91,6 +91,10 @@ public class PlayerData
     public int totalCoinsCollected;
     public int competitiveBestScore; // 경쟁모드 전용 베스트 스코어
     
+    // 경쟁모드 관련 추가 정보
+    public string competitiveBestCharacter; // 최고 점수를 기록한 캐릭터
+    public long competitiveBestScoreTimestamp; // 최고 점수 기록 시간
+    
     // 마지막 업데이트 시간
     public long lastUpdateTimestamp;
     
@@ -264,6 +268,8 @@ public class PlayerData
             totalPlayCount = 0,
             totalCoinsCollected = 0,
             competitiveBestScore = 0,
+            competitiveBestCharacter = "",
+            competitiveBestScoreTimestamp = 0,
             lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         };
         

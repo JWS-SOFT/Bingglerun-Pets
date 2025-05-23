@@ -643,15 +643,37 @@ public class PlayerDataManager : MonoBehaviour
     /// <param name="score"></param>
     public void UpdateCompetitiveBestScore(int score)
     {
-        Debug.Log("UpdateScore");
-        if (CurrentPlayerData.competitiveBestScore == 0)
+        Debug.Log("UpdateCompetitiveBestScore 호출");
+        
+        if (!IsDataLoaded)
+        {
+            Debug.LogWarning("[PlayerDataManager] 플레이어 데이터가 로드되지 않았습니다.");
+            return;
+        }
+        
+        bool scoreUpdated = false;
+        
+        if (CurrentPlayerData.competitiveBestScore == 0 || score > CurrentPlayerData.competitiveBestScore)
         {
             CurrentPlayerData.competitiveBestScore = score;
+            CurrentPlayerData.competitiveBestCharacter = CurrentPlayerData.currentCharacter; // 현재 사용 중인 캐릭터 저장
+            CurrentPlayerData.competitiveBestScoreTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            scoreUpdated = true;
+            
+            Debug.Log($"[PlayerDataManager] 경쟁모드 최고 점수 업데이트: {score} (캐릭터: {CurrentPlayerData.currentCharacter})");
+            
+            // 이벤트 발생
+            OnCompetitiveBestScoreChanged?.Invoke(CurrentPlayerData.competitiveBestScore);
         }
-        if (score > CurrentPlayerData.competitiveBestScore)
+        else
         {
-            CurrentPlayerData.competitiveBestScore = score;
+            Debug.Log($"[PlayerDataManager] 기존 최고 점수({CurrentPlayerData.competitiveBestScore})보다 낮아서 업데이트하지 않음: {score}");
         }
+        
+        // 점수가 업데이트되었든 안되었든 플레이 카운트는 증가
+        CurrentPlayerData.totalPlayCount++;
+        
+        // 데이터 저장
         _ = SavePlayerDataAsync();
     }
     #endregion

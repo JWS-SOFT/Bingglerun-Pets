@@ -52,4 +52,29 @@ public class UIController : MonoBehaviour
     {
 
     }
+
+    /// <summary>
+    /// 리더보드 UI 열기
+    /// </summary>
+    public void OpenLeaderboard()
+    {
+        TogglePopup("LeaderboardUI");
+    }
+
+    /// <summary>
+    /// 리더보드 새로고침 (리더보드 UI가 열려있을 때 호출)
+    /// </summary>
+    public void RefreshLeaderboard()
+    {
+        // 현재 활성화된 리더보드 UI 컨트롤러 찾기
+        LeaderboardUIController leaderboardController = FindObjectOfType<LeaderboardUIController>();
+        if (leaderboardController != null)
+        {
+            leaderboardController.RefreshLeaderboard();
+        }
+        else
+        {
+            Debug.LogWarning("[UIController] LeaderboardUIController를 찾을 수 없습니다.");
+        }
+    }
 }
