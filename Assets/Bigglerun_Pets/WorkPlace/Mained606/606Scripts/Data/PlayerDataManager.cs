@@ -170,7 +170,10 @@ public class PlayerDataManager : MonoBehaviour
             }
         }
         
-        Debug.Log($"[PlayerDataManager] Dictionary 초기화 완료 - 스테이지 데이터: {(CurrentPlayerData.storyStages != null ? CurrentPlayerData.storyStages.Count : 0)}개, 아이템 데이터: {(CurrentPlayerData.items != null ? CurrentPlayerData.items.Count : 0)}개");
+        // 캐릭터별 경쟁모드 점수 마이그레이션 (기존 데이터 호환성)
+        CurrentPlayerData.MigrateToCharacterScores();
+        
+        Debug.Log($"[PlayerDataManager] Dictionary 초기화 완료 - 스테이지 데이터: {(CurrentPlayerData.storyStages != null ? CurrentPlayerData.storyStages.Count : 0)}개, 아이템 데이터: {(CurrentPlayerData.items != null ? CurrentPlayerData.items.Count : 0)}개, 캐릭터별 점수: {CurrentPlayerData.GetAllCharacterScores().Count}개");
     }
     
     /// <summary>
@@ -651,23 +654,32 @@ public class PlayerDataManager : MonoBehaviour
             return;
         }
         
+        string currentCharacter = CurrentPlayerData.currentCharacter ?? "Dog";
         bool scoreUpdated = false;
         
+        // 캐릭터별 점수 업데이트 (새로운 시스템)
+        bool characterScoreUpdated = CurrentPlayerData.UpdateCharacterScore(currentCharacter, score);
+        
+        // 전체 최고 점수 업데이트 (기존 시스템 호환성 유지)
         if (CurrentPlayerData.competitiveBestScore == 0 || score > CurrentPlayerData.competitiveBestScore)
         {
             CurrentPlayerData.competitiveBestScore = score;
-            CurrentPlayerData.competitiveBestCharacter = CurrentPlayerData.currentCharacter; // 현재 사용 중인 캐릭터 저장
+            CurrentPlayerData.competitiveBestCharacter = currentCharacter;
             CurrentPlayerData.competitiveBestScoreTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             scoreUpdated = true;
             
-            Debug.Log($"[PlayerDataManager] 경쟁모드 최고 점수 업데이트: {score} (캐릭터: {CurrentPlayerData.currentCharacter})");
-            
-            // 이벤트 발생
+            Debug.Log($"[PlayerDataManager] 전체 최고 점수 업데이트: {score} (캐릭터: {currentCharacter})");
+        }
+        
+        // 캐릭터별 점수가 업데이트되었거나 전체 점수가 업데이트된 경우 이벤트 발생
+        if (characterScoreUpdated || scoreUpdated)
+        {
             OnCompetitiveBestScoreChanged?.Invoke(CurrentPlayerData.competitiveBestScore);
+            Debug.Log($"[PlayerDataManager] 점수 업데이트 완료 - 캐릭터별: {characterScoreUpdated}, 전체: {scoreUpdated}");
         }
         else
         {
-            Debug.Log($"[PlayerDataManager] 기존 최고 점수({CurrentPlayerData.competitiveBestScore})보다 낮아서 업데이트하지 않음: {score}");
+            Debug.Log($"[PlayerDataManager] 기존 점수보다 낮아서 업데이트하지 않음: {score} (현재 캐릭터 최고: {CurrentPlayerData.GetCharacterBestScore(currentCharacter)}, 전체 최고: {CurrentPlayerData.competitiveBestScore})");
         }
         
         // 점수가 업데이트되었든 안되었든 플레이 카운트는 증가
