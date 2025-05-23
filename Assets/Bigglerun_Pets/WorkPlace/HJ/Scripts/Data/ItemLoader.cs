@@ -14,4 +14,10 @@ public static class ItemLoader
         TextAsset json = Resources.Load<TextAsset>("Data/DecorationItemData");
         return JsonUtilityWrapper.FromJsonList<DecorationItemData>(json.text);
     }
+
+    public static List<CharacterData> LoadCharacterData()
+    {
+        TextAsset json = Resources.Load<TextAsset>("Data/CharacterData");
+        return JsonUtilityWrapper.FromJsonList<CharacterData>(json.text);
+    }
 }
