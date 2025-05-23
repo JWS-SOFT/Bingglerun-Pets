@@ -32,6 +32,7 @@ public class LeaderboardUIController : MonoBehaviour
         public TextMeshProUGUI nameText;
         public TextMeshProUGUI scoreText;
         public TextMeshProUGUI levelText;        // 레벨 표시용 (Server 대신 사용)
+        public TextMeshProUGUI characterText;    // 캐릭터 정보 표시용 (추가)
         public Image backgroundImage;
         
         // 별 표시용 (있으면) - 총 별 개수 표시
@@ -110,6 +111,7 @@ public class LeaderboardUIController : MonoBehaviour
         item.nameText = FindTextComponent(itemTransform, "User");
         item.scoreText = FindTextComponent(itemTransform, "Score");
         item.levelText = FindTextComponent(itemTransform, "Server"); // Server 필드를 Level로 재활용
+        item.characterText = FindTextComponent(itemTransform, "Character"); // 캐릭터 정보 표시용
         
         // 배경 이미지 (옵션)
         item.backgroundImage = itemTransform.GetComponent<Image>();
@@ -218,6 +220,8 @@ public class LeaderboardUIController : MonoBehaviour
     /// </summary>
     private void UpdateLeaderboardItem(LeaderboardItemUI item, PlayerData playerData, int rank)
     {
+        Debug.Log($"[LeaderboardUIController] 리더보드 항목 업데이트 - 순위: {rank}, 플레이어: {playerData.playerId}, 닉네임: {playerData.nickname}, 점수: {playerData.competitiveBestScore}");
+        
         // 순위 설정
         if (item.rankText != null)
         {
@@ -227,7 +231,9 @@ public class LeaderboardUIController : MonoBehaviour
         // 플레이어 이름 설정
         if (item.nameText != null)
         {
-            item.nameText.text = playerData.nickname ?? "Unknown";
+            string displayName = !string.IsNullOrEmpty(playerData.nickname) ? playerData.nickname : "Unknown Player";
+            item.nameText.text = displayName;
+            Debug.Log($"[LeaderboardUIController] 닉네임 설정: {displayName}");
         }
 
         // 점수 설정 (competitiveBestScore)
@@ -236,10 +242,30 @@ public class LeaderboardUIController : MonoBehaviour
             item.scoreText.text = playerData.competitiveBestScore.ToString("N0");
         }
 
+        // 캐릭터 정보 준비
+        string characterName = !string.IsNullOrEmpty(playerData.competitiveBestCharacter) 
+            ? playerData.competitiveBestCharacter 
+            : playerData.currentCharacter ?? "Unknown";
+
         // 레벨 정보 설정 (기존 Server 필드 재활용)
         if (item.levelText != null)
         {
-            item.levelText.text = $"Lv.{playerData.level}";
+            // 캐릭터 정보가 별도 UI가 없다면 레벨과 함께 표시
+            if (item.characterText == null)
+            {
+                item.levelText.text = $"Lv.{playerData.level} ({characterName})";
+            }
+            else
+            {
+                item.levelText.text = $"Lv.{playerData.level}";
+            }
+        }
+
+        // 캐릭터 정보 설정 (별도 UI가 있는 경우)
+        if (item.characterText != null)
+        {
+            item.characterText.text = characterName;
+            Debug.Log($"[LeaderboardUIController] 캐릭터 정보 설정: {characterName}");
         }
 
         // 별 표시 설정 (총 별 개수를 5개 단위로 표시)

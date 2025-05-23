@@ -116,7 +116,13 @@ public class LeaderboardManager : MonoBehaviour
                                     playerData.InitializeStagesFromList();
                                     playerData.InitializeItemsFromList();
                                     
+                                    Debug.Log($"[LeaderboardManager] 플레이어 데이터 로드: {playerData.playerId}, 닉네임: {playerData.nickname}, 점수: {playerData.competitiveBestScore}, 캐릭터: {playerData.competitiveBestCharacter}");
+                                    
                                     allPlayers.Add(playerData);
+                                }
+                                else
+                                {
+                                    Debug.Log($"[LeaderboardManager] 플레이어 데이터 스킵 (점수 없음): {playerData?.playerId}, 점수: {playerData?.competitiveBestScore}");
                                 }
                             }
                             catch (Exception ex)
@@ -229,6 +235,7 @@ public class LeaderboardManager : MonoBehaviour
     private void CreateTestData()
     {
         string[] testNames = { "김진우", "이수민", "박민준", "최서연", "정하늘", "강도윤", "윤지유", "임서준", "조민서", "한예준" };
+        string[] testCharacters = { "dog", "cat", "hamster", "rabbit", "bird", "dog", "cat", "hamster", "rabbit", "bird" };
         
         for (int i = 0; i < testNames.Length; i++)
         {
@@ -237,6 +244,9 @@ public class LeaderboardManager : MonoBehaviour
                 playerId = $"test_player_{i}",
                 nickname = testNames[i],
                 competitiveBestScore = UnityEngine.Random.Range(50000, 999999),
+                competitiveBestCharacter = testCharacters[i],
+                competitiveBestScoreTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (i * 3600000),
+                currentCharacter = testCharacters[i],
                 level = UnityEngine.Random.Range(1, 20),
                 totalStars = UnityEngine.Random.Range(10, 100),
                 lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (i * 3600000) // 1시간씩 간격
