@@ -45,6 +45,8 @@ public class TerrainScrollManager : MonoBehaviour
             return;
         }
 
+        terrainIndex = 0;
+        terrainDistance = 0;
         terrainWidth = GetPrefabWidth(terrainPrefab);
 
         // 패턴 생성
@@ -77,18 +79,19 @@ public class TerrainScrollManager : MonoBehaviour
 
             terrainIndex++;
         }
+        Debug.Log("설정거리 : " + PlayerManager.GetStageDistance() + "M");
     }
 
     private void Update()
     {
         if (!PlayerManager.Instance.isGameStartReady) return;
-        if (PlayerManager.GetStageDistance <= terrainDistance) return;
+        if (PlayerManager.GetStageDistance() <= terrainDistance) return;
         
         float delta = scrollSpeed * Time.deltaTime;
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
 
-        bool isTerrainDistanceMax = PlayerManager.GetStageDistance <= terrainIndex * terrainWidth;
+        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= terrainIndex * terrainWidth;
         foreach (var obj in terrainPool)
         {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
@@ -100,12 +103,6 @@ public class TerrainScrollManager : MonoBehaviour
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
             first.transform.position = new Vector3(lastX + terrainWidth, first.transform.position.y, 0);
-
-            // 기존 장애물 제거
-            if (first.transform.childCount > 1)
-            {
-                Destroy(first.transform.GetChild(first.transform.childCount - 1).gameObject);
-            }
 
             // 다음 타일 패턴 적용
             if (terrainIndex >= spawnPattern.Count)
@@ -141,6 +138,11 @@ public class TerrainScrollManager : MonoBehaviour
     // 타일 활성/비활성
     private void SetTileActive(GameObject tile, int state, bool first)
     {
+        // 기존 장애물 제거
+        if (tile.transform.childCount > 1)
+        {
+            Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
+        }
         tile.SetActive(state == 1);
         if (state == 1 && first) SpawnItemOnTerrain(tile);
     }

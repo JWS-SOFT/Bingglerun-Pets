@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         if (moving) return;
         else
         {
-            if (currentStairIndex > 0 && currentStairIndex < PlayerManager.GetStageStair - 1 && !PlayerManager.ActionTImerCheck())
+            if (currentStairIndex > 0 && currentStairIndex < PlayerManager.GetStageStair() - 1 && !PlayerManager.ActionTImerCheck())
             {
                 TriggerGameOver();
                 return;
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
                 moving = false;
                 player_Animator.SetBool("Jump", false);
 
-                if (currentStairIndex + 1 == PlayerManager.GetStageStair)
+                if (currentStairIndex + 1 == PlayerManager.GetStageStair())
                 {
                     StageStairCLear();
                 }

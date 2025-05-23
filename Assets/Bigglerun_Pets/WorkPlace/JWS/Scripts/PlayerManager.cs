@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -21,8 +22,14 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int stageLevel = 1;
     [SerializeField] private int stairBaseCount = 20;
     [SerializeField] private int baseDistance = 50;
-    public static int GetStageStair;
-    public static int GetStageDistance;
+    public static int GetStageStair()
+    {
+        return ((Instance.stageLevel * 10) + Instance.stairBaseCount);
+    }
+    public static int GetStageDistance()
+    {
+        return ((Instance.stageLevel * 50) + Instance.baseDistance);
+    }
     [SerializeField] private TerrainScrollManager terrainScrollManager;
     [SerializeField] private Button[] actionButton = new Button[3];
     private PlayerData playerData;
@@ -60,6 +67,8 @@ public class PlayerManager : MonoBehaviour
     private bool isInvincible = false;
     public TerrainScrollManager TerrainScrollManager => terrainScrollManager;
 
+    public event Action OnTakeDamage;
+
 
     private void Awake()
     {
@@ -73,8 +82,6 @@ public class PlayerManager : MonoBehaviour
         }
 
         actionTimer = new BasicTimer(timeAction);
-        GetStageStair = ((stageLevel * 10) + stairBaseCount);
-        GetStageDistance = ((stageLevel * 50) + baseDistance);
     }
 
     private void Start()
@@ -158,9 +165,8 @@ public class PlayerManager : MonoBehaviour
 
     public static void ChangeFloor(int floor)
     {
-        if (GetStageStair != ((Instance.stageLevel * 10) + Instance.stairBaseCount)) GetStageStair = ((Instance.stageLevel * 10) + Instance.stairBaseCount);
         Instance.currentPlayerFloor = floor;
-        Instance.floorText.text = GetStageStair == Instance.currentPlayerFloor + 1 ?
+        Instance.floorText.text = GetStageStair() == Instance.currentPlayerFloor + 1 ?
             "Floor\nMax Floor; : " : "Floor\n" + Instance.currentPlayerFloor;
         ActionTImeStart();
         ScoreManager.Instance.AddStep(); // 추가
@@ -168,16 +174,15 @@ public class PlayerManager : MonoBehaviour
 
     public static void ChangeDistance(float distance)
     {
-        if (GetStageDistance != ((Instance.stageLevel * 50) + Instance.baseDistance)) GetStageDistance = ((Instance.stageLevel * 50) + Instance.baseDistance);
         Instance.currentPlayerDistance = distance;
         Instance.floorText.text = "Distance\n" + Instance.currentPlayerDistance.ToString("N1") + "m";
-        Instance.timerText.text = Instance.currentPlayerDistance.ToString("N1") + "m";
-        Instance.timerSlider.maxValue = GetStageDistance;
+        Instance.timerText.text = Instance.currentPlayerDistance.ToString("N0") + "m";
+        Instance.timerSlider.maxValue = GetStageDistance();
         Instance.timerSlider.value = Instance.currentPlayerDistance;
 
         float movedDistance = 5f * Time.deltaTime; // 추가
         if (ScoreManager.Instance!=null) ScoreManager.Instance.AddHorizontalDistance(movedDistance); // 추가
-        if (GetStageDistance <= Instance.currentPlayerDistance)
+        if (GetStageDistance() <= Instance.currentPlayerDistance)
         {
             if (!Instance.isBattleMode)
             {
@@ -186,8 +191,6 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 Instance.stageLevel++;
-                GetStageStair = ((Instance.stageLevel * 10) + Instance.stairBaseCount);
-                GetStageDistance = ((Instance.stageLevel * 50) + Instance.baseDistance);
                 Instance.SetPlayMode(false);
             }
         }
@@ -262,6 +265,8 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
+        // 이벤트 호출
+        OnTakeDamage?.Invoke();
         currentLife--;
         // 별 감소도 함께 처리
         if (ScoreManager.Instance!=null ) ScoreManager.Instance.DecreaseStar();
@@ -280,6 +285,7 @@ public class PlayerManager : MonoBehaviour
 
             SetInvincible(0.5f);    //0.5초 동안 무적
         }
+        
     }
 
     //무적
@@ -329,6 +335,18 @@ public class PlayerManager : MonoBehaviour
     {
         currentLife += amount;
         Debug.Log($"스타트 목숨: {currentLife}");
+    }
+
+    //최대 목숨
+    public int GetMaxLife()
+    {
+        return maxLife;
+    }
+    
+    //현재 목숨
+    public int GetCurrentLife()
+    {
+        return currentLife;
     }
 
     //스킬 횟수 추가
