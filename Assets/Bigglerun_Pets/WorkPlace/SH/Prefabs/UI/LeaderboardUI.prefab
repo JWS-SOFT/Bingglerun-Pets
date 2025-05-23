@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 2035715809136759272}
   - component: {fileID: 5576361464369684075}
   m_Layer: 5
-  m_Name: KittyButton
+  m_Name: CatButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 3866860115899870421}
   - component: {fileID: 771359773019093087}
   m_Layer: 5
-  m_Name: Puppy
+  m_Name: Dog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -581,7 +581,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Puppy
+  m_text: Dog
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}
   m_sharedMaterial: {fileID: 913401800013230857, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}
@@ -801,7 +801,7 @@ GameObject:
   - component: {fileID: 3165491486548520308}
   - component: {fileID: 1847777795435671712}
   m_Layer: 5
-  m_Name: PuppyButton
+  m_Name: DogButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1941,6 +1941,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   contentParent: {fileID: 6921132669001139577}
   leaderboardItemPrefab: {fileID: 0}
+  allButton: {fileID: 0}
+  dogButton: {fileID: 0}
+  catButton: {fileID: 0}
+  hamsterButton: {fileID: 0}
   maxDisplayEntries: 50
   autoRefresh: 1
   refreshInterval: 30
@@ -3241,7 +3245,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Kitty
+  m_text: Cat
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}
   m_sharedMaterial: {fileID: 913401800013230857, guid: 36f89eef7d8cb9a4a80ce8bcd7e6bf9b, type: 2}

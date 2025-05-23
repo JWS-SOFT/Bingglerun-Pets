@@ -1,0 +1,20 @@
+[
+  {
+    "characterId": "dog",
+    "goldPrice": "0",
+    "cashPrice": "0",
+    "iconPath": "Icons/dog"
+  },
+  {
+    "characterId": "cat",
+    "goldPrice": "0",
+    "cashPrice": "100",
+    "iconPath": "Icons/cat"
+  },
+  {
+    "characterId": "hamster",
+    "goldPrice": "1000",
+    "cashPrice": "200",
+    "iconPath": "Icons/hamster"
+  }
+]
