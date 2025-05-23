@@ -108,13 +108,56 @@ public class LeaderboardUIController : MonoBehaviour
 
         // 자식 요소들에서 UI 컴포넌트 찾기
         item.rankText = FindTextComponent(itemTransform, "Rank");
-        item.nameText = FindTextComponent(itemTransform, "User");
+        
+        // User 오브젝트를 찾아서 그 자식에서 닉네임 텍스트 찾기
+        Transform userTransform = FindChildSafe(itemTransform, "User");
+        if (userTransform != null)
+        {
+            // User 오브젝트의 자식에서 닉네임 텍스트 컴포넌트 찾기
+            item.nameText = userTransform.GetComponentInChildren<TextMeshProUGUI>();
+            
+            // 명시적으로 Name이라는 자식이 있는지 확인
+            Transform nameChild = userTransform.Find("Name");
+            if (nameChild != null)
+            {
+                TextMeshProUGUI nameComponent = nameChild.GetComponent<TextMeshProUGUI>();
+                if (nameComponent != null)
+                {
+                    item.nameText = nameComponent;
+                }
+            }
+            
+            // Level 정보도 User 자식에서 찾기
+            Transform levelChild = userTransform.Find("Level");
+            if (levelChild != null)
+            {
+                TextMeshProUGUI levelComponent = levelChild.GetComponent<TextMeshProUGUI>();
+                if (levelComponent != null)
+                {
+                    item.levelText = levelComponent;
+                }
+            }
+        }
+        else
+        {
+            // 기존 방식으로 폴백
+            item.nameText = FindTextComponent(itemTransform, "User");
+        }
+        
         item.scoreText = FindTextComponent(itemTransform, "Score");
-        item.levelText = FindTextComponent(itemTransform, "Server"); // Server 필드를 Level로 재활용
+        
+        // levelText가 아직 설정되지 않았다면 기존 방식으로 찾기
+        if (item.levelText == null)
+        {
+            item.levelText = FindTextComponent(itemTransform, "Server"); // Server 필드를 Level로 재활용
+        }
+        
         item.characterText = FindTextComponent(itemTransform, "Character"); // 캐릭터 정보 표시용
         
         // 배경 이미지 (옵션)
         item.backgroundImage = itemTransform.GetComponent<Image>();
+
+        Debug.Log($"[LeaderboardUIController] 항목 설정 완료 - Rank: {item.rankText != null}, Name: {item.nameText != null}, Score: {item.scoreText != null}, Level: {item.levelText != null}");
 
         return item;
     }
@@ -124,28 +167,75 @@ public class LeaderboardUIController : MonoBehaviour
     /// </summary>
     private TextMeshProUGUI FindTextComponent(Transform parent, string childName)
     {
-        Transform child = FindChildRecursive(parent, childName);
-        return child?.GetComponent<TextMeshProUGUI>();
+        Transform child = FindChildSafe(parent, childName);
+        
+        // 찾은 오브젝트에서 TextMeshProUGUI 컴포넌트 확인
+        if (child != null)
+        {
+            TextMeshProUGUI textComponent = child.GetComponent<TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                return textComponent;
+            }
+            
+            // 자식에서 TextMeshProUGUI 컴포넌트를 찾기 (User 오브젝트의 자식인 경우)
+            textComponent = child.GetComponentInChildren<TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                return textComponent;
+            }
+        }
+        
+        return null;
     }
 
     /// <summary>
-    /// 재귀적으로 자식 오브젝트 찾기
+    /// 안전한 자식 오브젝트 찾기 (순환 참조 방지)
     /// </summary>
-    private Transform FindChildRecursive(Transform parent, string childName)
+    private Transform FindChildSafe(Transform parent, string childName)
     {
+        HashSet<Transform> visited = new HashSet<Transform>();
+        return FindChildRecursiveWithTracking(parent, childName, visited, 0, 5);
+    }
+
+    /// <summary>
+    /// 재귀적으로 자식 오브젝트 찾기 (방문 추적 및 깊이 제한)
+    /// </summary>
+    private Transform FindChildRecursiveWithTracking(Transform parent, string childName, HashSet<Transform> visited, int currentDepth, int maxDepth)
+    {
+        // 깊이 제한 및 null 체크
+        if (currentDepth >= maxDepth || parent == null || visited.Contains(parent))
+        {
+            return null;
+        }
+
+        // 방문 표시
+        visited.Add(parent);
+
         // 직접 자식에서 찾기
         Transform directChild = parent.Find(childName);
-        if (directChild != null) return directChild;
+        if (directChild != null) 
+        {
+            return directChild;
+        }
 
         // 자식의 자식에서 찾기
         for (int i = 0; i < parent.childCount; i++)
         {
             Transform child = parent.GetChild(i);
+            if (child == null || visited.Contains(child)) continue;
+            
             if (child.name == childName)
+            {
                 return child;
+            }
                 
-            Transform found = FindChildRecursive(child, childName);
-            if (found != null) return found;
+            // 재귀 호출
+            Transform found = FindChildRecursiveWithTracking(child, childName, visited, currentDepth + 1, maxDepth);
+            if (found != null) 
+            {
+                return found;
+            }
         }
 
         return null;
@@ -233,7 +323,11 @@ public class LeaderboardUIController : MonoBehaviour
         {
             string displayName = !string.IsNullOrEmpty(playerData.nickname) ? playerData.nickname : "Unknown Player";
             item.nameText.text = displayName;
-            Debug.Log($"[LeaderboardUIController] 닉네임 설정: {displayName}");
+            Debug.Log($"[LeaderboardUIController] 닉네임 설정 완료: {displayName} (컴포넌트: {item.nameText.name})");
+        }
+        else
+        {
+            Debug.LogWarning("[LeaderboardUIController] nameText 컴포넌트가 null입니다. User 오브젝트 구조를 확인해주세요.");
         }
 
         // 점수 설정 (competitiveBestScore)
@@ -247,7 +341,7 @@ public class LeaderboardUIController : MonoBehaviour
             ? playerData.competitiveBestCharacter 
             : playerData.currentCharacter ?? "Unknown";
 
-        // 레벨 정보 설정 (기존 Server 필드 재활용)
+        // 레벨 정보 설정
         if (item.levelText != null)
         {
             // 캐릭터 정보가 별도 UI가 없다면 레벨과 함께 표시
@@ -259,6 +353,11 @@ public class LeaderboardUIController : MonoBehaviour
             {
                 item.levelText.text = $"Lv.{playerData.level}";
             }
+            Debug.Log($"[LeaderboardUIController] 레벨 설정 완료: {item.levelText.text} (컴포넌트: {item.levelText.name})");
+        }
+        else
+        {
+            Debug.LogWarning("[LeaderboardUIController] levelText 컴포넌트가 null입니다. User 오브젝트 구조를 확인해주세요.");
         }
 
         // 캐릭터 정보 설정 (별도 UI가 있는 경우)
