@@ -4065,9 +4065,9 @@ MonoBehaviour:
   baseDistance: 1
   terrainScrollManager: {fileID: 1073473418}
   actionButton:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 298908458}
+  - {fileID: 192925710}
+  - {fileID: 200457142}
   currentPlayerFloor: 0
   currentPlayerDistance: 0
   floorText: {fileID: 1910438448}
