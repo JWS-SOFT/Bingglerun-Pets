@@ -7,10 +7,13 @@ public class StageStart : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stageLeveltext, score;
     [SerializeField] private int currentStageLevel;
     [SerializeField] private Image[] starIcons;
+    [SerializeField] private Material originalMaterial;
 
     public void SetStageGameStart(int level)
     {
         currentStageLevel = level;
+        score.text = "NotPlay";
+        stageLeveltext.text = "0";
         // 스테이지 번호 표시
         stageLeveltext.text = "Stage #" + currentStageLevel.ToString();
 
@@ -25,14 +28,11 @@ public class StageStart : MonoBehaviour
 
         // 별 아이콘 표시
         int stars = (stageData != null) ? stageData.stars : 0;
-        if (stars > 0)
+        for (int i = 0; i < starIcons.Length; i++)
         {
-            for (int i = 0; i < stars; i++)
+            if (starIcons[i] != null)
             {
-                if (starIcons[i] != null)
-                {
-                    starIcons[i].material = null;
-                }
+                starIcons[i].material = i < stars ? null : originalMaterial;
             }
         }
 

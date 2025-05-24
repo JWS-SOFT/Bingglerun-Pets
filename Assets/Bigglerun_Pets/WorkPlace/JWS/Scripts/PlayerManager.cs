@@ -69,7 +69,6 @@ public class PlayerManager : MonoBehaviour
 
     public event Action OnTakeDamage;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -86,8 +85,8 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        SetPlayMode(false);
         playerData = PlayerDataManager.Instance.CurrentPlayerData;
+        SetPlayMode(false);
         //playerData = PlayerData.CreateDefault("hamster");
         if (!PlayMode)
         {
@@ -134,6 +133,7 @@ public class PlayerManager : MonoBehaviour
 
     public void SetPlayMode(bool mode)
     {
+        stageLevel = playerData.highestStage;
         if (mode)
         {
             actionButton[1].gameObject.SetActive(false);
