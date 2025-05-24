@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -8,13 +9,13 @@ public class RankManager : MonoBehaviour
     [SerializeField] private GameObject rankListPosition;
     [SerializeField] private GameObject[] rankListPrefab;
     [SerializeField] private int maxRankList = 50;
-    [SerializeField] private List<RankingList> rankingList = new List<RankingList>();
     private bool isRefreshing = false;
     private List<PlayerData> allLeaderboardData = new List<PlayerData>();
 
     private void OnEnable()
     {
         gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1);
+        ResetRankBoard();
         RefreshLeaderboard();
     }
 
@@ -42,8 +43,16 @@ public class RankManager : MonoBehaviour
                 GameObject prefabObject = rankListPrefab[3];
                 if (i < 3) prefabObject = rankListPrefab[i];
                 else prefabObject = rankListPrefab[3];
+                
+                string displayName = !string.IsNullOrEmpty(allLeaderboardData[i].nickname) ? allLeaderboardData[i].nickname : "Unknown Player";
+                // 캐릭터별 엔트리인지 확인 (playerId에 "_캐릭터명" 형식이 포함된 경우)
+                if (allLeaderboardData[i].playerId.Contains("_") && !string.IsNullOrEmpty(allLeaderboardData[i].competitiveBestCharacter))
+                {
+                    // 캐릭터 정보를 이름과 함께 표시
+                    displayName = $"{displayName} ({allLeaderboardData[i].competitiveBestCharacter})";
+                }
+
                 RankingList rankList = Instantiate(prefabObject, rankListPosition.transform).transform.GetComponent<RankingList>();
-                string displayName = allLeaderboardData[i].competitiveBestCharacter == null ? "None" : allLeaderboardData[i].competitiveBestCharacter;
                 rankList.SetRankList(allLeaderboardData[i].competitiveBestScore.ToString(), displayName, i);
             }
         }
@@ -59,15 +68,11 @@ public class RankManager : MonoBehaviour
         }
     }
 
-    private void SetRankBoard()
+    private void ResetRankBoard()
     {
-        for (int i = 0; i < maxRankList; i++)
+        foreach (GameObject gob in rankListPosition.transform)
         {
-            GameObject prefabObject = rankListPrefab[3];
-            if (i < 3) prefabObject = rankListPrefab[i];
-            else prefabObject = rankListPrefab[3];
-            RankingList rankList = Instantiate(prefabObject, rankListPosition.transform).transform.GetComponent<RankingList>();
-            rankingList.Add(rankList);
+            Destroy(gob);
         }
     }
 }

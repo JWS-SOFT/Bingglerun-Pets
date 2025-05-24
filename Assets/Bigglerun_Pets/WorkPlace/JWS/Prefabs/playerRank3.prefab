@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 90fcbbce7125942bd8e00327e9a5f7f3, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -879,10 +879,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61ea1c46406bac74ab43f0f337948359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highScore: {fileID: 0}
-  playerName: {fileID: 0}
-  rank: {fileID: 0}
-  avataImage: {fileID: 0}
+  highScore: {fileID: 7536035742502978536}
+  playerName: {fileID: 9011419454597340039}
+  rank: {fileID: 8517557814470423586}
+  avataImage: {fileID: 7571048739024413591}
 --- !u!1 &4340623484343785670
 GameObject:
   m_ObjectHideFlags: 0
