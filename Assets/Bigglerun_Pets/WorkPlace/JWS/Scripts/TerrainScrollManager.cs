@@ -91,7 +91,7 @@ public class TerrainScrollManager : MonoBehaviour
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
 
-        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= terrainIndex * terrainWidth;
+        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= (terrainIndex -1)* terrainWidth;
         foreach (var obj in terrainPool)
         {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);

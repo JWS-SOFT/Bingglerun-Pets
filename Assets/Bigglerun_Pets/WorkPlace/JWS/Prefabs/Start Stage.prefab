@@ -650,7 +650,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageLeveltext: {fileID: 4597822294066550578}
-  buttons: []
+  score: {fileID: 2450000147052673272}
+  currentStageLevel: 0
+  starIcons:
+  - {fileID: 3546018510682287082}
+  - {fileID: 3546018510682270022}
+  - {fileID: 3546018510682266984}
 --- !u!1 &3974882328008825981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,7 +1075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2515351442638769166, guid: 53b82005885544a019fa1881dafc535b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -61
+      value: -76.21
       objectReference: {fileID: 0}
     - target: {fileID: 2515351442638769166, guid: 53b82005885544a019fa1881dafc535b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1116,7 +1121,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 347740575494044511, guid: 83b7083b38d49490682a0c69c7d0eb26, type: 3}
       propertyPath: m_text
-      value: 0
+      value: NotPlay
       objectReference: {fileID: 0}
     - target: {fileID: 347740575494044511, guid: 83b7083b38d49490682a0c69c7d0eb26, type: 3}
       propertyPath: m_fontSize
@@ -1223,6 +1228,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83b7083b38d49490682a0c69c7d0eb26, type: 3}
+--- !u!114 &2450000147052673272 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 347740575494044511, guid: 83b7083b38d49490682a0c69c7d0eb26, type: 3}
+  m_PrefabInstance: {fileID: 2797661231290598311}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4577384335036449742 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1825480525834109033, guid: 83b7083b38d49490682a0c69c7d0eb26, type: 3}
@@ -1783,7 +1799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1345239700985742471, guid: c2de0605e80bf4d5ab6cf8ffb6b6e072, type: 3}
       propertyPath: m_text
-      value: Go!
+      value: Play!
       objectReference: {fileID: 0}
     - target: {fileID: 1345239700985742471, guid: c2de0605e80bf4d5ab6cf8ffb6b6e072, type: 3}
       propertyPath: m_fontSize
@@ -2040,19 +2056,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7408082878323906763, guid: c51e93ca7c7504dba9adea8cd95a9ced, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7408082878323906763, guid: c51e93ca7c7504dba9adea8cd95a9ced, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1893085144093204182}
+      objectReference: {fileID: 3546018510687877226}
     - target: {fileID: 7408082878323906763, guid: c51e93ca7c7504dba9adea8cd95a9ced, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ClickCloseWindow
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 7408082878323906763, guid: c51e93ca7c7504dba9adea8cd95a9ced, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: StageStart, Assembly-CSharp
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7408082878323906763, guid: c51e93ca7c7504dba9adea8cd95a9ced, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
