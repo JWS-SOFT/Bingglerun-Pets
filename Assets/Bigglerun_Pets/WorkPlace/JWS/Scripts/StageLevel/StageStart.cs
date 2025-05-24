@@ -41,6 +41,7 @@ public class StageStart : MonoBehaviour
 
     public void StageGameStart()
     {
+        GameManager.Instance.currentPlayStage = currentStageLevel;
         // 게임 데이터 저장
         GameDataManager.SetSelectedStageId(currentStageLevel.ToString());
         

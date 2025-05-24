@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private bool play_Mode = false;
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private StairManager stairManager;
-    [SerializeField] private int stageLevel = 1;
+    public int stageLevel = 1;
     [SerializeField] private int stairBaseCount = 20;
     [SerializeField] private int baseDistance = 50;
     public static int GetStageStair()
@@ -133,7 +133,6 @@ public class PlayerManager : MonoBehaviour
 
     public void SetPlayMode(bool mode)
     {
-        stageLevel = playerData.highestStage;
         if (mode)
         {
             actionButton[1].gameObject.SetActive(false);
