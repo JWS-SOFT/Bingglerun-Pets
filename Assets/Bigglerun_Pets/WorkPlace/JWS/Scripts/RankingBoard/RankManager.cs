@@ -52,8 +52,10 @@ public class RankManager : MonoBehaviour
                     displayName = $"{displayName} ({allLeaderboardData[i].competitiveBestCharacter})";
                 }
 
+                bool iscurrentPlayer = PlayerDataManager.Instance.CurrentPlayerData.playerId == allLeaderboardData[i].playerId;
+
                 RankingList rankList = Instantiate(prefabObject, rankListPosition.transform).transform.GetComponent<RankingList>();
-                rankList.SetRankList(allLeaderboardData[i].competitiveBestScore.ToString(), displayName, i);
+                rankList.SetRankList(allLeaderboardData[i].competitiveBestScore.ToString(), displayName, i, iscurrentPlayer);
             }
         }
         catch (System.Exception ex)
