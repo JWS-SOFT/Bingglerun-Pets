@@ -33,6 +33,10 @@ public class StairManager : MonoBehaviour
 
     public void StartStairs()
     {
+        if (!PlayerManager.Instance.isBattleMode)
+        {
+            PlayerManager.Instance.stageLevel = GameManager.Instance.currentPlayStage;
+        }
         stairTotalCount = PlayerManager.GetStageStair();
         InitStairPool(stairTotalCount);
         GenerateInitialStairs();

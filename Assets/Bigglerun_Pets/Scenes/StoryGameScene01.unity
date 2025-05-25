@@ -1856,8 +1856,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.5000534, y: 77.221466}
-  m_SizeDelta: {x: 1803.8999, y: 186.0975}
+  m_AnchoredPosition: {x: -4.5000534, y: 58.8811}
+  m_SizeDelta: {x: 1803.8999, y: 149.4167}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &694135295
 MonoBehaviour:
@@ -3785,8 +3785,8 @@ MonoBehaviour:
   skillManager: {fileID: 1339467147}
   stairManager: {fileID: 487118649}
   stageLevel: 1
-  stairBaseCount: 1
-  baseDistance: 1
+  stairBaseCount: 10
+  baseDistance: 50
   terrainScrollManager: {fileID: 1073473418}
   actionButton:
   - {fileID: 518272088}

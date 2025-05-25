@@ -14,8 +14,8 @@ public class StageSelectUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI totalStarsText;
     [SerializeField] private StageInfoUI stageInfoUI;
     
-    [Header("스테이지 버튼")]
-    [SerializeField] private List<StageButtonUI> stageButtons = new List<StageButtonUI>();
+    // [Header("스테이지 버튼")]
+    // [SerializeField] private List<StageButtonUI> stageButtons = new List<StageButtonUI>();
     
     [Header("설정")]
     [SerializeField] private float initializationDelay = 0.2f;
@@ -188,7 +188,7 @@ public class StageSelectUIController : MonoBehaviour
         UpdateTotalStars();
         
         // 스테이지 버튼 초기화
-        InitializeStageButtons();
+        // InitializeStageButtons();
         
         isInitialized = true;
         Debug.Log("[StageSelectUIController] UI 초기화 완료");
@@ -266,16 +266,16 @@ public class StageSelectUIController : MonoBehaviour
             return;
         }
         
-        for (int i = 0; i < stageButtons.Count; i++)
-        {
-            StageButtonUI button = stageButtons[i];
-            if (button != null)
-            {
-                // 스테이지 번호는 1부터 시작
-                string stageId = (i + 1).ToString();
-                button.Initialize(stageId, OnStageButtonClicked);
-            }
-        }
+        // for (int i = 0; i < stageButtons.Count; i++)
+        // {
+        //     StageButtonUI button = stageButtons[i];
+        //     if (button != null)
+        //     {
+        //         // 스테이지 번호는 1부터 시작
+        //         string stageId = (i + 1).ToString();
+        //         button.Initialize(stageId, OnStageButtonClicked);
+        //     }
+        // }
     }
     
     /// <summary>
@@ -348,12 +348,12 @@ public class StageSelectUIController : MonoBehaviour
             return;
         }
         
-        // 각 버튼 새로고침
-        foreach (StageButtonUI button in stageButtons)
-        {
-            if (button != null)
-                button.RefreshData();
-        }
+        // // 각 버튼 새로고침
+        // foreach (StageButtonUI button in stageButtons)
+        // {
+        //     if (button != null)
+        //         button.RefreshData();
+        // }
         
         UpdateTotalStars();
         Debug.Log("[StageSelectUIController] 모든 스테이지 버튼 새로고침 완료");
