@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -69,7 +68,6 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<ItemManager>();
         gameObject.AddComponent<ShopManager>();
         gameObject.AddComponent<ScoreManager>();
-        gameObject.AddComponent<FriendSystemManager>(); // 친구 시스템 매니저 추가
     }
 
     private void Start()
@@ -118,12 +116,7 @@ public class GameManager : MonoBehaviour
         
         if (success)
         {
-            Debug.Log("[GameManager] 플레이어 데이터 로드 성공, 친구 시스템 초기화 중...");
-            
-            // 친구 시스템 초기화
-            await InitializeFriendSystemAsync(firebase.UserId);
-            
-            Debug.Log("[GameManager] 친구 시스템 초기화 완료, 로비로 전환합니다.");
+            Debug.Log("[GameManager] 플레이어 데이터 로드 성공, 로비로 전환합니다.");
             SceneFader.LoadScene(LobbySceneName);
             StateMachine.ChangeState(GameState.Lobby);
         }
@@ -131,63 +124,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("[GameManager] 플레이어 데이터 로드 실패");
             // 오류 메시지 표시 또는 재시도 로직 추가
-        }
-    }
-    
-    /// <summary>
-    /// 친구 시스템 초기화
-    /// </summary>
-    private async Task<bool> InitializeFriendSystemAsync(string userId)
-    {
-        if (FriendSystemManager.Instance == null)
-        {
-            Debug.LogError("[GameManager] FriendSystemManager 인스턴스가 없습니다.");
-            return false;
-        }
-        
-        bool success = await FriendSystemManager.Instance.InitializeFriendSystemAsync(userId);
-        
-        if (success)
-        {
-            Debug.Log("[GameManager] FriendSystemManager 초기화 성공");
-            
-            // 초기화 완료 후 공개 프로필 업데이트
-            await UpdateFriendSystemProfile();
-        }
-        else
-        {
-            Debug.LogError("[GameManager] FriendSystemManager 초기화 실패");
-        }
-        
-        return success;
-    }
-    
-    /// <summary>
-    /// 친구 시스템 공개 프로필 업데이트
-    /// </summary>
-    private async Task UpdateFriendSystemProfile()
-    {
-        if (PlayerDataManager.Instance?.CurrentPlayerData == null)
-        {
-            Debug.LogWarning("[GameManager] 플레이어 데이터가 없어서 프로필 업데이트를 건너뜁니다.");
-            return;
-        }
-
-        var playerData = PlayerDataManager.Instance.CurrentPlayerData;
-        string displayName = !string.IsNullOrEmpty(playerData.nickname) ? playerData.nickname : "Player";
-        int bestScore = playerData.competitiveBestScore;
-        string characterId = playerData.currentCharacter ?? "default";
-
-        bool success = await FriendSystemManager.Instance.UpdateMyPublicProfileAsync(
-            displayName, bestScore, characterId, true);
-
-        if (success)
-        {
-            Debug.Log($"[GameManager] 친구 시스템 프로필 업데이트 성공: {displayName}");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] 친구 시스템 프로필 업데이트 실패");
         }
     }
     

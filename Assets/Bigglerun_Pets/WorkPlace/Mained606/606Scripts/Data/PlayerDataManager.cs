@@ -84,9 +84,6 @@ public class PlayerDataManager : MonoBehaviour
             IsDataLoaded = true;
             OnDataLoaded?.Invoke();
             
-            // 친구 시스템용 공개 프로필 업데이트
-            await UpdatePublicProfileForFriendSystem(userId);
-            
             Debug.Log($"[PlayerDataManager] 플레이어 데이터 로드 성공: {userId}");
             return true;
         }
@@ -811,68 +808,5 @@ public class PlayerDataManager : MonoBehaviour
             
         return CurrentPlayerData.unlockedCharacters.Contains(characterId);
     }
-    #endregion
-
-    #region 친구 시스템 연동
-
-    /// <summary>
-    /// 친구 시스템용 공개 프로필 업데이트
-    /// </summary>
-    private async Task UpdatePublicProfileForFriendSystem(string userId)
-    {
-        if (CurrentPlayerData == null)
-        {
-            Debug.LogWarning("[PlayerDataManager] 공개 프로필 업데이트 실패: 플레이어 데이터가 없습니다.");
-            return;
-        }
-
-        if (FriendSystemManager.Instance == null)
-        {
-            Debug.LogWarning("[PlayerDataManager] 공개 프로필 업데이트 실패: FriendSystemManager 인스턴스가 없습니다.");
-            return;
-        }
-
-        // FriendSystemManager 초기화 상태 확인
-        if (!FriendSystemManager.Instance.IsInitialized())
-        {
-            Debug.LogWarning("[PlayerDataManager] 공개 프로필 업데이트 스킵: FriendSystemManager가 아직 초기화되지 않았습니다. 로비 진입 후 자동으로 업데이트됩니다.");
-            return;
-        }
-
-        if (!FriendSystemManager.Instance.IsFirebaseConnected())
-        {
-            Debug.LogWarning("[PlayerDataManager] 공개 프로필 업데이트 스킵: Firebase Database가 연결되지 않았습니다.");
-            return;
-        }
-
-        try
-        {
-            // 플레이어 데이터로부터 공개 프로필 정보 생성
-            string displayName = !string.IsNullOrEmpty(CurrentPlayerData.nickname) 
-                                ? CurrentPlayerData.nickname 
-                                : "Player";
-            
-            int bestScore = CurrentPlayerData.competitiveBestScore;
-            string characterId = CurrentPlayerData.currentCharacter ?? "default";
-            
-            // FriendSystemManager를 통해 공개 프로필 업데이트
-            bool success = await FriendSystemManager.Instance.UpdateMyPublicProfileAsync(
-                displayName, bestScore, characterId, true);
-            
-            if (success)
-            {
-                Debug.Log($"[PlayerDataManager] 공개 프로필 업데이트 성공: {displayName}, 최고점수: {bestScore}");
-            }
-            else
-            {
-                Debug.LogWarning("[PlayerDataManager] 공개 프로필 업데이트 실패");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[PlayerDataManager] 공개 프로필 업데이트 중 오류: {ex.Message}");
-        }
-    }
-
     #endregion
 }
