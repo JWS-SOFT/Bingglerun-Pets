@@ -1,12 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CharacterItem : MonoBehaviour
 {
-    public string characterId;
-    public Image characterImage;
-    public int goldPrice;
-    public int cashPrice;
+    public CharacterData characterData;
 }
 
 public enum CharacterType
@@ -16,6 +14,7 @@ public enum CharacterType
     hamster
 }
 
+[Serializable]
 public class CharacterData
 {
     public string characterId;

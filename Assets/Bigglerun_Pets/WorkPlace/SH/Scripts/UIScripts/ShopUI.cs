@@ -214,7 +214,7 @@ public class ShopUI : MonoBehaviour
                 {
                     GameObject confirm = Instantiate(confirmUI.gameObject, UIManager.Instance.popup);
                     confirm.SetActive(true);
-                    confirm.GetComponent<ConfirmUI>().characterItem = characterItem;
+                    confirm.GetComponent<ConfirmUI>().characterItemData = characterItem.characterData;
                     confirm.GetComponent<ConfirmUI>().itemType = ItemType.Character;
                     return;
                 }
@@ -252,6 +252,7 @@ public class ShopUI : MonoBehaviour
         }
     }
 
+    // 데코레이션 아이템 리스트 로드
     private void AccessaryListLoad()
     {
         for(int i = 0; i < ItemManager.AllDecorationItems.Count; i++)
@@ -262,11 +263,13 @@ public class ShopUI : MonoBehaviour
         }
     }
 
+    // 스킨 아이템 리스트 로드
     private void SkinListLoad()
     {
         // TODO
     }
 
+    // 시작 아이템 리스트 로드
     private void ItemListLoad()
     {
         var itemList = ItemManager.Instance.GetFilteredUsableItems(showInShopOnly: true);
@@ -278,17 +281,23 @@ public class ShopUI : MonoBehaviour
         }
     }
 
-    // 캐릭터 데이터화 할 필요 있음
+    // 캐릭터 아이템 리스트 로드
     private void CharacterListLoad()
     {
-        for(int i = 0; i < characterCount; i++)
+        for (int i = 0; i < ItemManager.AllCharacterItems.Count; i++)
         {
             GameObject itemPrefab = Instantiate(characterPrefab, contents);
-            CharacterType type = (CharacterType)i;
-            itemPrefab.GetComponent<CharacterItem>().characterId = type.ToString();
-            itemPrefab.GetComponent<CharacterItem>().goldPrice = 100 * i;
-            itemPrefab.GetComponent<CharacterItem>().cashPrice = 50 * i;
+            itemPrefab.GetComponent<CharacterItem>().characterData = ItemManager.AllCharacterItems[i];
             ShopManager.Instance.characterItemList.Add(itemPrefab);
         }
+        //for (int i = 0; i < characterCount; i++)
+        //{
+        //    GameObject itemPrefab = Instantiate(characterPrefab, contents);
+        //    CharacterType type = (CharacterType)i;
+        //    itemPrefab.GetComponent<CharacterItem>().characterId = type.ToString();
+        //    itemPrefab.GetComponent<CharacterItem>().goldPrice = 100 * i;
+        //    itemPrefab.GetComponent<CharacterItem>().cashPrice = 50 * i;
+        //    ShopManager.Instance.characterItemList.Add(itemPrefab);
+        //}
     }
 }
