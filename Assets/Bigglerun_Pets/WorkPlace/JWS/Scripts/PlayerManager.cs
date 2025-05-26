@@ -253,6 +253,8 @@ public class PlayerManager : MonoBehaviour
     //데미지
     public void TakeDamage()
     {
+        if (playerController.IsRecovering) return;
+
         if (isInvincible)   //무적 상태
         {
             if (playerController.IsRecovering) return;
@@ -279,13 +281,17 @@ public class PlayerManager : MonoBehaviour
         else
         {
             if (PlayerManager.PlayMode)                     //런모드
+            {
                 playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+                SetInvincible(1f);
+            }
             else                                            //계단모드
+            {
                 playerController.RecoverToLastStair();      //이전 계단으로 복귀
+                SetInvincible(0.5f);
+            }
 
-            SetInvincible(0.5f);    //0.5초 동안 무적
         }
-        
     }
 
     //무적
@@ -354,5 +360,10 @@ public class PlayerManager : MonoBehaviour
     {
         currentSkillCount += amount;
         Debug.Log($"스타트 스킬 횟수: {currentSkillCount}");
+    }
+
+    public void SetPoisition()
+    {
+        playerController.PlayerPosition = playerController.transform.position;
     }
 }
