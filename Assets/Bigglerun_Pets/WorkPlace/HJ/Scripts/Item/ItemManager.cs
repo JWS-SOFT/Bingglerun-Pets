@@ -109,7 +109,6 @@ public class ItemManager : MonoBehaviour
             {
                 //Debug.Log($"해금된 캐릭터 불러옴 : {GetCharacterById(characterId)}");
                 unlockedCharacterIds.Add(characterId);
-                Debug.Log($"unlockedCharacter개수 : {unlockedCharacterIds.Count}");
             }
         }
 
@@ -438,9 +437,7 @@ public class ItemManager : MonoBehaviour
     {
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
-        Debug.Log($"decoItemList.Count : {decoItemList}");
         characterItemList = ItemLoader.LoadCharacterData();
-        Debug.Log($"characterItemList.Count : {characterItemList.Count}");
 
         // 게임 매니저 초기화가 완료된 후 PlayerDataManager와 동기화
         if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
