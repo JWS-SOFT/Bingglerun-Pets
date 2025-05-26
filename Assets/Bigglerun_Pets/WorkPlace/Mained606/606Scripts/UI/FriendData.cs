@@ -51,6 +51,14 @@ public class FriendRequestData
     public FriendRequestStatus status;
     public FriendRequestType requestType;  // UI 표시용 요청 타입
     
+    // 추가 사용자 정보
+    public int fromUserLevel;      // 요청 보낸 사람 레벨
+    public int toUserLevel;        // 요청 받는 사람 레벨
+    public bool fromUserIsOnline;  // 요청 보낸 사람 온라인 상태
+    public bool toUserIsOnline;    // 요청 받는 사람 온라인 상태
+    public long fromUserLastLogin; // 요청 보낸 사람 마지막 로그인
+    public long toUserLastLogin;   // 요청 받는 사람 마지막 로그인
+    
     public FriendRequestData()
     {
         requestId = "";
@@ -61,6 +69,14 @@ public class FriendRequestData
         requestTime = 0;
         status = FriendRequestStatus.Pending;
         requestType = FriendRequestType.Received;
+        
+        // 추가 정보 초기화
+        fromUserLevel = 1;
+        toUserLevel = 1;
+        fromUserIsOnline = false;
+        toUserIsOnline = false;
+        fromUserLastLogin = 0;
+        toUserLastLogin = 0;
     }
     
     public FriendRequestData(string fromUserId, string fromNickname, string toUserId, string toNickname = "")
@@ -73,6 +89,14 @@ public class FriendRequestData
         this.requestTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         this.status = FriendRequestStatus.Pending;
         this.requestType = FriendRequestType.Received; // 기본값, 나중에 설정됨
+        
+        // 추가 정보 초기화
+        this.fromUserLevel = 1;
+        this.toUserLevel = 1;
+        this.fromUserIsOnline = false;
+        this.toUserIsOnline = false;
+        this.fromUserLastLogin = 0;
+        this.toUserLastLogin = 0;
     }
 }
 

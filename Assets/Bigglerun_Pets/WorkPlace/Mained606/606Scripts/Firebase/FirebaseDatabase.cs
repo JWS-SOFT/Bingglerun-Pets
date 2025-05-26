@@ -362,6 +362,45 @@ public class FirebaseDatabase : MonoBehaviour
     #region 친구 시스템 관련 메서드
     
     /// <summary>
+    /// 사용자 기본 정보 조회 (레벨, 마지막 로그인 등)
+    /// </summary>
+    private async Task<(int level, long lastLogin, bool isOnline)> GetUserBasicInfoAsync(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            return (1, 0, false);
+        }
+        
+#if FIREBASE_DATABASE
+        try
+        {
+            var snapshot = await databaseReference.Child("players").Child(userId).GetValueAsync();
+            
+            if (snapshot.Exists)
+            {
+                string playerJson = snapshot.GetRawJsonValue();
+                if (!string.IsNullOrEmpty(playerJson))
+                {
+                    var playerData = JsonUtility.FromJson<PlayerData>(playerJson);
+                    
+                    // 온라인 상태는 마지막 업데이트가 5분 이내인지로 판단
+                    long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    bool isOnline = (currentTime - playerData.lastUpdateTimestamp) < 300000; // 5분 (밀리초)
+                    
+                    return (playerData.level, playerData.lastUpdateTimestamp, isOnline);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 사용자 정보 조회 실패: {e.Message}");
+        }
+#endif
+        
+        return (1, 0, false);
+    }
+    
+    /// <summary>
     /// 친구 목록 가져오기
     /// </summary>
     public async Task<FriendListResponse> GetFriendsAsync(string userId)
@@ -457,6 +496,13 @@ public class FirebaseDatabase : MonoBehaviour
                         if (requestData.status == FriendRequestStatus.Pending)
                         {
                             requestData.requestType = FriendRequestType.Received;
+                            
+                            // 요청 보낸 사람의 추가 정보 조회
+                            var (fromLevel, fromLastLogin, fromIsOnline) = await GetUserBasicInfoAsync(requestData.fromUserId);
+                            requestData.fromUserLevel = fromLevel;
+                            requestData.fromUserLastLogin = fromLastLogin;
+                            requestData.fromUserIsOnline = fromIsOnline;
+                            
                             response.requests.Add(requestData);
                         }
                     }
@@ -479,6 +525,13 @@ public class FirebaseDatabase : MonoBehaviour
                             if (requestData.fromUserId == userId && requestData.status == FriendRequestStatus.Pending)
                             {
                                 requestData.requestType = FriendRequestType.Sent;
+                                
+                                // 요청 받는 사람의 추가 정보 조회
+                                var (toLevel, toLastLogin, toIsOnline) = await GetUserBasicInfoAsync(requestData.toUserId);
+                                requestData.toUserLevel = toLevel;
+                                requestData.toUserLastLogin = toLastLogin;
+                                requestData.toUserIsOnline = toIsOnline;
+                                
                                 response.requests.Add(requestData);
                             }
                         }
@@ -501,11 +554,17 @@ public class FirebaseDatabase : MonoBehaviour
         // 테스트 받은 친구 요청 데이터 생성
         var receivedRequest = new FriendRequestData("test_user_1", "TestUser1", userId);
         receivedRequest.requestType = FriendRequestType.Received;
+        receivedRequest.fromUserLevel = UnityEngine.Random.Range(1, 20);
+        receivedRequest.fromUserIsOnline = UnityEngine.Random.value > 0.5f;
+        receivedRequest.fromUserLastLogin = DateTimeOffset.UtcNow.AddHours(-UnityEngine.Random.Range(0, 48)).ToUnixTimeMilliseconds();
         response.requests.Add(receivedRequest);
         
         // 테스트 보낸 친구 요청 데이터 생성
         var sentRequest = new FriendRequestData(userId, "MyNickname", "test_user_2", "TestUser2");
         sentRequest.requestType = FriendRequestType.Sent;
+        sentRequest.toUserLevel = UnityEngine.Random.Range(1, 20);
+        sentRequest.toUserIsOnline = UnityEngine.Random.value > 0.5f;
+        sentRequest.toUserLastLogin = DateTimeOffset.UtcNow.AddHours(-UnityEngine.Random.Range(0, 48)).ToUnixTimeMilliseconds();
         response.requests.Add(sentRequest);
         
         response.success = true;

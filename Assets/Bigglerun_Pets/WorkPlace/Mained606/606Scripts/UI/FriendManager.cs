@@ -276,6 +276,17 @@ public class FriendManager : MonoBehaviour
             Debug.Log($"[FriendManager] 친구 요청 전송: {fromNickname} -> {targetNickname}");
             
             var requestData = new FriendRequestData(fromUserId, fromNickname, targetUserId, targetNickname);
+            
+            // 보내는 사람(나)의 추가 정보 설정
+            if (PlayerDataManager.Instance != null && 
+                PlayerDataManager.Instance.IsDataLoaded && 
+                PlayerDataManager.Instance.CurrentPlayerData != null)
+            {
+                requestData.fromUserLevel = PlayerDataManager.Instance.CurrentPlayerData.level;
+                requestData.fromUserLastLogin = PlayerDataManager.Instance.CurrentPlayerData.lastUpdateTimestamp;
+                requestData.fromUserIsOnline = true; // 현재 요청을 보내고 있으므로 온라인
+            }
+            
             bool success = await FirebaseDatabase.Instance.SendFriendRequestAsync(requestData);
             
             if (success)

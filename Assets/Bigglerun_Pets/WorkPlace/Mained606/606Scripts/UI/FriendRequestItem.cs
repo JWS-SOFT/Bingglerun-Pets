@@ -11,6 +11,8 @@ public class FriendRequestItem : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI nicknameText;
     [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private TextMeshProUGUI levelText;      // 레벨 표시용 (선택사항)
+    [SerializeField] private TextMeshProUGUI statusText;     // 온라인 상태 표시용 (선택사항)
     [SerializeField] private Button acceptButton;
     [SerializeField] private Button rejectButton;
     
@@ -108,7 +110,44 @@ public class FriendRequestItem : MonoBehaviour
             }
         }
         
-        Debug.Log($"[FriendRequestItem] UI 요소 상태 - 닉네임: {nicknameText != null}, 시간: {timeText != null}, 수락: {acceptButton != null}, 거절: {rejectButton != null}");
+        // 레벨 텍스트 찾기
+        if (levelText == null)
+        {
+            TextMeshProUGUI[] texts = GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var text in texts)
+            {
+                if (text != nicknameText && text != timeText && 
+                    (text.name.ToLower().Contains("level") || 
+                     text.name.ToLower().Contains("lv") ||
+                     text.name.ToLower().Contains("레벨")))
+                {
+                    levelText = text;
+                    Debug.Log($"[FriendRequestItem] 레벨 텍스트 자동 찾기 성공: {text.name}");
+                    break;
+                }
+            }
+        }
+        
+        // 상태 텍스트 찾기
+        if (statusText == null)
+        {
+            TextMeshProUGUI[] texts = GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var text in texts)
+            {
+                if (text != nicknameText && text != timeText && text != levelText && 
+                    (text.name.ToLower().Contains("status") || 
+                     text.name.ToLower().Contains("online") ||
+                     text.name.ToLower().Contains("state") ||
+                     text.name.ToLower().Contains("상태")))
+                {
+                    statusText = text;
+                    Debug.Log($"[FriendRequestItem] 상태 텍스트 자동 찾기 성공: {text.name}");
+                    break;
+                }
+            }
+        }
+        
+        Debug.Log($"[FriendRequestItem] UI 요소 상태 - 닉네임: {nicknameText != null}, 시간: {timeText != null}, 레벨: {levelText != null}, 상태: {statusText != null}, 수락: {acceptButton != null}, 거절: {rejectButton != null}");
     }
     
     /// <summary>
@@ -157,12 +196,26 @@ public class FriendRequestItem : MonoBehaviour
         // 요청 타입에 따라 다른 UI 표시
         if (requestData.requestType == FriendRequestType.Received)
         {
-            // 받은 요청: "From: 닉네임"
+            // 받은 요청: "From: 닉네임 (Lv.X)"
             if (nicknameText != null)
             {
-                nicknameText.text = $"From: {requestData.fromNickname}";
-                Debug.Log($"[FriendRequestItem] 받은 요청 닉네임 설정 완료: {requestData.fromNickname}");
+                string displayText = $"From: {requestData.fromNickname}";
+                if (requestData.fromUserLevel > 1)
+                {
+                    displayText += $" (Lv.{requestData.fromUserLevel})";
+                }
+                nicknameText.text = displayText;
+                Debug.Log($"[FriendRequestItem] 받은 요청 닉네임 설정 완료: {displayText}");
             }
+            
+            // 레벨 정보 별도 표시 (levelText가 있는 경우)
+            if (levelText != null)
+            {
+                levelText.text = $"Level {requestData.fromUserLevel}";
+            }
+            
+            // 온라인 상태 표시
+            UpdateUserStatus(requestData.fromUserIsOnline, requestData.fromUserLastLogin);
             
             // 수락/거절 버튼 표시
             if (acceptButton != null)
@@ -181,13 +234,27 @@ public class FriendRequestItem : MonoBehaviour
         }
         else if (requestData.requestType == FriendRequestType.Sent)
         {
-            // 보낸 요청: "To: 닉네임"
+            // 보낸 요청: "To: 닉네임 (Lv.X)"
             if (nicknameText != null)
             {
                 string targetNickname = !string.IsNullOrEmpty(requestData.toNickname) ? requestData.toNickname : "Unknown";
-                nicknameText.text = $"To: {targetNickname}";
-                Debug.Log($"[FriendRequestItem] 보낸 요청 닉네임 설정 완료: {targetNickname}");
+                string displayText = $"To: {targetNickname}";
+                if (requestData.toUserLevel > 1)
+                {
+                    displayText += $" (Lv.{requestData.toUserLevel})";
+                }
+                nicknameText.text = displayText;
+                Debug.Log($"[FriendRequestItem] 보낸 요청 닉네임 설정 완료: {displayText}");
             }
+            
+            // 레벨 정보 별도 표시 (levelText가 있는 경우)
+            if (levelText != null)
+            {
+                levelText.text = $"Level {requestData.toUserLevel}";
+            }
+            
+            // 온라인 상태 표시
+            UpdateUserStatus(requestData.toUserIsOnline, requestData.toUserLastLogin);
             
             // 취소 버튼만 표시
             if (acceptButton != null)
@@ -203,9 +270,15 @@ public class FriendRequestItem : MonoBehaviour
             }
         }
         
-        // 요청 시간 설정
-        if (timeText != null)
+        // 요청 시간 설정 (statusText가 별도로 있지 않은 경우에만)
+        if (timeText != null && statusText == null)
         {
+            // UpdateUserStatus에서 timeText에 상태 정보도 함께 표시됨
+            Debug.Log("[FriendRequestItem] 시간 및 상태 정보는 UpdateUserStatus에서 처리됨");
+        }
+        else if (timeText != null && statusText != null)
+        {
+            // statusText가 별도로 있는 경우 timeText에는 요청 시간만 표시
             var requestTime = DateTimeOffset.FromUnixTimeSeconds(requestData.requestTime);
             var timeDiff = DateTimeOffset.UtcNow - requestTime;
             
@@ -225,6 +298,59 @@ public class FriendRequestItem : MonoBehaviour
         
         // UI 레이아웃 강제 업데이트
         Canvas.ForceUpdateCanvases();
+    }
+    
+    /// <summary>
+    /// 사용자 상태 업데이트 (온라인/오프라인, 마지막 접속시간)
+    /// </summary>
+    private void UpdateUserStatus(bool isOnline, long lastLoginTime)
+    {
+        if (statusText != null)
+        {
+            if (isOnline)
+            {
+                statusText.text = "Online";
+                statusText.color = UnityEngine.Color.green;
+            }
+            else
+            {
+                // 마지막 접속시간 계산
+                var lastLoginDateTime = DateTimeOffset.FromUnixTimeMilliseconds(lastLoginTime);
+                var timeDiff = DateTimeOffset.UtcNow - lastLoginDateTime;
+                
+                string statusString = "";
+                if (timeDiff.TotalDays >= 1)
+                    statusString = $"Last seen {(int)timeDiff.TotalDays}d ago";
+                else if (timeDiff.TotalHours >= 1)
+                    statusString = $"Last seen {(int)timeDiff.TotalHours}h ago";
+                else if (timeDiff.TotalMinutes >= 1)
+                    statusString = $"Last seen {(int)timeDiff.TotalMinutes}m ago";
+                else
+                    statusString = "Last seen recently";
+                
+                statusText.text = statusString;
+                statusText.color = UnityEngine.Color.gray;
+            }
+        }
+        else if (timeText != null)
+        {
+            // statusText가 없으면 timeText에 상태 정보도 함께 표시
+            var requestTime = DateTimeOffset.FromUnixTimeSeconds(requestData.requestTime);
+            var timeDiff = DateTimeOffset.UtcNow - requestTime;
+            
+            string timeString = "";
+            if (timeDiff.TotalDays >= 1)
+                timeString = $"{(int)timeDiff.TotalDays}d ago";
+            else if (timeDiff.TotalHours >= 1)
+                timeString = $"{(int)timeDiff.TotalHours}h ago";
+            else if (timeDiff.TotalMinutes >= 1)
+                timeString = $"{(int)timeDiff.TotalMinutes}m ago";
+            else
+                timeString = "Just now";
+            
+            string statusString = isOnline ? "Online" : "Offline";
+            timeText.text = $"{timeString} | {statusString}";
+        }
     }
     
     /// <summary>
