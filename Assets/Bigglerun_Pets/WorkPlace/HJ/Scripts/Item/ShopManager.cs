@@ -43,7 +43,15 @@ public class ShopManager : MonoBehaviour
         {
             if (ItemManager.Instance.IsUnlockedDecoration(itemId))
             {
-                //Debug.Log("이미 해금된 데코 아이템");
+                Debug.Log("이미 해금된 데코 아이템");
+                return false;
+            }
+        }
+        if (ItemManager.Instance.IsCharacterItem(itemId))
+        {
+            if (ItemManager.Instance.IsUnlockCharacter(itemId))
+            {
+                Debug.Log("이미 해금된 캐릭터");
                 return false;
             }
         }
@@ -51,7 +59,6 @@ public class ShopManager : MonoBehaviour
         if (useCash)
         {
             int cashPrice = ItemManager.Instance.GetCashPrice(itemId) * amount;
-
             if (cashPrice > 0 && PlayerCash >= cashPrice)
             {
                 if (PlayerDataManager.Instance.TrySpendDiamond(cashPrice))
@@ -133,6 +140,10 @@ public class ShopManager : MonoBehaviour
         else if(ItemManager.Instance.IsDecorationItem(itemId))
         {
             ItemManager.Instance.UnlockDecoration(itemId);
+        }
+        else if (ItemManager.Instance.IsCharacterItem(itemId))
+        {
+            ItemManager.Instance.UnlockCharacter(itemId);
         }
     }
 }
