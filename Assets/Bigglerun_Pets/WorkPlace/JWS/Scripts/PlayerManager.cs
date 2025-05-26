@@ -65,6 +65,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     private bool isInvincible = false;
+    private bool isRecoveringFromDamage = false;
     public TerrainScrollManager TerrainScrollManager => terrainScrollManager;
 
     public event Action OnTakeDamage;
@@ -253,14 +254,19 @@ public class PlayerManager : MonoBehaviour
     //데미지
     public void TakeDamage()
     {
+        if (playerController.IsRecovering || isRecoveringFromDamage) return;
+
         if (isInvincible)   //무적 상태
         {
-            if (playerController.IsRecovering) return;
+            if (!isRecoveringFromDamage)
+            {
+                isRecoveringFromDamage = true;
 
-            if (PlayerManager.PlayMode)                     //런모드
-                playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
-            else                                            //계단모드
-                playerController.RecoverToLastStair();      //이전 계단으로 복귀
+                if (PlayerManager.PlayMode)                     //런모드
+                    playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+                else                                            //계단모드
+                    playerController.RecoverToLastStair();      //이전 계단으로 복귀
+            }
 
             return;
         }
@@ -279,13 +285,16 @@ public class PlayerManager : MonoBehaviour
         else
         {
             if (PlayerManager.PlayMode)                     //런모드
+            {
                 playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+            }
             else                                            //계단모드
+            {
                 playerController.RecoverToLastStair();      //이전 계단으로 복귀
+            }
 
-            SetInvincible(0.5f);    //0.5초 동안 무적
+            SetInvincible(1.5f);
         }
-        
     }
 
     //무적
@@ -304,6 +313,11 @@ public class PlayerManager : MonoBehaviour
 
         isInvincible = false;
         Debug.Log($"무적 종료");
+    }
+
+    public void ClearRecoveryState()
+    {
+        isRecoveringFromDamage = false;
     }
 
     //부스터
@@ -354,5 +368,10 @@ public class PlayerManager : MonoBehaviour
     {
         currentSkillCount += amount;
         Debug.Log($"스타트 스킬 횟수: {currentSkillCount}");
+    }
+
+    public void SetPoisition()
+    {
+        playerController.PlayerPosition = playerController.transform.position;
     }
 }

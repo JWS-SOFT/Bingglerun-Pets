@@ -3199,7 +3199,7 @@ MonoBehaviour:
   scrollSpeed: 5
   obstaclePrefabs:
   - {fileID: 7174697107108937338, guid: 8b871633ab506db4ebcced915fb2c654, type: 3}
-  obstacleHeightOffset: 1
+  obstacleHeightOffset: 0.4
   spawnItem: {fileID: 9110722616142168254, guid: abeda8378a7a956429f80a44aa8d3ffb, type: 3}
   spawnPercent: 0.8
   invincibleItemChance: 0.2

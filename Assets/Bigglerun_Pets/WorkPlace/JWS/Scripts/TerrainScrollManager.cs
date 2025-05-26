@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TerrainScrollManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class TerrainScrollManager : MonoBehaviour
 
     [Header("장애물 설정")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
-    [SerializeField] private float obstacleHeightOffset = 1.45f;
+    [SerializeField] private float obstacleHeightOffset = 0f;
 
     [Header("아이템 설정")]
     [SerializeField] private GameObject spawnItem;
@@ -36,6 +37,11 @@ public class TerrainScrollManager : MonoBehaviour
     //05.22 HJ 추가
     private int invincibleCooldownCounter = 0;
     private const int invincibleCooldownLength = 5;
+
+    //05.26 HJ 추가
+    private int obstacleCooldownCounter = 0;
+    private bool obstacleJustSpawned = false;
+    private const int cooldownAfterObstacle = 5;
 
     public void StartTest(Vector3 lastTerranPosition)
     {
@@ -83,6 +89,9 @@ public class TerrainScrollManager : MonoBehaviour
 
             terrainIndex++;
         }
+
+        PlayerManager.Instance.SetPoisition();
+
         Debug.Log("설정거리 : " + PlayerManager.GetStageDistance() + "M");
     }
 
@@ -116,7 +125,7 @@ public class TerrainScrollManager : MonoBehaviour
             SetTileActive(first, patternValue, true);
 
             // 장애물 생성 (필요 시 활성화)
-            // SpawnObstacleOnTerrain(first, terrainIndex);
+            SpawnObstacleOnTerrain(first, terrainIndex);
 
             terrainIndex++;
             terrainPool.Enqueue(first);
@@ -219,8 +228,8 @@ public class TerrainScrollManager : MonoBehaviour
         playerInstance.transform.position = spawnPos;
     }
 
-    private int consecutiveObstacleCount = 0;
-    private int skipCount = 0;
+    //private int consecutiveObstacleCount = 0;
+    //private int skipCount = 0;
 
     private void SpawnObstacleOnTerrain(GameObject terrain, int index)
     {
@@ -230,13 +239,22 @@ public class TerrainScrollManager : MonoBehaviour
         if (!terrain.activeSelf)
             return; // 비활성 타일에는 장애물 생성 금지
 
-        if (skipCount > 0)
+        //if (skipCount > 0)
+        //{
+        //    skipCount--;
+        //    consecutiveObstacleCount = 0;
+        //    return;
+        //}
+
+        // 장애물 생성 쿨다운 중이라면 무조건 스킵
+        if (obstacleCooldownCounter > 0)
         {
-            skipCount--;
-            consecutiveObstacleCount = 0;
+            obstacleCooldownCounter--;
+            obstacleJustSpawned = false;
             return;
         }
 
+        // 랜덤으로 장애물 생성 결정
         bool placeObstacle = Random.value < 0.5f;
 
         if (placeObstacle)
@@ -246,21 +264,80 @@ public class TerrainScrollManager : MonoBehaviour
 
             GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)];
             GameObject obstacle = Instantiate(prefab, new Vector3(x, y, 0f), Quaternion.identity, terrain.transform);
+
+            FitObstacleToTile(obstacle, terrain, prefab);
+
             obstacle.tag = "Obstacle";
 
-            consecutiveObstacleCount++;
-
-            if (consecutiveObstacleCount >= 2)
-            {
-                skipCount = 2;
-                consecutiveObstacleCount = 0;
-            }
+            // 이전 타일도 장애물이 있었으면 → 연속 2개
+            // 이번 타일이 첫 장애물이라도 → 쿨다운 시작
+            obstacleCooldownCounter = cooldownAfterObstacle;
+            obstacleJustSpawned = true;
         }
         else
         {
-            consecutiveObstacleCount = 0;
+            obstacleJustSpawned = false;
         }
     }
+
+    public static void FitObstacleToTile(GameObject obstacle, GameObject tile, GameObject prefab)
+    {
+        // 1. 타일의 보이는 가로 폭
+        SpriteRenderer tileSR = tile.GetComponent<SpriteRenderer>();
+        if (tileSR == null)
+        {
+            Debug.LogWarning("Tile에 SpriteRenderer가 없습니다.");
+            return;
+        }
+        float tileWidth = tileSR.bounds.size.x;
+
+        // 2. 장애물의 SpriteRenderer
+        SpriteRenderer obstacleSR = obstacle.GetComponent<SpriteRenderer>();
+        if (obstacleSR == null)
+        {
+            Debug.LogWarning("장애물에 SpriteRenderer가 없습니다.");
+            return;
+        }
+
+        // 3. 프리팹에서 원본 스프라이트 비율과 로컬 스케일 비율 가져오기
+        SpriteRenderer prefabSR = prefab.GetComponent<SpriteRenderer>();
+        if (prefabSR == null)
+        {
+            Debug.LogWarning("프리팹에 SpriteRenderer가 없습니다.");
+            return;
+        }
+
+        Vector2 spriteSize = prefabSR.sprite.bounds.size;
+        Vector3 prefabScale = prefab.transform.localScale;
+
+        // 스프라이트 원본 비율 × 프리팹에서 디자인된 스케일 비율
+        float totalAspectRatio = (spriteSize.y / spriteSize.x) * (prefabScale.y / prefabScale.x);
+
+        // 4. 장애물의 현재 보이는 가로 폭
+        float obstacleWidth = obstacleSR.bounds.size.x;
+
+        // 5. 타일에 맞추기 위한 X축 스케일
+        float scaleX = tileWidth / obstacleWidth;
+
+        // 6. 비율 유지한 Y축 스케일
+        float scaleY = scaleX * totalAspectRatio;
+
+        // 7. 부모 스케일 역보정
+        Vector3 parentScale = tile.transform.lossyScale;
+        Vector3 inverseParent = new Vector3(
+            1f / parentScale.x,
+            1f / parentScale.y,
+            1f / parentScale.z
+        );
+
+        // 8. 최종 스케일 적용
+        obstacle.transform.localScale = new Vector3(
+            scaleX * inverseParent.x,
+            scaleY * inverseParent.y,
+            1f
+        );
+    }
+
 
     private void SpawnItemOnTerrain(GameObject terrain)
     {
