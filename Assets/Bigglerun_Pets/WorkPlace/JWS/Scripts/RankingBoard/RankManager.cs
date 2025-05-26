@@ -15,6 +15,7 @@ public class RankManager : MonoBehaviour
     private void OnEnable()
     {
         gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1);
+
         ResetRankBoard();
         RefreshLeaderboard();
     }
@@ -72,9 +73,9 @@ public class RankManager : MonoBehaviour
 
     private void ResetRankBoard()
     {
-        foreach (GameObject gob in rankListPosition.transform)
+        foreach (Transform child in rankListPosition.transform)
         {
-            Destroy(gob);
+            Destroy(child.gameObject);
         }
     }
 }
