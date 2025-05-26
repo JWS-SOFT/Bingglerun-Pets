@@ -1,4 +1,5 @@
 using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -357,4 +358,388 @@ public class FirebaseDatabase : MonoBehaviour
         Debug.Log($"[FirebaseDatabase] 테스트 환경에서는 오프라인 지속성 설정이 무시됩니다: {enabled}");
 #endif
     }
-} 
+
+    #region 친구 시스템 관련 메서드
+    
+    /// <summary>
+    /// 친구 목록 가져오기
+    /// </summary>
+    public async Task<FriendListResponse> GetFriendsAsync(string userId)
+    {
+        var response = new FriendListResponse();
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            response.errorMessage = "User ID is empty";
+            return response;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            response.errorMessage = "Firebase Database not initialized";
+            return response;
+        }
+        
+        try
+        {
+            var snapshot = await databaseReference.Child("friends").Child(userId).GetValueAsync();
+            
+            if (snapshot.Exists)
+            {
+                foreach (var child in snapshot.Children)
+                {
+                    string friendJson = child.GetRawJsonValue();
+                    if (!string.IsNullOrEmpty(friendJson))
+                    {
+                        var friendData = JsonUtility.FromJson<FriendData>(friendJson);
+                        response.friends.Add(friendData);
+                    }
+                }
+            }
+            
+            response.success = true;
+            Debug.Log($"[FirebaseDatabase] 친구 목록 로드 완료: {response.friends.Count}명");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 목록 로드 실패: {e.Message}");
+            response.errorMessage = e.Message;
+        }
+#else
+        // 테스트용 더미 데이터
+        await Task.Delay(500);
+        
+        // 테스트 친구 데이터 생성
+        response.friends.Add(new FriendData("test_friend_1", "TestFriend1", true, 5));
+        response.friends.Add(new FriendData("test_friend_2", "TestFriend2", false, 3));
+        response.success = true;
+        
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 목록 로드: {response.friends.Count}명");
+#endif
+        
+        return response;
+    }
+    
+    /// <summary>
+    /// 친구 요청 목록 가져오기
+    /// </summary>
+    public async Task<FriendRequestListResponse> GetFriendRequestsAsync(string userId)
+    {
+        var response = new FriendRequestListResponse();
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            response.errorMessage = "User ID is empty";
+            return response;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            response.errorMessage = "Firebase Database not initialized";
+            return response;
+        }
+        
+        try
+        {
+            // 받은 친구 요청 가져오기
+            var snapshot = await databaseReference.Child("friendRequests").Child(userId).GetValueAsync();
+            
+            if (snapshot.Exists)
+            {
+                foreach (var child in snapshot.Children)
+                {
+                    string requestJson = child.GetRawJsonValue();
+                    if (!string.IsNullOrEmpty(requestJson))
+                    {
+                        var requestData = JsonUtility.FromJson<FriendRequestData>(requestJson);
+                        if (requestData.status == FriendRequestStatus.Pending)
+                        {
+                            response.requests.Add(requestData);
+                        }
+                    }
+                }
+            }
+            
+            response.success = true;
+            Debug.Log($"[FirebaseDatabase] 친구 요청 목록 로드 완료: {response.requests.Count}개");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 요청 목록 로드 실패: {e.Message}");
+            response.errorMessage = e.Message;
+        }
+#else
+        // 테스트용 더미 데이터
+        await Task.Delay(500);
+        
+        // 테스트 친구 요청 데이터 생성
+        response.requests.Add(new FriendRequestData("test_user_1", "TestUser1", userId));
+        response.success = true;
+        
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 목록 로드: {response.requests.Count}개");
+#endif
+        
+        return response;
+    }    
+    /// <summary>
+    /// 닉네임으로 사용자 검색
+    /// </summary>
+    public async Task<UserSearchResult> SearchUserByNicknameAsync(string nickname)
+    {
+        if (string.IsNullOrEmpty(nickname))
+        {
+            return null;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            return null;
+        }
+        
+        try
+        {
+            // 닉네임으로 사용자 검색 (대소문자 구분 없이)
+            var snapshot = await databaseReference.Child("players")
+                .OrderByChild("nickname")
+                .EqualTo(nickname)
+                .GetValueAsync();
+            
+            if (snapshot.Exists)
+            {
+                foreach (var child in snapshot.Children)
+                {
+                    string playerJson = child.GetRawJsonValue();
+                    if (!string.IsNullOrEmpty(playerJson))
+                    {
+                        var playerData = JsonUtility.FromJson<PlayerData>(playerJson);
+                        
+                        var result = new UserSearchResult
+                        {
+                            userId = child.Key,
+                            nickname = playerData.nickname,
+                            level = playerData.level,
+                            isOnline = false // 온라인 상태는 별도 구현 필요
+                        };
+                        
+                        Debug.Log($"[FirebaseDatabase] 사용자 검색 완료: {result.nickname}");
+                        return result;
+                    }
+                }
+            }
+            
+            Debug.Log($"[FirebaseDatabase] 사용자를 찾을 수 없음: {nickname}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 사용자 검색 실패: {e.Message}");
+            return null;
+        }
+#else
+        // 테스트용 더미 데이터
+        await Task.Delay(500);
+        
+        // 테스트 사용자 검색 결과
+        if (nickname.ToLower().Contains("test"))
+        {
+            return new UserSearchResult
+            {
+                userId = "test_search_user",
+                nickname = nickname,
+                level = UnityEngine.Random.Range(1, 10),
+                isOnline = UnityEngine.Random.value > 0.5f
+            };
+        }
+        
+        Debug.Log($"[FirebaseDatabase] 테스트 환경에서 사용자를 찾을 수 없음: {nickname}");
+        return null;
+#endif
+    }
+    
+    /// <summary>
+    /// 친구 요청 보내기
+    /// </summary>
+    public async Task<bool> SendFriendRequestAsync(FriendRequestData requestData)
+    {
+        if (requestData == null || string.IsNullOrEmpty(requestData.toUserId))
+        {
+            return false;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            return false;
+        }
+        
+        try
+        {
+            string requestJson = JsonUtility.ToJson(requestData);
+            
+            // 받는 사람의 친구 요청 목록에 추가
+            await databaseReference.Child("friendRequests")
+                .Child(requestData.toUserId)
+                .Child(requestData.requestId)
+                .SetRawJsonValueAsync(requestJson);
+            
+            Debug.Log($"[FirebaseDatabase] 친구 요청 전송 완료: {requestData.fromNickname} -> {requestData.toUserId}");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 요청 전송 실패: {e.Message}");
+            return false;
+        }
+#else
+        // 테스트용
+        await Task.Delay(500);
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 전송: {requestData.fromNickname} -> {requestData.toUserId}");
+        return true;
+#endif
+    }    
+    /// <summary>
+    /// 친구 요청에 응답 (수락/거절)
+    /// </summary>
+    public async Task<bool> RespondToFriendRequestAsync(string requestId, bool accept)
+    {
+        if (string.IsNullOrEmpty(requestId))
+        {
+            return false;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            return false;
+        }
+        
+        try
+        {
+            string userId = FirebaseManager.Instance.UserId;
+            
+            // 요청 데이터 가져오기
+            var requestSnapshot = await databaseReference.Child("friendRequests")
+                .Child(userId)
+                .Child(requestId)
+                .GetValueAsync();
+            
+            if (!requestSnapshot.Exists)
+            {
+                Debug.LogWarning($"[FirebaseDatabase] 친구 요청을 찾을 수 없음: {requestId}");
+                return false;
+            }
+            
+            string requestJson = requestSnapshot.GetRawJsonValue();
+            var requestData = JsonUtility.FromJson<FriendRequestData>(requestJson);
+            
+            if (accept)
+            {
+                // 수락한 경우 양쪽 친구 목록에 추가
+                var myData = new FriendData(requestData.fromUserId, requestData.fromNickname);
+                
+                // 현재 사용자의 닉네임을 안전하게 가져오기
+                string myNickname = "Unknown";
+                if (PlayerDataManager.Instance != null && 
+                    PlayerDataManager.Instance.IsDataLoaded && 
+                    PlayerDataManager.Instance.CurrentPlayerData != null &&
+                    !string.IsNullOrEmpty(PlayerDataManager.Instance.CurrentPlayerData.nickname))
+                {
+                    myNickname = PlayerDataManager.Instance.CurrentPlayerData.nickname;
+                }
+                
+                var friendData = new FriendData(userId, myNickname);
+                
+                string myDataJson = JsonUtility.ToJson(myData);
+                string friendDataJson = JsonUtility.ToJson(friendData);
+                
+                // 내 친구 목록에 추가
+                await databaseReference.Child("friends")
+                    .Child(userId)
+                    .Child(requestData.fromUserId)
+                    .SetRawJsonValueAsync(myDataJson);
+                
+                // 상대방 친구 목록에 추가
+                await databaseReference.Child("friends")
+                    .Child(requestData.fromUserId)
+                    .Child(userId)
+                    .SetRawJsonValueAsync(friendDataJson);
+                
+                Debug.Log($"[FirebaseDatabase] 친구 요청 수락 완료: {requestData.fromNickname}");
+            }
+            else
+            {
+                Debug.Log($"[FirebaseDatabase] 친구 요청 거절: {requestData.fromNickname}");
+            }
+            
+            // 요청 삭제
+            await databaseReference.Child("friendRequests")
+                .Child(userId)
+                .Child(requestId)
+                .RemoveValueAsync();
+            
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 요청 응답 실패: {e.Message}");
+            return false;
+        }
+#else
+        // 테스트용
+        await Task.Delay(500);
+        string action = accept ? "수락" : "거절";
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 {action}: {requestId}");
+        return true;
+#endif
+    }
+    
+    /// <summary>
+    /// 친구 삭제
+    /// </summary>
+    public async Task<bool> RemoveFriendAsync(string userId, string friendUserId)
+    {
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(friendUserId))
+        {
+            return false;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            return false;
+        }
+        
+        try
+        {
+            // 양쪽 친구 목록에서 삭제
+            await databaseReference.Child("friends")
+                .Child(userId)
+                .Child(friendUserId)
+                .RemoveValueAsync();
+            
+            await databaseReference.Child("friends")
+                .Child(friendUserId)
+                .Child(userId)
+                .RemoveValueAsync();
+            
+            Debug.Log($"[FirebaseDatabase] 친구 삭제 완료: {userId} <-> {friendUserId}");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 삭제 실패: {e.Message}");
+            return false;
+        }
+#else
+        // 테스트용
+        await Task.Delay(500);
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 삭제: {userId} <-> {friendUserId}");
+        return true;
+#endif
+    }
+    
+    #endregion    #endregion
+}
