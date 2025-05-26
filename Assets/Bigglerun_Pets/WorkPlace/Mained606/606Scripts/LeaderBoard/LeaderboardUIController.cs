@@ -4,6 +4,8 @@ using TMPro;
 using System.Collections;
 using UnityEngine.UI;
 using System.Linq;
+using System.Text;
+using System;
 
 // 캐릭터 카테고리 열거형
 public enum CharacterCategory
@@ -515,16 +517,19 @@ public class LeaderboardUIController : MonoBehaviour
             case CharacterCategory.Dog:
                 return lowerCharacterName.Contains("puppy") || 
                        lowerCharacterName.Contains("dog") ||
-                       lowerCharacterName.Contains("강아지");
+                       lowerCharacterName.Contains("강아지") ||
+                       lowerCharacterName.Equals("dog", StringComparison.OrdinalIgnoreCase);
                        
             case CharacterCategory.Cat:
                 return lowerCharacterName.Contains("kitty") || 
                        lowerCharacterName.Contains("cat") ||
-                       lowerCharacterName.Contains("고양이");
+                       lowerCharacterName.Contains("고양이") ||
+                       lowerCharacterName.Equals("cat", StringComparison.OrdinalIgnoreCase);
                        
             case CharacterCategory.Hamster:
                 return lowerCharacterName.Contains("hamster") ||
-                       lowerCharacterName.Contains("햄스터");
+                       lowerCharacterName.Contains("햄스터") ||
+                       lowerCharacterName.Equals("hamster", StringComparison.OrdinalIgnoreCase);
                        
             case CharacterCategory.All:
             default:
@@ -592,6 +597,14 @@ public class LeaderboardUIController : MonoBehaviour
         if (item.nameText != null)
         {
             string displayName = !string.IsNullOrEmpty(playerData.nickname) ? playerData.nickname : "Unknown Player";
+            
+            // 캐릭터별 엔트리인지 확인 (playerId에 "_캐릭터명" 형식이 포함된 경우)
+            if (playerData.playerId.Contains("_") && !string.IsNullOrEmpty(playerData.competitiveBestCharacter))
+            {
+                // 캐릭터 정보를 이름과 함께 표시
+                displayName = $"{displayName} ({playerData.competitiveBestCharacter})";
+            }
+            
             item.nameText.text = displayName;
             Debug.Log($"[LeaderboardUIController] 닉네임 설정 완료: {displayName} (컴포넌트: {item.nameText.name})");
         }
@@ -653,8 +666,15 @@ public class LeaderboardUIController : MonoBehaviour
         // 배경 색상 설정 (상위 순위 강조)
         if (item.backgroundImage != null)
         {
-            // 현재 플레이어인지 확인
-            bool isCurrentPlayer = PlayerDataManager.Instance?.CurrentPlayerData?.playerId == playerData.playerId;
+            // 현재 플레이어인지 확인 (캐릭터별 엔트리 고려)
+            bool isCurrentPlayer = false;
+            if (PlayerDataManager.Instance?.CurrentPlayerData != null)
+            {
+                string currentPlayerId = PlayerDataManager.Instance.CurrentPlayerData.playerId;
+                // 기본 플레이어 ID 또는 캐릭터별 엔트리 ID 모두 확인
+                isCurrentPlayer = playerData.playerId == currentPlayerId || 
+                                playerData.playerId.StartsWith(currentPlayerId + "_");
+            }
             
             if (isCurrentPlayer)
             {

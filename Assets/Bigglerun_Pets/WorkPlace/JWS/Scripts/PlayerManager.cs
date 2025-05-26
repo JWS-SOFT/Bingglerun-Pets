@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private bool play_Mode = false;
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private StairManager stairManager;
-    [SerializeField] private int stageLevel = 1;
+    public int stageLevel = 1;
     [SerializeField] private int stairBaseCount = 20;
     [SerializeField] private int baseDistance = 50;
     public static int GetStageStair()
@@ -69,7 +69,6 @@ public class PlayerManager : MonoBehaviour
 
     public event Action OnTakeDamage;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -86,8 +85,8 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        SetPlayMode(false);
         playerData = PlayerDataManager.Instance.CurrentPlayerData;
+        SetPlayMode(false);
         //playerData = PlayerData.CreateDefault("hamster");
         if (!PlayMode)
         {

@@ -37,7 +37,7 @@ public class StageClearUITest : MonoBehaviour
 
         // 현재 게임 상태에 따라 다른 베스트 스코어 처리
         GameState currentState = GameManager.Instance.StateMachine.CurrentState;
-        
+
         if (currentState == GameState.CompetitionInGame)
         {
             // 경쟁 모드: competitiveBestScore만 업데이트
@@ -54,12 +54,12 @@ public class StageClearUITest : MonoBehaviour
             {
                 Debug.Log($"스테이지 결과 저장 전 - 현재 스테이지: {currentStageId}, 현재 별: {currentStars}개");
                 PlayerDataManager.Instance.UpdateStageResult(currentStageId, (int)totalScore, currentStars);
-                
+
                 // 스테이지별 베스트 스코어 표시
                 int stageBestScore = PlayerDataManager.Instance.GetStageBestScore(currentStageId);
                 totalScoreText.text = totalScore.ToString();
                 bestScoreText.text = "Best Score : " + stageBestScore.ToString();
-                
+
                 // DB 저장 후 실제 값 확인
                 StageData savedData = PlayerDataManager.Instance.GetStageData(currentStageId);
                 int totalStars = PlayerDataManager.Instance.CurrentPlayerData.totalStars;
@@ -70,6 +70,17 @@ public class StageClearUITest : MonoBehaviour
                 Debug.LogWarning("스테이지 ID를 찾을 수 없어 결과를 저장할 수 없습니다.");
                 totalScoreText.text = totalScore.ToString();
                 bestScoreText.text = "Best Score : 0";
+            }
+
+            // 클리어 정보 업데이트 하여 해금실시.
+            if (int.TryParse(currentStageId, out int currentStageNumber))
+            {
+                int nextStageNumber = currentStageNumber + 1;
+                PlayerDataManager.Instance.UnlockStage(nextStageNumber.ToString());
+            }
+            else
+            {
+                Debug.LogWarning($"currentStageId 파싱 실패: {currentStageId}");
             }
         }
         else

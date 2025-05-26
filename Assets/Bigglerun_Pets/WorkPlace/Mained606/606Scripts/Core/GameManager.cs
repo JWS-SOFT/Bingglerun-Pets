@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public GameStateMachine StateMachine { get; private set; }
     public SceneFader SceneFader { get; private set; }
+    [HideInInspector] public int currentPlayStage = 1;
 
     [SerializeField] private String LobbySceneName;
     [SerializeField] private String GameSceneName;

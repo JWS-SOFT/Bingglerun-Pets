@@ -118,9 +118,32 @@ public class LeaderboardManager : MonoBehaviour
                                     playerData.InitializeStagesFromList();
                                     playerData.InitializeItemsFromList();
                                     
+                                    // 기존 데이터 마이그레이션
+                                    playerData.MigrateToCharacterScores();
+                                    
                                     Debug.Log($"[LeaderboardManager] 플레이어 데이터 로드: {playerData.playerId}, 닉네임: {playerData.nickname}, 점수: {playerData.competitiveBestScore}, 캐릭터: {playerData.competitiveBestCharacter}");
                                     
-                                    allPlayers.Add(playerData);
+                                    // 캐릭터별 점수가 있는 경우 각각을 개별 엔트리로 추가
+                                    var characterScores = playerData.GetAllCharacterScores();
+                                    if (characterScores != null && characterScores.Count > 0)
+                                    {
+                                        foreach (var characterScore in characterScores)
+                                        {
+                                            if (characterScore.bestScore > 0)
+                                            {
+                                                // 캐릭터별 엔트리를 위한 PlayerData 복사본 생성
+                                                PlayerData characterEntry = CreateCharacterEntry(playerData, characterScore);
+                                                allPlayers.Add(characterEntry);
+                                                Debug.Log($"[LeaderboardManager] 캐릭터별 엔트리 추가: {playerData.nickname} ({characterScore.characterName}) - {characterScore.bestScore}점");
+                                            }
+                                        }
+                                    }
+                                    else if (playerData.competitiveBestScore > 0)
+                                    {
+                                        // 캐릭터별 점수가 없지만 기존 점수가 있는 경우 (하위 호환성)
+                                        allPlayers.Add(playerData);
+                                        Debug.Log($"[LeaderboardManager] 기존 방식 엔트리 추가: {playerData.nickname} - {playerData.competitiveBestScore}점");
+                                    }
                                 }
                                 else
                                 {
@@ -135,7 +158,7 @@ public class LeaderboardManager : MonoBehaviour
                     }
                 }
                 
-                // competitiveBestScore 기준으로 내림차순 정렬
+                // competitiveBestScore 기준으로 내림차순 정렬 (캐릭터별 점수 포함)
                 allPlayers.Sort((a, b) => b.competitiveBestScore.CompareTo(a.competitiveBestScore));
                 
                 // 제한된 수만큼 반환
@@ -190,8 +213,16 @@ public class LeaderboardManager : MonoBehaviour
             return false;
         }
 
-        // 기본 점수 확인
-        if (playerData.competitiveBestScore <= 0)
+        // 기본 점수 확인 - 캐릭터별 점수가 있는지도 확인
+        bool hasValidScore = playerData.competitiveBestScore > 0;
+        if (!hasValidScore)
+        {
+            // 캐릭터별 점수 확인
+            var characterScores = playerData.GetAllCharacterScores();
+            hasValidScore = characterScores != null && characterScores.Any(cs => cs.bestScore > 0);
+        }
+        
+        if (!hasValidScore)
         {
             return false;
         }
@@ -280,7 +311,7 @@ public class LeaderboardManager : MonoBehaviour
     private void CreateTestData()
     {
         string[] testNames = { "김진우", "이수민", "박민준", "최서연", "정하늘", "강도윤", "윤지유", "임서준", "조민서", "한예준" };
-        string[] testCharacters = { "dog", "cat", "hamster", "rabbit", "bird", "dog", "cat", "hamster", "rabbit", "bird" };
+        string[] allCharacters = { "Dog", "Cat", "Hamster" };
         
         for (int i = 0; i < testNames.Length; i++)
         {
@@ -288,16 +319,39 @@ public class LeaderboardManager : MonoBehaviour
             {
                 playerId = $"test_player_{i}",
                 nickname = testNames[i],
-                competitiveBestScore = UnityEngine.Random.Range(50000, 999999),
-                competitiveBestCharacter = testCharacters[i],
-                competitiveBestScoreTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (i * 3600000),
-                currentCharacter = testCharacters[i],
+                currentCharacter = allCharacters[i % allCharacters.Length],
                 level = UnityEngine.Random.Range(1, 20),
                 totalStars = UnityEngine.Random.Range(10, 100),
-                lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (i * 3600000) // 1시간씩 간격
+                lastUpdateTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (i * 3600000),
+                characterCompetitiveScores = new List<SerializableCharacterScore>()
             };
             
-            cachedLeaderboard.Add(testPlayer);
+            // 각 캐릭터별로 랜덤 점수 생성 (일부 캐릭터는 점수가 없을 수도 있음)
+            foreach (string character in allCharacters)
+            {
+                if (UnityEngine.Random.Range(0f, 1f) > 0.3f) // 70% 확률로 해당 캐릭터 점수 존재
+                {
+                    int score = UnityEngine.Random.Range(50000, 999999);
+                    long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - (UnityEngine.Random.Range(0, 30) * 86400000); // 최근 30일 내
+                    
+                    testPlayer.characterCompetitiveScores.Add(new SerializableCharacterScore(character, score, timestamp));
+                    
+                    // 전체 최고 점수 업데이트
+                    if (score > testPlayer.competitiveBestScore)
+                    {
+                        testPlayer.competitiveBestScore = score;
+                        testPlayer.competitiveBestCharacter = character;
+                        testPlayer.competitiveBestScoreTimestamp = timestamp;
+                    }
+                }
+            }
+            
+            // 캐릭터별 점수를 개별 엔트리로 추가
+            foreach (var characterScore in testPlayer.characterCompetitiveScores)
+            {
+                PlayerData characterEntry = CreateCharacterEntry(testPlayer, characterScore);
+                cachedLeaderboard.Add(characterEntry);
+            }
         }
         
         // 점수 기준으로 정렬
@@ -351,5 +405,26 @@ public class LeaderboardManager : MonoBehaviour
     {
         InvalidateCache();
         return await LoadLeaderboardAsync(limit);
+    }
+
+    /// <summary>
+    /// 캐릭터별 엔트리를 위한 PlayerData 복사본 생성
+    /// </summary>
+    private PlayerData CreateCharacterEntry(PlayerData originalPlayerData, SerializableCharacterScore characterScore)
+    {
+        PlayerData characterEntry = new PlayerData
+        {
+            playerId = $"{originalPlayerData.playerId}_{characterScore.characterName}",
+            nickname = originalPlayerData.nickname,
+            competitiveBestScore = characterScore.bestScore,
+            competitiveBestCharacter = characterScore.characterName,
+            competitiveBestScoreTimestamp = characterScore.bestScoreTimestamp,
+            currentCharacter = characterScore.characterName,
+            level = originalPlayerData.level,
+            totalStars = originalPlayerData.totalStars,
+            lastUpdateTimestamp = originalPlayerData.lastUpdateTimestamp
+        };
+
+        return characterEntry;
     }
 } 

@@ -42,7 +42,7 @@ public class StageLevelMapManager : MonoBehaviour
             // 새로운 버튼 UI를 생성해서 원래 버튼의 부모 아래에 붙임
             LevelButtonUI lvbt = Instantiate(unLockedPrefab, stageLevel[i].transform.parent).GetComponent<LevelButtonUI>();
             stageLevel[i].gameObject.SetActive(false);
-            lvbt.SetStageLevelSetting(i, i == currentLevel - 1);
+            // lvbt.SetStageLevelSetting(i, i == currentLevel - 1);
         }
     }
 }

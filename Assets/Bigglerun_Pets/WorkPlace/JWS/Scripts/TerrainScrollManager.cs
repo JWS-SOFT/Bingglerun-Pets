@@ -44,6 +44,10 @@ public class TerrainScrollManager : MonoBehaviour
             Debug.LogError("지형 프리팹 또는 플레이어가 비어 있습니다!");
             return;
         }
+        if (!PlayerManager.Instance.isBattleMode)
+        {
+            PlayerManager.Instance.stageLevel = GameManager.Instance.currentPlayStage;
+        }
 
         terrainIndex = 0;
         terrainDistance = 0;
@@ -91,7 +95,7 @@ public class TerrainScrollManager : MonoBehaviour
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
 
-        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= terrainIndex * terrainWidth;
+        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= (terrainIndex -1)* terrainWidth;
         foreach (var obj in terrainPool)
         {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
