@@ -246,7 +246,7 @@ public class TerrainScrollManager : MonoBehaviour
         //    return;
         //}
 
-        // 장애물 생성 쿨다운 중이라면 무조건 스킵
+        //장애물 생성 쿨다운 중이라면 무조건 스킵
         if (obstacleCooldownCounter > 0)
         {
             obstacleCooldownCounter--;
@@ -254,7 +254,7 @@ public class TerrainScrollManager : MonoBehaviour
             return;
         }
 
-        // 랜덤으로 장애물 생성 결정
+        //랜덤으로 장애물 생성 결정
         bool placeObstacle = Random.value < 0.5f;
 
         if (placeObstacle)
@@ -269,8 +269,8 @@ public class TerrainScrollManager : MonoBehaviour
 
             obstacle.tag = "Obstacle";
 
-            // 이전 타일도 장애물이 있었으면 → 연속 2개
-            // 이번 타일이 첫 장애물이라도 → 쿨다운 시작
+            //이전 타일도 장애물이 있었으면 → 연속 2개
+            //이번 타일이 첫 장애물이라도 → 쿨다운 시작
             obstacleCooldownCounter = cooldownAfterObstacle;
             obstacleJustSpawned = true;
         }
@@ -282,7 +282,7 @@ public class TerrainScrollManager : MonoBehaviour
 
     public static void FitObstacleToTile(GameObject obstacle, GameObject tile, GameObject prefab)
     {
-        // 1. 타일의 보이는 가로 폭
+        //1. 타일의 보이는 가로 폭
         SpriteRenderer tileSR = tile.GetComponent<SpriteRenderer>();
         if (tileSR == null)
         {
@@ -291,7 +291,7 @@ public class TerrainScrollManager : MonoBehaviour
         }
         float tileWidth = tileSR.bounds.size.x;
 
-        // 2. 장애물의 SpriteRenderer
+        //2. 장애물의 SpriteRenderer
         SpriteRenderer obstacleSR = obstacle.GetComponent<SpriteRenderer>();
         if (obstacleSR == null)
         {
@@ -299,7 +299,7 @@ public class TerrainScrollManager : MonoBehaviour
             return;
         }
 
-        // 3. 프리팹에서 원본 스프라이트 비율과 로컬 스케일 비율 가져오기
+        //3. 프리팹에서 원본 스프라이트 비율과 로컬 스케일 비율 가져오기
         SpriteRenderer prefabSR = prefab.GetComponent<SpriteRenderer>();
         if (prefabSR == null)
         {
@@ -310,19 +310,19 @@ public class TerrainScrollManager : MonoBehaviour
         Vector2 spriteSize = prefabSR.sprite.bounds.size;
         Vector3 prefabScale = prefab.transform.localScale;
 
-        // 스프라이트 원본 비율 × 프리팹에서 디자인된 스케일 비율
+        //스프라이트 원본 비율 × 프리팹에서 디자인된 스케일 비율
         float totalAspectRatio = (spriteSize.y / spriteSize.x) * (prefabScale.y / prefabScale.x);
 
-        // 4. 장애물의 현재 보이는 가로 폭
+        //4. 장애물의 현재 보이는 가로 폭
         float obstacleWidth = obstacleSR.bounds.size.x;
 
-        // 5. 타일에 맞추기 위한 X축 스케일
+        //5. 타일에 맞추기 위한 X축 스케일
         float scaleX = tileWidth / obstacleWidth;
 
-        // 6. 비율 유지한 Y축 스케일
+        //6. 비율 유지한 Y축 스케일
         float scaleY = scaleX * totalAspectRatio;
 
-        // 7. 부모 스케일 역보정
+        //7. 부모 스케일 역보정
         Vector3 parentScale = tile.transform.lossyScale;
         Vector3 inverseParent = new Vector3(
             1f / parentScale.x,
@@ -330,7 +330,7 @@ public class TerrainScrollManager : MonoBehaviour
             1f / parentScale.z
         );
 
-        // 8. 최종 스케일 적용
+        //8. 최종 스케일 적용
         obstacle.transform.localScale = new Vector3(
             scaleX * inverseParent.x,
             scaleY * inverseParent.y,

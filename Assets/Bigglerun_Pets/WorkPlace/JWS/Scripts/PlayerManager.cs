@@ -65,7 +65,6 @@ public class PlayerManager : MonoBehaviour
     }
 
     private bool isInvincible = false;
-    private bool isRecoveringFromDamage = false;
     public TerrainScrollManager TerrainScrollManager => terrainScrollManager;
 
     public event Action OnTakeDamage;
@@ -254,19 +253,16 @@ public class PlayerManager : MonoBehaviour
     //데미지
     public void TakeDamage()
     {
-        if (playerController.IsRecovering || isRecoveringFromDamage) return;
+        if (playerController.IsRecovering) return;
 
         if (isInvincible)   //무적 상태
         {
-            if (!isRecoveringFromDamage)
-            {
-                isRecoveringFromDamage = true;
+            if (playerController.IsRecovering) return;
 
-                if (PlayerManager.PlayMode)                     //런모드
-                    playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
-                else                                            //계단모드
-                    playerController.RecoverToLastStair();      //이전 계단으로 복귀
-            }
+            if (PlayerManager.PlayMode)                     //런모드
+                playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+            else                                            //계단모드
+                playerController.RecoverToLastStair();      //이전 계단으로 복귀
 
             return;
         }
@@ -287,13 +283,14 @@ public class PlayerManager : MonoBehaviour
             if (PlayerManager.PlayMode)                     //런모드
             {
                 playerController.RecoverToForwardGround();  //앞에 있는 안전한 땅으로 복귀
+                SetInvincible(1f);
             }
             else                                            //계단모드
             {
                 playerController.RecoverToLastStair();      //이전 계단으로 복귀
+                SetInvincible(0.5f);
             }
 
-            SetInvincible(1.5f);
         }
     }
 
@@ -313,11 +310,6 @@ public class PlayerManager : MonoBehaviour
 
         isInvincible = false;
         Debug.Log($"무적 종료");
-    }
-
-    public void ClearRecoveryState()
-    {
-        isRecoveringFromDamage = false;
     }
 
     //부스터

@@ -297,12 +297,6 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("복귀, 직전 계단으로 위치 초기화");
 
-        //if (stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
-        //{
-        //    //복귀 애니메이션 추가
-        //    transform.position = stairPos;
-        //}
-
         StartCoroutine(RecoverLastStairRoutine());
     }
 
@@ -372,19 +366,6 @@ public class PlayerController : MonoBehaviour
         isRecovering = true;
         moving = true;
 
-        //// ✅ 1. 플레이어 Collider 가져오기
-        //Collider2D col = GetComponent<Collider2D>();
-        //if (col != null)
-        //    col.enabled = false; // 🔒 충돌 끄기
-
-        //yield return null; // 🔄 1 프레임 쉬기 (복귀 애니메이션 시작 전)
-
-        //if (col != null)
-        //    col.enabled = true;  // 🔓 충돌 다시 켜기
-
-        //Vector2 start = transform.position; //현재 위치
-        //Vector2 target = FindGroundAhead(); //안전한 땅
-
         float duration = 0.4f;
         float elapsed = 0f;
 
@@ -392,8 +373,7 @@ public class PlayerController : MonoBehaviour
         {
             float t = elapsed / duration;   //진행 비율
             float height = Mathf.Sin(t * Mathf.PI) * 1.5f;  //위로 아치형
-            //Vector2 jumpPos = Vector2.Lerp(start, target, t) + Vector2.up * height; //수평 이동 + 위로 점프하듯이
-            Vector2 jumpPos = new Vector2(PlayerPosition.x, PlayerPosition.y + height); // ❗ X는 고정, Y만 위아래로
+            Vector2 jumpPos = new Vector2(PlayerPosition.x, PlayerPosition.y + height); //x 고정, y 위아래
 
             transform.position = jumpPos;
 
@@ -404,7 +384,6 @@ public class PlayerController : MonoBehaviour
         transform.position = PlayerPosition;    //위치 보정
         moving = false;
         isRecovering = false;
-        PlayerManager.Instance.ClearRecoveryState();
     }
 
     //안전한 땅 찾기(왼->오)
@@ -423,7 +402,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log($"[탐색 {i}] 지면 발견: {ground.name}");
 
-                // ground의 자식 중 "장애물"이 있는지 검사
+                //ground의 자식 중 장애물이 있는지 검사
                 bool hasObstacleChild = false;
 
                 for (int j = 0; j < ground.transform.childCount; j++)
@@ -442,25 +421,6 @@ public class PlayerController : MonoBehaviour
                 {
                     result = ground.transform.position + Vector3.up * 0.5f;
                     break;
-
-                    //// ✅ 지면의 최상단 계산 (Collider 기준)
-                    //Collider2D groundCol = ground.GetComponent<Collider2D>();
-                    //float groundTopY = ground.transform.position.y;
-
-                    //if (groundCol != null)
-                    //{
-                    //    groundTopY = ground.bounds.max.y; // Collider의 최상단
-                    //}
-
-                    //// ✅ 플레이어의 키
-                    //float playerHeight = GetComponent<Collider2D>().bounds.size.y;
-
-                    //// ✅ 플레이어가 발로 땅을 딱 밟도록 위치 계산
-                    //float correctedY = groundTopY + (playerHeight / 2f);
-
-                    //result = new Vector2(ground.transform.position.x, correctedY);
-                    //Debug.Log($"✅ 안전한 지면 선택됨 → {ground.name} / pos: {result}");
-                    //break;
                 }
             }
             else
