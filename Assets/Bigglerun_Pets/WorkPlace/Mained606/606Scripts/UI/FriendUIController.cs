@@ -61,6 +61,8 @@ public class FriendUIController : MonoBehaviour
         ShowFriendListTab();
     }
     
+
+    
     /// <summary>
     /// UI 레이아웃 조정
     /// </summary>
@@ -103,6 +105,8 @@ public class FriendUIController : MonoBehaviour
         // ScrollRect 설정 확인 및 조정
         AdjustScrollRects();
     }
+    
+
     
     /// <summary>
     /// ScrollRect 설정 조정
@@ -724,6 +728,8 @@ public class FriendUIController : MonoBehaviour
     private void OnFriendRequestsUpdated(List<FriendRequestData> requests)
     {
         Debug.Log($"[FriendUIController] 친구 요청 목록 업데이트 - 요청 수: {requests.Count}");
+        
+
         
         // 기존 아이템들 제거
         foreach (var item in friendRequestItems)

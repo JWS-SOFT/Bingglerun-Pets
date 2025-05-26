@@ -66,8 +66,9 @@ MonoBehaviour:
   friendListPanel: {fileID: 8160140191740590122}
   friendSearchPanel: {fileID: 9207333841208708749}
   friendRequestPanel: {fileID: 5080516970101533779}
+  closeButton: {fileID: 2236055062569308238}
   friendListContent: {fileID: 3080242070090790571}
-  friendListItemPrefab: {fileID: 1839924237591085488, guid: aceb5ce1bbac6ab4092bdc887ed728cf, type: 3}
+  friendListItemPrefab: {fileID: 3503626384797220276, guid: 4a9feb41607c8ff4b872c9a2f3371506, type: 3}
   friendCountText: {fileID: 1930257753497950048}
   searchInputField: {fileID: 3708857328447370105}
   searchButton: {fileID: 3240551791297353010}
@@ -77,7 +78,7 @@ MonoBehaviour:
   sendRequestButton: {fileID: 8409525377988752521}
   searchStatusText: {fileID: 6660053732870110083}
   friendRequestContent: {fileID: 4334668338391355961}
-  friendRequestItemPrefab: {fileID: 1563321821840007341, guid: b83c221e2a77a194d8d7f408f6d9da81, type: 3}
+  friendRequestItemPrefab: {fileID: 7632910268271225892, guid: c1d134490a7419b45a71ba8e05e90ab2, type: 3}
   requestCountText: {fileID: 7710013530694066771}
   friendListTabButton: {fileID: 1076575586400365453}
   friendSearchTabButton: {fileID: 3966623274699545061}
