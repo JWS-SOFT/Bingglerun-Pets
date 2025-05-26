@@ -53,7 +53,16 @@ public class RankManager : MonoBehaviour
                     displayName = $"{displayName} ({allLeaderboardData[i].competitiveBestCharacter})";
                 }
 
-                bool iscurrentPlayer = PlayerDataManager.Instance.CurrentPlayerData.playerId == allLeaderboardData[i].playerId;
+                bool iscurrentPlayer = false;
+                if (PlayerDataManager.Instance?.CurrentPlayerData != null)
+                {
+                    string currentPlayerId = PlayerDataManager.Instance.CurrentPlayerData.playerId;
+                    string entryPlayerId = allLeaderboardData[i].playerId;
+                    
+                    // 기본 플레이어 ID 또는 캐릭터별 엔트리 ID 모두 확인
+                    iscurrentPlayer = entryPlayerId == currentPlayerId || 
+                                     entryPlayerId.StartsWith(currentPlayerId + "_");
+                }
 
                 RankingList rankList = Instantiate(prefabObject, rankListPosition.transform).transform.GetComponent<RankingList>();
                 rankList.SetRankList(allLeaderboardData[i].competitiveBestScore.ToString(), displayName, i, iscurrentPlayer);
