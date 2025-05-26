@@ -744,16 +744,28 @@ public class FriendUIController : MonoBehaviour
         {
             foreach (var request in requests)
             {
-                Debug.Log($"[FriendUIController] 친구 요청 아이템 생성 - 요청자: {request.fromNickname}");
+                Debug.Log($"[FriendUIController] 친구 요청 아이템 생성 - 타입: {request.requestType}, 요청자: {request.fromNickname}");
                 
                 GameObject itemObj = Instantiate(friendRequestItemPrefab, friendRequestContent);
                 FriendRequestItem item = itemObj.GetComponent<FriendRequestItem>();
                 
                 if (item != null)
                 {
-                    item.Setup(request, OnAcceptRequestClicked, OnRejectRequestClicked);
+                    // 요청 타입에 따라 다른 Setup 메서드 호출
+                    if (request.requestType == FriendRequestType.Received)
+                    {
+                        // 받은 요청: 수락/거절 버튼
+                        item.Setup(request, OnAcceptRequestClicked, OnRejectRequestClicked);
+                        Debug.Log($"[FriendUIController] 받은 요청 아이템 설정 완료 - 요청자: {request.fromNickname}");
+                    }
+                    else if (request.requestType == FriendRequestType.Sent)
+                    {
+                        // 보낸 요청: 취소 버튼
+                        item.Setup(request, OnCancelRequestClicked);
+                        Debug.Log($"[FriendUIController] 보낸 요청 아이템 설정 완료 - 받는 사람: {request.toNickname}");
+                    }
+                    
                     friendRequestItems.Add(item);
-                    Debug.Log($"[FriendUIController] 친구 요청 아이템 설정 완료 - 요청자: {request.fromNickname}");
                 }
                 else
                 {
@@ -823,6 +835,18 @@ public class FriendUIController : MonoBehaviour
         if (FriendManager.Instance != null)
         {
             await FriendManager.Instance.RespondToFriendRequestAsync(request.requestId, false);
+        }
+    }
+    
+    /// <summary>
+    /// 친구 요청 취소 버튼 클릭 처리
+    /// </summary>
+    private async void OnCancelRequestClicked(FriendRequestData request)
+    {
+        if (FriendManager.Instance != null)
+        {
+            string targetNickname = !string.IsNullOrEmpty(request.toNickname) ? request.toNickname : "Unknown";
+            await FriendManager.Instance.CancelFriendRequestAsync(request.requestId, request.toUserId, targetNickname);
         }
     }
     

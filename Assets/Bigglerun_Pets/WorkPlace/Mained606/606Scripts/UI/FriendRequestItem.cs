@@ -112,7 +112,7 @@ public class FriendRequestItem : MonoBehaviour
     }
     
     /// <summary>
-    /// 친구 요청 아이템 설정
+    /// 친구 요청 아이템 설정 (받은 요청용)
     /// </summary>
     public void Setup(FriendRequestData request, Action<FriendRequestData> acceptCallback, Action<FriendRequestData> rejectCallback)
     {
@@ -121,6 +121,21 @@ public class FriendRequestItem : MonoBehaviour
         requestData = request;
         onAcceptClicked = acceptCallback;
         onRejectClicked = rejectCallback;
+        
+        UpdateUI();
+        SetupEvents();
+    }
+    
+    /// <summary>
+    /// 친구 요청 아이템 설정 (보낸 요청용)
+    /// </summary>
+    public void Setup(FriendRequestData request, Action<FriendRequestData> cancelCallback)
+    {
+        Debug.Log($"[FriendRequestItem] Setup 호출 (보낸 요청) - 받는 사람: {request?.toNickname}");
+        
+        requestData = request;
+        onAcceptClicked = cancelCallback; // 취소 콜백을 수락 버튼에 연결
+        onRejectClicked = null;
         
         UpdateUI();
         SetupEvents();
@@ -137,17 +152,55 @@ public class FriendRequestItem : MonoBehaviour
             return;
         }
         
-        Debug.Log($"[FriendRequestItem] UI 업데이트 - 닉네임: {requestData.fromNickname}");
+        Debug.Log($"[FriendRequestItem] UI 업데이트 - 타입: {requestData.requestType}, 닉네임: {requestData.fromNickname}");
         
-        // 닉네임 설정
-        if (nicknameText != null)
+        // 요청 타입에 따라 다른 UI 표시
+        if (requestData.requestType == FriendRequestType.Received)
         {
-            nicknameText.text = requestData.fromNickname;
-            Debug.Log($"[FriendRequestItem] 닉네임 설정 완료: {requestData.fromNickname}");
+            // 받은 요청: "From: 닉네임"
+            if (nicknameText != null)
+            {
+                nicknameText.text = $"From: {requestData.fromNickname}";
+                Debug.Log($"[FriendRequestItem] 받은 요청 닉네임 설정 완료: {requestData.fromNickname}");
+            }
+            
+            // 수락/거절 버튼 표시
+            if (acceptButton != null)
+            {
+                acceptButton.gameObject.SetActive(true);
+                var acceptText = acceptButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (acceptText != null) acceptText.text = "Accept";
+            }
+            
+            if (rejectButton != null)
+            {
+                rejectButton.gameObject.SetActive(true);
+                var rejectText = rejectButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (rejectText != null) rejectText.text = "Reject";
+            }
         }
-        else
+        else if (requestData.requestType == FriendRequestType.Sent)
         {
-            Debug.LogWarning("[FriendRequestItem] nicknameText가 null입니다!");
+            // 보낸 요청: "To: 닉네임"
+            if (nicknameText != null)
+            {
+                string targetNickname = !string.IsNullOrEmpty(requestData.toNickname) ? requestData.toNickname : "Unknown";
+                nicknameText.text = $"To: {targetNickname}";
+                Debug.Log($"[FriendRequestItem] 보낸 요청 닉네임 설정 완료: {targetNickname}");
+            }
+            
+            // 취소 버튼만 표시
+            if (acceptButton != null)
+            {
+                acceptButton.gameObject.SetActive(true);
+                var acceptText = acceptButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (acceptText != null) acceptText.text = "Cancel";
+            }
+            
+            if (rejectButton != null)
+            {
+                rejectButton.gameObject.SetActive(false);
+            }
         }
         
         // 요청 시간 설정

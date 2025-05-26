@@ -46,8 +46,10 @@ public class FriendRequestData
     public string fromUserId;
     public string fromNickname;
     public string toUserId;
+    public string toNickname;  // 받는 사람 닉네임 추가
     public long requestTime;
     public FriendRequestStatus status;
+    public FriendRequestType requestType;  // UI 표시용 요청 타입
     
     public FriendRequestData()
     {
@@ -55,18 +57,22 @@ public class FriendRequestData
         fromUserId = "";
         fromNickname = "";
         toUserId = "";
+        toNickname = "";
         requestTime = 0;
         status = FriendRequestStatus.Pending;
+        requestType = FriendRequestType.Received;
     }
     
-    public FriendRequestData(string fromUserId, string fromNickname, string toUserId)
+    public FriendRequestData(string fromUserId, string fromNickname, string toUserId, string toNickname = "")
     {
         this.requestId = Guid.NewGuid().ToString();
         this.fromUserId = fromUserId;
         this.fromNickname = fromNickname;
         this.toUserId = toUserId;
+        this.toNickname = toNickname;
         this.requestTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         this.status = FriendRequestStatus.Pending;
+        this.requestType = FriendRequestType.Received; // 기본값, 나중에 설정됨
     }
 }
 
@@ -78,6 +84,15 @@ public enum FriendRequestStatus
     Pending,    // 대기 중
     Accepted,   // 수락됨
     Rejected    // 거절됨
+}
+
+/// <summary>
+/// 친구 요청 타입 (UI 표시용)
+/// </summary>
+public enum FriendRequestType
+{
+    Received,   // 받은 요청
+    Sent        // 보낸 요청
 }
 
 /// <summary>

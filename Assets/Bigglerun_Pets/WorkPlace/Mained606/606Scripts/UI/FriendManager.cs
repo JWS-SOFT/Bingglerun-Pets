@@ -275,7 +275,7 @@ public class FriendManager : MonoBehaviour
             
             Debug.Log($"[FriendManager] 친구 요청 전송: {fromNickname} -> {targetNickname}");
             
-            var requestData = new FriendRequestData(fromUserId, fromNickname, targetUserId);
+            var requestData = new FriendRequestData(fromUserId, fromNickname, targetUserId, targetNickname);
             bool success = await FirebaseDatabase.Instance.SendFriendRequestAsync(requestData);
             
             if (success)
@@ -295,6 +295,44 @@ public class FriendManager : MonoBehaviour
         {
             Debug.LogError($"[FriendManager] 친구 요청 전송 실패: {e.Message}");
             OnError?.Invoke($"Failed to send friend request: {e.Message}");
+            return false;
+        }
+    }
+    
+    /// <summary>
+    /// 친구 요청 취소
+    /// </summary>
+    public async Task<bool> CancelFriendRequestAsync(string requestId, string toUserId, string toNickname)
+    {
+        try
+        {
+            if (!FirebaseManager.Instance.IsAuthenticated)
+            {
+                OnError?.Invoke("Please login first");
+                return false;
+            }
+            
+            Debug.Log($"[FriendManager] 친구 요청 취소: {toNickname}");
+            
+            bool success = await FirebaseDatabase.Instance.CancelFriendRequestAsync(requestId, toUserId);
+            
+            if (success)
+            {
+                OnFriendRequestSent?.Invoke($"Friend request to {toNickname} cancelled");
+                await LoadFriendRequestsAsync(); // 요청 목록 새로고침
+                Debug.Log("[FriendManager] 친구 요청 취소 완료");
+                return true;
+            }
+            else
+            {
+                OnError?.Invoke("Failed to cancel friend request");
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FriendManager] 친구 요청 취소 실패: {e.Message}");
+            OnError?.Invoke($"Failed to cancel friend request: {e.Message}");
             return false;
         }
     }    

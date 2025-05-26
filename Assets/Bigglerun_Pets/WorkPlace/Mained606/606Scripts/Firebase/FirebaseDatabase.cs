@@ -422,7 +422,7 @@ public class FirebaseDatabase : MonoBehaviour
     }
     
     /// <summary>
-    /// 친구 요청 목록 가져오기
+    /// 친구 요청 목록 가져오기 (받은 요청과 보낸 요청 모두)
     /// </summary>
     public async Task<FriendRequestListResponse> GetFriendRequestsAsync(string userId)
     {
@@ -444,11 +444,11 @@ public class FirebaseDatabase : MonoBehaviour
         try
         {
             // 받은 친구 요청 가져오기
-            var snapshot = await databaseReference.Child("friendRequests").Child(userId).GetValueAsync();
+            var receivedSnapshot = await databaseReference.Child("friendRequests").Child(userId).GetValueAsync();
             
-            if (snapshot.Exists)
+            if (receivedSnapshot.Exists)
             {
-                foreach (var child in snapshot.Children)
+                foreach (var child in receivedSnapshot.Children)
                 {
                     string requestJson = child.GetRawJsonValue();
                     if (!string.IsNullOrEmpty(requestJson))
@@ -456,7 +456,31 @@ public class FirebaseDatabase : MonoBehaviour
                         var requestData = JsonUtility.FromJson<FriendRequestData>(requestJson);
                         if (requestData.status == FriendRequestStatus.Pending)
                         {
+                            requestData.requestType = FriendRequestType.Received;
                             response.requests.Add(requestData);
+                        }
+                    }
+                }
+            }
+            
+            // 보낸 친구 요청 가져오기 (모든 사용자의 요청 중에서 내가 보낸 것 찾기)
+            var allRequestsSnapshot = await databaseReference.Child("friendRequests").GetValueAsync();
+            
+            if (allRequestsSnapshot.Exists)
+            {
+                foreach (var userChild in allRequestsSnapshot.Children)
+                {
+                    foreach (var requestChild in userChild.Children)
+                    {
+                        string requestJson = requestChild.GetRawJsonValue();
+                        if (!string.IsNullOrEmpty(requestJson))
+                        {
+                            var requestData = JsonUtility.FromJson<FriendRequestData>(requestJson);
+                            if (requestData.fromUserId == userId && requestData.status == FriendRequestStatus.Pending)
+                            {
+                                requestData.requestType = FriendRequestType.Sent;
+                                response.requests.Add(requestData);
+                            }
                         }
                     }
                 }
@@ -474,8 +498,16 @@ public class FirebaseDatabase : MonoBehaviour
         // 테스트용 더미 데이터
         await Task.Delay(500);
         
-        // 테스트 친구 요청 데이터 생성
-        response.requests.Add(new FriendRequestData("test_user_1", "TestUser1", userId));
+        // 테스트 받은 친구 요청 데이터 생성
+        var receivedRequest = new FriendRequestData("test_user_1", "TestUser1", userId);
+        receivedRequest.requestType = FriendRequestType.Received;
+        response.requests.Add(receivedRequest);
+        
+        // 테스트 보낸 친구 요청 데이터 생성
+        var sentRequest = new FriendRequestData(userId, "MyNickname", "test_user_2", "TestUser2");
+        sentRequest.requestType = FriendRequestType.Sent;
+        response.requests.Add(sentRequest);
+        
         response.success = true;
         
         Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 목록 로드: {response.requests.Count}개");
@@ -597,6 +629,46 @@ public class FirebaseDatabase : MonoBehaviour
         // 테스트용
         await Task.Delay(500);
         Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 전송: {requestData.fromNickname} -> {requestData.toUserId}");
+        return true;
+#endif
+    }
+    
+    /// <summary>
+    /// 친구 요청 취소
+    /// </summary>
+    public async Task<bool> CancelFriendRequestAsync(string requestId, string toUserId)
+    {
+        if (string.IsNullOrEmpty(requestId) || string.IsNullOrEmpty(toUserId))
+        {
+            return false;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            return false;
+        }
+        
+        try
+        {
+            // 받는 사람의 친구 요청 목록에서 삭제
+            await databaseReference.Child("friendRequests")
+                .Child(toUserId)
+                .Child(requestId)
+                .RemoveValueAsync();
+            
+            Debug.Log($"[FirebaseDatabase] 친구 요청 취소 완료: {requestId}");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 친구 요청 취소 실패: {e.Message}");
+            return false;
+        }
+#else
+        // 테스트용
+        await Task.Delay(500);
+        Debug.Log($"[FirebaseDatabase] 테스트 친구 요청 취소: {requestId}");
         return true;
 #endif
     }    
