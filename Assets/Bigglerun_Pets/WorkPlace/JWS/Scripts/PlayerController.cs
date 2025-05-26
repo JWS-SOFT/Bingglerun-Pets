@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     //05.16 HJ 추가
     private bool isRecovering = false;
     public bool IsRecovering => isRecovering;
+    public Vector2 PlayerPosition;
+
 
     private void Start()
     {
@@ -75,7 +77,7 @@ public class PlayerController : MonoBehaviour
         if (!moving)
         {
             // 🟥 횡스크롤 모드에서 아래 타일 유무 체크
-            if (isGamemode && PlayerManager.Instance.isGameStartReady)
+            if (isGamemode && PlayerManager.Instance.isGameStartReady && !PlayerManager.Instance.PlayerController.IsRecovering)
             {
                 Vector2 checkPos = footPoint.position; // 발밑 바로 아래
                 Collider2D hit = Physics2D.OverlapCircle(checkPos, 0.1f, LayerMask.GetMask("Ground")); // 'Ground' 레이어로 타일 설정했다고 가정
@@ -295,12 +297,6 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("복귀, 직전 계단으로 위치 초기화");
 
-        //if (stairManager.TryGetStairPosition(currentStairIndex, out Vector2 stairPos))
-        //{
-        //    //복귀 애니메이션 추가
-        //    transform.position = stairPos;
-        //}
-
         StartCoroutine(RecoverLastStairRoutine());
     }
 
@@ -370,9 +366,6 @@ public class PlayerController : MonoBehaviour
         isRecovering = true;
         moving = true;
 
-        Vector2 start = transform.position; //현재 위치
-        Vector2 target = FindGroundAhead(); //안전한 땅
-
         float duration = 0.4f;
         float elapsed = 0f;
 
@@ -380,7 +373,7 @@ public class PlayerController : MonoBehaviour
         {
             float t = elapsed / duration;   //진행 비율
             float height = Mathf.Sin(t * Mathf.PI) * 1.5f;  //위로 아치형
-            Vector2 jumpPos = Vector2.Lerp(start, target, t) + Vector2.up * height; //수평 이동 + 위로 점프하듯이
+            Vector2 jumpPos = new Vector2(PlayerPosition.x, PlayerPosition.y + height); //x 고정, y 위아래
 
             transform.position = jumpPos;
 
@@ -388,7 +381,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        transform.position = target;    //위치 보정
+        transform.position = PlayerPosition;    //위치 보정
         moving = false;
         isRecovering = false;
     }
@@ -403,17 +396,39 @@ public class PlayerController : MonoBehaviour
         for (int i = 1; i <= 10; i++)
         {
             Vector2 checkPos = checkOrigin + Vector2.right * i * checkInterval;
-            Collider2D ground = Physics2D.OverlapCircle(checkPos, 0.1f, LayerMask.GetMask("Ground"));
+            Collider2D ground = Physics2D.OverlapCircle(checkPos, 0.5f, LayerMask.GetMask("Ground"));
 
             if (ground != null)
             {
-                result = ground.transform.position + Vector3.up * 0.5f;
-                break;
+                Debug.Log($"[탐색 {i}] 지면 발견: {ground.name}");
+
+                //ground의 자식 중 장애물이 있는지 검사
+                bool hasObstacleChild = false;
+
+                for (int j = 0; j < ground.transform.childCount; j++)
+                {
+                    Transform child = ground.transform.GetChild(j);
+                    if (child.CompareTag("Obstacle"))
+                    {
+                        Debug.Log($"[탐색 {i}] 장애물 발견: {child.name}");
+                        hasObstacleChild = true;
+                        break;
+                    }
+                }
+
+                // 장애물이 없는 ground만 안전 지면으로 인정
+                if (!hasObstacleChild)
+                {
+                    result = ground.transform.position + Vector3.up * 0.5f;
+                    break;
+                }
+            }
+            else
+            {
+                Debug.Log("땅없음");
             }
         }
 
         return result;
     }
-
-
 }

@@ -12,6 +12,7 @@ public class Huddle : MonoBehaviour
                 Debug.Log("장애물과 접촉");
                 //controller.TriggerGameOver();
                 PlayerManager.Instance.TakeDamage();
+                Debug.Log("장애물 충돌");
             }
         }
     }
