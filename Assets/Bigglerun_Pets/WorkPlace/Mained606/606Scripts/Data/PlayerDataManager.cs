@@ -308,34 +308,48 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 하트 충전
+    /// 하트 충전 (HeartSystem을 통해 처리)
     /// </summary>
     public void RefillHeart(int amount = 1)
     {
-        if (!IsDataLoaded || amount <= 0) return;
+        if (HeartSystem.Instance != null)
+        {
+            HeartSystem.Instance.AddHearts(amount);
+        }
+        else
+        {
+            // HeartSystem이 없는 경우 직접 처리 (하위 호환성)
+            if (!IsDataLoaded || amount <= 0) return;
 
-        CurrentPlayerData.heart += amount;
-        OnHeartChanged?.Invoke(CurrentPlayerData.heart);
-        UIManager.Instance.uiController.heart.text = CurrentPlayerData.heart.ToString();
-        _ = SavePlayerDataAsync();
+            CurrentPlayerData.heart += amount;
+            OnHeartChanged?.Invoke(CurrentPlayerData.heart);
+            _ = SavePlayerDataAsync();
+        }
     }
 
     /// <summary>
-    /// 하트 소비 시도
+    /// 하트 소비 시도 (HeartSystem을 통해 처리)
     /// </summary>
-    public bool TrySpendHeart()
+    public bool TrySpendHeart(int amount = 1)
     {
-        if (!IsDataLoaded) return false;
-
-        if(CurrentPlayerData.heart > 0)
+        if (HeartSystem.Instance != null)
         {
-            CurrentPlayerData.heart--;
-            OnHeartChanged?.Invoke(CurrentPlayerData.diamond);
-            UIManager.Instance.uiController.heart.text = CurrentPlayerData.heart.ToString();
-            _ = SavePlayerDataAsync();
-            return true;
+            return HeartSystem.Instance.TryConsumeHearts(amount);
         }
-        return false;
+        else
+        {
+            // HeartSystem이 없는 경우 직접 처리 (하위 호환성)
+            if (!IsDataLoaded) return false;
+
+            if(CurrentPlayerData.heart >= amount)
+            {
+                CurrentPlayerData.heart -= amount;
+                OnHeartChanged?.Invoke(CurrentPlayerData.heart);
+                _ = SavePlayerDataAsync();
+                return true;
+            }
+            return false;
+        }
     }
     #endregion
     
