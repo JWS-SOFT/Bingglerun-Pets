@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
         jumpHeight = !isGamemode ? 0.25f : 3f;    // ⬅ 점프 높이
-        if (moving || isGameOver) return;
+        if (moving || isGameOver || isRecovering) return;
 
         player_Animator.SetBool("Jump", true);
         // ✅ 횡스크롤 모드일 경우: 제자리 점프
