@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<ItemManager>();
         gameObject.AddComponent<ShopManager>();
         gameObject.AddComponent<ScoreManager>();
+        gameObject.AddComponent<HeartSystem>(); // 하트 시스템 추가
     }
 
     private void Start()
@@ -138,6 +139,19 @@ public class GameManager : MonoBehaviour
             return;
         }
         
+        // 하트 소모 체크
+        if (!TryConsumeHeartForGame())
+        {
+            Debug.LogWarning("[GameManager] 하트가 부족하여 게임을 시작할 수 없습니다.");
+            // UI에서 하트 부족 알림 표시
+            if (UIManager.Instance != null)
+            {
+                // 하트 부족 팝업 표시 (구현 필요)
+                ShowInsufficientHeartsPopup();
+            }
+            return;
+        }
+        
         // 게임 데이터 저장
         GameDataManager.SetSelectedStageId(stageId);
         
@@ -153,6 +167,40 @@ public class GameManager : MonoBehaviour
         else
         {
             StateMachine.ChangeState(GameState.StoryInGame);
+        }
+    }
+    
+    /// <summary>
+    /// 게임 시작을 위한 하트 소모 시도
+    /// </summary>
+    private bool TryConsumeHeartForGame()
+    {
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            return PlayerDataManager.Instance.TrySpendHeart(1);
+        }
+        
+        Debug.LogWarning("[GameManager] PlayerDataManager가 초기화되지 않았습니다.");
+        return false;
+    }
+    
+    /// <summary>
+    /// 하트 부족 팝업 표시
+    /// </summary>
+    private void ShowInsufficientHeartsPopup()
+    {
+        // TODO: 하트 부족 팝업 UI 구현
+        // 현재는 로그로만 표시
+        Debug.Log("[GameManager] 하트 부족 팝업 표시 (UI 구현 필요)");
+        
+        // 임시로 간단한 알림 표시
+        if (HeartSystem.Instance != null)
+        {
+            var timeUntilNext = HeartSystem.Instance.GetTimeUntilNextRecovery();
+            if (timeUntilNext.TotalSeconds > 0)
+            {
+                Debug.Log($"[GameManager] 다음 하트 회복까지: {timeUntilNext.Minutes}분 {timeUntilNext.Seconds}초");
+            }
         }
     }
 }

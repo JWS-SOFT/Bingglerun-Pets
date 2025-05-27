@@ -75,6 +75,10 @@ public class PlayerData
     public int diamond;
     public int heart;
     
+    // 하트 시스템 관련
+    public long lastHeartRecoveryTime; // 마지막 하트 회복 시간 (Unix timestamp)
+    public int maxHearts = 99; // 최대 하트 개수
+    
     // 게임 진행
     [NonSerialized]
     public Dictionary<string, StageData> storyStages; // 메모리에서만 사용됨
@@ -276,6 +280,8 @@ public class PlayerData
             gold = 1000,
             diamond = 50,
             heart = 5,
+            lastHeartRecoveryTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            maxHearts = 99,
             storyStages = new Dictionary<string, StageData>
             {
                 { "1", new StageData { stageId = "1", stars = 0, highScore = 0, isUnlocked = true } }
