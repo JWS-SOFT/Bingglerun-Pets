@@ -2031,7 +2031,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8397585336946076418}
-  - {fileID: 5996287380078100611}
+  - {fileID: 8152187710135812104}
   - {fileID: 2473097326861359657}
   - {fileID: 2631256455555576422}
   - {fileID: 9139440495852092027}
@@ -6703,13 +6703,41 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 2172845059379276663}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: TogglePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: UIController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b88383239bdc5384596108d581b5afba, type: 3}
---- !u!224 &5996287380078100611 stripped
+--- !u!224 &8152187710135812104 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3245926929182868620, guid: b88383239bdc5384596108d581b5afba, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1089498674629968903, guid: b88383239bdc5384596108d581b5afba, type: 3}
   m_PrefabInstance: {fileID: 9096372680275739663}
   m_PrefabAsset: {fileID: 0}

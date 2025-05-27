@@ -15,10 +15,24 @@ namespace Ricimi
         public Color backgroundColor = new Color(10.0f / 255.0f, 10.0f / 255.0f, 10.0f / 255.0f, 0.6f);
 
         private GameObject m_background;
+        private Animator animator;
+
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        private void OnEnable()
+        {
+            if(animator != null)
+            {
+                animator.Play("Open");
+            }
+        }
 
         public void Open()
         {
-            AddBackground();
+            //AddBackground();
         }
 
         public void Close()
@@ -28,7 +42,7 @@ namespace Ricimi
                 animator.Play("Close");
 
             //RemoveBackground();
-            StartCoroutine(RunPopupDestroy());
+            StartCoroutine(ExitPopup());
         }
 
         // We destroy the popup automatically 0.5 seconds after closing it.
@@ -40,6 +54,12 @@ namespace Ricimi
             yield return new WaitForSeconds(0.5f);
             Destroy(m_background);
             Destroy(gameObject);
+        }
+
+        public IEnumerator ExitPopup()
+        {
+            yield return new WaitForSeconds(0.5f);
+            this.gameObject.SetActive(false);
         }
 
         private void AddBackground()
