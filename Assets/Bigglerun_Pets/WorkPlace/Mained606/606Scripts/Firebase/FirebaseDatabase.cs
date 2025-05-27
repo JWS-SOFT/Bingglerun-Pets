@@ -982,4 +982,126 @@ public class FirebaseDatabase : MonoBehaviour
 #endif
     
     #endregion
+    
+    #region 게임 설정 관리
+    
+    /// <summary>
+    /// Firebase에서 게임 설정 로드
+    /// </summary>
+    public async Task<Dictionary<string, object>> LoadGameSettingsAsync()
+    {
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            Debug.LogError("[FirebaseDatabase] Firebase Database가 초기화되지 않았습니다.");
+            return null;
+        }
+        
+        try
+        {
+            // Realtime Database에서 게임 설정 가져오기
+            Firebase.Database.DataSnapshot snapshot = 
+                await databaseReference.Child("gameSettings").GetValueAsync();
+                
+            if (snapshot.Exists)
+            {
+                var settings = new Dictionary<string, object>();
+                
+                foreach (var child in snapshot.Children)
+                {
+                    string key = child.Key;
+                    object value = child.Value;
+                    
+                    // 타입에 따라 적절히 변환
+                    if (value is long longValue)
+                    {
+                        settings[key] = (int)longValue;
+                    }
+                    else if (value is double doubleValue)
+                    {
+                        settings[key] = (float)doubleValue;
+                    }
+                    else
+                    {
+                        settings[key] = value;
+                    }
+                }
+                
+                Debug.Log($"[FirebaseDatabase] 게임 설정 로드 완료: {settings.Count}개 항목");
+                return settings;
+            }
+            else
+            {
+                Debug.Log("[FirebaseDatabase] 게임 설정이 없습니다. 기본값을 사용합니다.");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[FirebaseDatabase] 게임 설정 로드 중 오류 발생: {ex.Message}");
+            return null;
+        }
+#else
+        // 테스트용 더미 설정
+        await Task.Delay(200);
+        
+        var testSettings = new Dictionary<string, object>
+        {
+            { "heartRecoveryIntervalMinutes", 30 },
+            { "defaultMaxHearts", 5 },
+            { "absoluteMaxHearts", 99 },
+            { "storyModeHeartCost", 1 },
+            { "competitiveModeHeartCost", 1 }
+        };
+        
+        Debug.Log("[FirebaseDatabase] 테스트 게임 설정 로드 완료");
+        return testSettings;
+#endif
+    }
+    
+    /// <summary>
+    /// Firebase에 게임 설정 저장 (관리자용)
+    /// </summary>
+    public async Task<bool> SaveGameSettingsAsync(Dictionary<string, object> settings)
+    {
+        if (settings == null || settings.Count == 0)
+        {
+            Debug.LogError("[FirebaseDatabase] 저장할 게임 설정이 없습니다.");
+            return false;
+        }
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            Debug.LogError("[FirebaseDatabase] Firebase Database가 초기화되지 않았습니다.");
+            return false;
+        }
+        
+        try
+        {
+            // 각 설정값을 개별적으로 저장
+            foreach (var setting in settings)
+            {
+                await databaseReference.Child("gameSettings")
+                    .Child(setting.Key)
+                    .SetValueAsync(setting.Value);
+            }
+            
+            Debug.Log($"[FirebaseDatabase] 게임 설정 저장 완료: {settings.Count}개 항목");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[FirebaseDatabase] 게임 설정 저장 중 오류 발생: {ex.Message}");
+            return false;
+        }
+#else
+        // 테스트용
+        await Task.Delay(200);
+        Debug.Log($"[FirebaseDatabase] 테스트 게임 설정 저장: {settings.Count}개 항목");
+        return true;
+#endif
+    }
+    
+    #endregion
 }
