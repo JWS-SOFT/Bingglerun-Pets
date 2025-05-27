@@ -8,6 +8,9 @@ public class TerrainScrollManager : MonoBehaviour
     [SerializeField] private GameObject terrainPrefab;
     [SerializeField] private int poolSize = 50;
     [SerializeField] private float scrollSpeed = 5f;
+    [SerializeField] private float currentTerrainY = 0f;
+    [SerializeField] private int terrainChangeHeightDistance = 10;
+    private int terrainChangeHeightDistanceCount = 0;
     public float ScrollSpeed
     {
         get => scrollSpeed;
@@ -57,6 +60,9 @@ public class TerrainScrollManager : MonoBehaviour
 
         terrainIndex = 0;
         terrainDistance = 0;
+        currentTerrainY = 0f;
+        terrainChangeHeightDistance = 6;
+        terrainChangeHeightDistanceCount = 0;
         terrainWidth = GetPrefabWidth(terrainPrefab);
 
         // 패턴 생성
@@ -64,7 +70,16 @@ public class TerrainScrollManager : MonoBehaviour
 
         for (int i = 0; i < poolSize; i++)
         {
-            Vector3 pos = lastTerranPosition + new Vector3(i * terrainWidth, 0, 0);
+            // if ( terrainChangeHeightDistanceCount < terrainChangeHeightDistance ) terrainChangeHeightDistanceCount++;
+            // else 
+            // {
+            //     terrainChangeHeightDistance = Random.Range(10, 25);
+            //     terrainChangeHeightDistanceCount = 0;
+            //     if ( currentTerrainY == 0 ) currentTerrainY = 2f;
+            //     else currentTerrainY = 0;
+            // }
+
+            Vector3 pos = lastTerranPosition + new Vector3(i * terrainWidth, currentTerrainY, 0);
             GameObject obj;
 
             if (terrainPool.Count < poolSize)
@@ -115,7 +130,16 @@ public class TerrainScrollManager : MonoBehaviour
         {
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
-            first.transform.position = new Vector3(lastX + terrainWidth, first.transform.position.y, 0);
+            first.transform.position = new Vector3(lastX + terrainWidth, first.transform.position.y + currentTerrainY, 0);
+
+            // if ( terrainChangeHeightDistanceCount < terrainChangeHeightDistance ) terrainChangeHeightDistanceCount++;
+            // else 
+            // {
+            //     terrainChangeHeightDistance = Random.Range(6, 15);
+            //     terrainChangeHeightDistanceCount = 0;
+            //     if ( currentTerrainY == 0 ) currentTerrainY = 2f;
+            //     else currentTerrainY = 0;
+            // }
 
             // 다음 타일 패턴 적용
             if (terrainIndex >= spawnPattern.Count)
