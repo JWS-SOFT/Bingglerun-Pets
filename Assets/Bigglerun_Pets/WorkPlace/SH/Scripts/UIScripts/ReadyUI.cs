@@ -5,6 +5,7 @@ using TMPro;
 
 public class ReadyUI : MonoBehaviour
 {
+    [SerializeField] private List<Button> buttonList;
     [SerializeField] private List<Toggle> itemToggles; // 각 아이템에 연결된 Toggle
     [SerializeField] private List<string> itemNames;   // 토글과 순서 일치하는 아이템 이름들
     [SerializeField] private List<TextMeshProUGUI> itemCounts;
@@ -13,10 +14,10 @@ public class ReadyUI : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < itemToggles.Count; i++)
+        for (int i = 0; i < buttonList.Count; i++)
         {
             int index = i;
-            itemToggles[i].onValueChanged.AddListener((isOn) => OnToggleChanged(index, isOn));
+            buttonList[i].onClick.AddListener(() => OnToggleChanged(index));
         }
     }
     
@@ -34,23 +35,24 @@ public class ReadyUI : MonoBehaviour
         GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
     }
 
-    private void OnToggleChanged(int changedIndex, bool isOn)
+    private void OnToggleChanged(int changedIndex)
     {
-        if (isOn)
-        {
-            // 다른 토글은 해제
-            for (int i = 0; i < itemToggles.Count; i++)
-            {
-                if (i != changedIndex)
-                    itemToggles[i].isOn = false;
-            }
-        }
-        else
-        {
-            // 선택 해제된 경우: 아무 것도 선택 안 됨
-            //if (IsAllToggleOff())
+        //if (isOn)
+        //{
+        //    // 다른 토글은 해제
+        //    for (int i = 0; i < itemToggles.Count; i++)
+        //    {
+        //        if (i != changedIndex)
+        //            itemToggles[i].isOn = false;
+        //    }
+        //}
+        //else
+        //{
+        //    // 선택 해제된 경우: 아무 것도 선택 안 됨
+        //    //if (IsAllToggleOff())
 
-        }
+        //}
+        itemToggles[changedIndex].isOn = !itemToggles[changedIndex].isOn;
         SelectedItemName = itemNames[changedIndex];
         ItemManager.Instance.SelectPreGameItem(SelectedItemName);
     }
