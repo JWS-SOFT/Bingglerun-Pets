@@ -159,6 +159,8 @@ public class TerrainScrollManager : MonoBehaviour
         }
         //tile.SetActive(state == 1);
 
+
+        //05.27 HJ 추가
         //이전 타일에 장애물이 있었으면 이 타일은 무조건 활성화
         GameObject prevTile = GetTerrainByIndex(terrainIndex - 1);
         bool forceEnable = false;
@@ -262,15 +264,11 @@ public class TerrainScrollManager : MonoBehaviour
         if (!terrain.activeSelf)
             return; // 비활성 타일에는 장애물 생성 금지
 
-        // 앞뒤 타일 가져오기
+        //앞 타일 가져오기
         GameObject prevTile = GetTerrainByIndex(index - 1);
 
-        // 둘 다 활성화된 땅이 아니면 장애물 생성 금지
-        if (prevTile == null || !prevTile.activeSelf)
-        {
-            Debug.Log("이전 타일 없음");
-            return;
-        }
+        //활성화된 땅이 아니면 장애물 생성 금지
+        if (prevTile == null || !prevTile.activeSelf) return;
 
         //쿨다운 중이면 장애물 생성 금지
         if (obstacleCooldownCounter > 0)
@@ -325,9 +323,10 @@ public class TerrainScrollManager : MonoBehaviour
         }
     }
 
+    //05.27 HJ 추가
     private GameObject GetTerrainByIndex(int index)
     {
-        int baseIndex = terrainIndex - terrainPool.Count; // 큐 맨 앞 타일의 인덱스
+        int baseIndex = terrainIndex - terrainPool.Count; //현재 화면의 첫번째 타일의 전체 인덱스
         int localIndex = index - baseIndex;
 
         if (localIndex < 0 || localIndex >= terrainPool.Count)
@@ -344,6 +343,7 @@ public class TerrainScrollManager : MonoBehaviour
         return null;
     }
 
+    //05.26 HJ 추가
     public static void FitObstacleToTile(GameObject obstacle, GameObject tile, GameObject prefab)
     {
         SpriteRenderer GetSR(GameObject obj, string name)
