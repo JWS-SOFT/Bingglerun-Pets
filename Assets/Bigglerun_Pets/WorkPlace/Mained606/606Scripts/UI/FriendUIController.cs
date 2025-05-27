@@ -39,6 +39,7 @@ public class FriendUIController : MonoBehaviour
     [SerializeField] private Button friendListTabButton;
     [SerializeField] private Button friendSearchTabButton;
     [SerializeField] private Button friendRequestTabButton;
+    [SerializeField] private Button refreshButton;
     
     [Header("Status")]
     [SerializeField] private TextMeshProUGUI statusText;
@@ -50,6 +51,9 @@ public class FriendUIController : MonoBehaviour
     private List<FriendListItem> friendListItems = new List<FriendListItem>();
     private List<FriendRequestItem> friendRequestItems = new List<FriendRequestItem>();
     
+    // 이전 친구 요청 수 (새 요청 알림용)
+    private int previousRequestCount = 0;
+    
     private void Start()
     {
         InitializeUI();
@@ -59,6 +63,45 @@ public class FriendUIController : MonoBehaviour
         
         // 기본적으로 친구 목록 탭 활성화
         ShowFriendListTab();
+    }
+    
+    /// <summary>
+    /// UI가 활성화될 때마다 호출 (창이 열릴 때)
+    /// </summary>
+    private void OnEnable()
+    {
+        // FriendManager가 초기화되었고 로그인된 상태라면 데이터 새로고침
+        if (FriendManager.Instance != null && 
+            FriendManager.Instance.IsInitialized && 
+            FirebaseManager.Instance != null && 
+            FirebaseManager.Instance.IsAuthenticated)
+        {
+            Debug.Log("[FriendUIController] UI 활성화 - 친구 데이터 새로고침 시작");
+            RefreshAllData();
+        }
+    }
+    
+    /// <summary>
+    /// 모든 친구 관련 데이터 새로고침
+    /// </summary>
+    private async void RefreshAllData()
+    {
+        try
+        {
+            if (FriendManager.Instance != null)
+            {
+                Debug.Log("[FriendUIController] 친구 데이터 새로고침 중...");
+                
+                // 친구 목록과 친구 요청 목록을 Firebase에서 다시 로드
+                await FriendManager.Instance.LoadFriendDataAsync();
+                
+                Debug.Log("[FriendUIController] 친구 데이터 새로고침 완료");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[FriendUIController] 데이터 새로고침 중 오류: {e.Message}");
+        }
     }
     
 
@@ -315,6 +358,10 @@ public class FriendUIController : MonoBehaviour
         // 검색 입력 필드 엔터 키 이벤트
         if (searchInputField != null)
             searchInputField.onSubmit.AddListener(OnSearchSubmit);
+        
+        // 새로고침 버튼 이벤트
+        if (refreshButton != null)
+            refreshButton.onClick.AddListener(OnRefreshButtonClicked);
         
         // FriendManager 이벤트 구독
         if (FriendManager.Instance != null)
@@ -729,7 +776,25 @@ public class FriendUIController : MonoBehaviour
     {
         Debug.Log($"[FriendUIController] 친구 요청 목록 업데이트 - 요청 수: {requests.Count}");
         
-
+        // 새로운 친구 요청이 들어왔는지 확인 (받은 요청만 카운트)
+        int currentReceivedRequestCount = 0;
+        foreach (var request in requests)
+        {
+            if (request.requestType == FriendRequestType.Received)
+            {
+                currentReceivedRequestCount++;
+            }
+        }
+        
+        // 새 요청이 들어왔다면 알림 표시
+        if (previousRequestCount > 0 && currentReceivedRequestCount > previousRequestCount)
+        {
+            int newRequestCount = currentReceivedRequestCount - previousRequestCount;
+            ShowStatus($"새로운 친구 요청 {newRequestCount}개가 도착했습니다!");
+            Debug.Log($"[FriendUIController] 새 친구 요청 알림: {newRequestCount}개");
+        }
+        
+        previousRequestCount = currentReceivedRequestCount;
         
         // 기존 아이템들 제거
         foreach (var item in friendRequestItems)
@@ -903,6 +968,16 @@ public class FriendUIController : MonoBehaviour
     {
         if (statusText != null)
             statusText.text = "";
+    }
+    
+    /// <summary>
+    /// 새로고침 버튼 클릭 처리
+    /// </summary>
+    private void OnRefreshButtonClicked()
+    {
+        Debug.Log("[FriendUIController] 수동 새로고침 요청");
+        ShowStatus("데이터를 새로고침하는 중...");
+        RefreshAllData();
     }
     
     private void OnDestroy()

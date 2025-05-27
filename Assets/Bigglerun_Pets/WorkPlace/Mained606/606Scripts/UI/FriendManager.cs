@@ -27,6 +27,9 @@ public class FriendManager : MonoBehaviour
     // 상태
     public bool IsInitialized { get; private set; }
     
+    // 실시간 리스너 상태
+    private bool isListeningToFriendRequests = false;
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -68,6 +71,7 @@ public class FriendManager : MonoBehaviour
                 if (FirebaseManager.Instance.IsAuthenticated)
                 {
                     await LoadFriendDataAsync();
+                    StartListeningToFriendRequests();
                 }
             }
             
@@ -89,9 +93,11 @@ public class FriendManager : MonoBehaviour
         if (isLoggedIn)
         {
             await LoadFriendDataAsync();
+            StartListeningToFriendRequests();
         }
         else
         {
+            StopListeningToFriendRequests();
             ClearCachedData();
         }
     }
@@ -436,8 +442,73 @@ public class FriendManager : MonoBehaviour
         return new List<FriendRequestData>(cachedRequests);
     }
     
+    /// <summary>
+    /// 친구 요청 실시간 리스너 시작
+    /// </summary>
+    private void StartListeningToFriendRequests()
+    {
+        if (isListeningToFriendRequests || !FirebaseManager.Instance.IsAuthenticated)
+        {
+            return;
+        }
+        
+        string userId = FirebaseManager.Instance.UserId;
+        Debug.Log($"[FriendManager] 친구 요청 실시간 리스너 시작: {userId}");
+        
+        // Firebase Database에 실시간 리스너 등록 요청
+        if (FirebaseDatabase.Instance != null)
+        {
+            FirebaseDatabase.Instance.StartListeningToFriendRequests(userId, OnFriendRequestsRealTimeUpdate);
+            isListeningToFriendRequests = true;
+        }
+    }
+    
+    /// <summary>
+    /// 친구 요청 실시간 리스너 중지
+    /// </summary>
+    private void StopListeningToFriendRequests()
+    {
+        if (!isListeningToFriendRequests)
+        {
+            return;
+        }
+        
+        Debug.Log("[FriendManager] 친구 요청 실시간 리스너 중지");
+        
+        // Firebase Database에 실시간 리스너 해제 요청
+        if (FirebaseDatabase.Instance != null)
+        {
+            FirebaseDatabase.Instance.StopListeningToFriendRequests();
+            isListeningToFriendRequests = false;
+        }
+    }
+    
+    /// <summary>
+    /// 실시간 친구 요청 업데이트 콜백
+    /// </summary>
+    private async void OnFriendRequestsRealTimeUpdate()
+    {
+        Debug.Log("[FriendManager] 실시간 친구 요청 업데이트 감지");
+        
+        try
+        {
+            // 친구 요청 목록 다시 로드
+            await LoadFriendRequestsAsync();
+            
+            // 친구 목록도 업데이트 (요청이 수락되어 친구가 추가될 수 있음)
+            await LoadFriendListAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FriendManager] 실시간 업데이트 처리 중 오류: {e.Message}");
+        }
+    }
+    
     private void OnDestroy()
     {
+        // 실시간 리스너 중지
+        StopListeningToFriendRequests();
+        
         if (FirebaseManager.Instance != null)
         {
             FirebaseManager.Instance.OnLoginStateChanged -= OnLoginStateChanged;

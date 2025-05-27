@@ -872,5 +872,114 @@ public class FirebaseDatabase : MonoBehaviour
 #endif
     }
     
-    #endregion    #endregion
+    #endregion
+    
+    #region 실시간 리스너
+    
+    // 실시간 리스너 관련 변수
+#if FIREBASE_DATABASE
+    private Firebase.Database.DatabaseReference friendRequestsListener;
+#endif
+    private System.Action onFriendRequestsUpdated;
+    private string currentListeningUserId;
+    
+    /// <summary>
+    /// 친구 요청 실시간 리스너 시작
+    /// </summary>
+    public void StartListeningToFriendRequests(string userId, System.Action onUpdated)
+    {
+        if (string.IsNullOrEmpty(userId) || onUpdated == null)
+        {
+            Debug.LogWarning("[FirebaseDatabase] 실시간 리스너 시작 실패: 잘못된 매개변수");
+            return;
+        }
+        
+        // 기존 리스너가 있다면 중지
+        StopListeningToFriendRequests();
+        
+        currentListeningUserId = userId;
+        onFriendRequestsUpdated = onUpdated;
+        
+#if FIREBASE_DATABASE
+        if (!IsInitialized)
+        {
+            Debug.LogWarning("[FirebaseDatabase] Firebase Database가 초기화되지 않았습니다.");
+            return;
+        }
+        
+        try
+        {
+            // 해당 사용자의 친구 요청 경로에 리스너 등록
+            friendRequestsListener = databaseReference.Child("friendRequests").Child(userId);
+            friendRequestsListener.ValueChanged += OnFriendRequestsValueChanged;
+            
+            Debug.Log($"[FirebaseDatabase] 친구 요청 실시간 리스너 시작: {userId}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[FirebaseDatabase] 실시간 리스너 시작 실패: {e.Message}");
+        }
+#else
+        Debug.Log($"[FirebaseDatabase] 테스트 모드 - 실시간 리스너 시작: {userId}");
+#endif
+    }
+    
+    /// <summary>
+    /// 친구 요청 실시간 리스너 중지
+    /// </summary>
+    public void StopListeningToFriendRequests()
+    {
+#if FIREBASE_DATABASE
+        if (friendRequestsListener != null)
+        {
+            try
+            {
+                friendRequestsListener.ValueChanged -= OnFriendRequestsValueChanged;
+                friendRequestsListener = null;
+                Debug.Log("[FirebaseDatabase] 친구 요청 실시간 리스너 중지");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[FirebaseDatabase] 실시간 리스너 중지 실패: {e.Message}");
+            }
+        }
+#else
+        Debug.Log("[FirebaseDatabase] 테스트 모드 - 실시간 리스너 중지");
+#endif
+        
+        currentListeningUserId = null;
+        onFriendRequestsUpdated = null;
+    }
+    
+#if FIREBASE_DATABASE
+    /// <summary>
+    /// Firebase 친구 요청 데이터 변경 이벤트 처리
+    /// </summary>
+    private void OnFriendRequestsValueChanged(object sender, Firebase.Database.ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError($"[FirebaseDatabase] 실시간 리스너 오류: {args.DatabaseError.Message}");
+            return;
+        }
+        
+        Debug.Log("[FirebaseDatabase] 친구 요청 데이터 변경 감지");
+        
+        // 메인 스레드에서 콜백 실행
+        if (UnityMainThreadDispatcher.Instance != null)
+        {
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+            {
+                onFriendRequestsUpdated?.Invoke();
+            });
+        }
+        else
+        {
+            // UnityMainThreadDispatcher가 없는 경우 직접 호출 (위험하지만 대안)
+            onFriendRequestsUpdated?.Invoke();
+        }
+    }
+#endif
+    
+    #endregion
 }
