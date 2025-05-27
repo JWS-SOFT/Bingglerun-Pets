@@ -6,6 +6,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class OptionUI : MonoBehaviour
 {
+    [SerializeField] private Toggle[] mainTabToggles;
     [SerializeField] private Transform[] mainTab;
     [SerializeField] private List<Slider> volumeSlider;
     [SerializeField] private List<float> volumeValue = new List<float>();
@@ -22,13 +23,29 @@ public class OptionUI : MonoBehaviour
         Debug.Log("OptionUI OnEnable 호출됨");
         SetVolume();
         allMute.isOn = !PlayerDataManager.Instance.CurrentPlayerData.soundEnabled;
-        
+
+        for (int i = 0; i < mainTabToggles.Length; i++)
+        {
+            int index = i;  // 클로저 문제 방지
+            mainTabToggles[i].onValueChanged.AddListener((isOn) =>
+            {
+                if (isOn)
+                {
+                    MainTabSwitch(index);
+                }
+            });
+        }
+
         // 오디오 매니저의 뮤트 상태 변경 이벤트 구독
         SoundEvents.OnMuteStateChanged += OnMuteStateChanged;
     }
     
     private void OnDisable()
     {
+        for (int i = 0; i < mainTabToggles.Length; i++)
+        {
+            mainTabToggles[i].onValueChanged.RemoveAllListeners();
+        }
         // 오디오 매니저의 뮤트 상태 변경 이벤트 구독 해제
         SoundEvents.OnMuteStateChanged -= OnMuteStateChanged;
     }
