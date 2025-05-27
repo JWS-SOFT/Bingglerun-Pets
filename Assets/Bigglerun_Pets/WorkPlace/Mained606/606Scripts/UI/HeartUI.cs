@@ -10,16 +10,12 @@ using UnityEngine.UI;
 /// </summary>
 public class HeartUI : MonoBehaviour
 {
-    [Header("UI 컴포넌트")]
-    [SerializeField] private TextMeshProUGUI heartCountText;
-    [SerializeField] private TextMeshProUGUI recoveryTimeText;
-    [SerializeField] private Slider heartProgressSlider;
-    [SerializeField] private Button addHeartButton; // 하트 구매/추가 버튼
-    
-    [Header("하트 아이콘")]
-    [SerializeField] private Transform heartIconContainer;
-    [SerializeField] private GameObject heartIconPrefab;
-    [SerializeField] private int maxDisplayHearts = 5; // 표시할 최대 하트 아이콘 개수
+    [Header("찬스 UI 컴포넌트")]
+    [SerializeField] private GameObject yesChanceImage;  // 하트가 있을 때 활성화
+    [SerializeField] private GameObject noChanceImage;   // 하트가 없을 때 활성화
+    [SerializeField] private TextMeshProUGUI chanceCountText;  // 남은 하트 수 표시
+    [SerializeField] private TextMeshProUGUI timerText;        // 회복 시간 표시
+    [SerializeField] private Button purchaseButton;           // 하트 구매 버튼
     
     private Coroutine recoveryTimerCoroutine;
     
@@ -40,9 +36,9 @@ public class HeartUI : MonoBehaviour
         }
         
         // 버튼 이벤트 연결
-        if (addHeartButton != null)
+        if (purchaseButton != null)
         {
-            addHeartButton.onClick.AddListener(OnAddHeartButtonClicked);
+            purchaseButton.onClick.AddListener(OnPurchaseButtonClicked);
         }
         
         // 초기 UI 업데이트
@@ -107,68 +103,23 @@ public class HeartUI : MonoBehaviour
     /// </summary>
     private void UpdateHeartDisplay(int currentHearts)
     {
-        // 하트 개수 텍스트 업데이트
-        if (heartCountText != null)
-        {
-            int maxHearts = GetMaxHearts();
-            heartCountText.text = $"{currentHearts}/{maxHearts}";
-        }
+        // 찬스 이미지 상태 업데이트 (하트가 1개라도 있으면 YesChance 활성화)
+        bool hasHearts = currentHearts > 0;
         
-        // 하트 아이콘 업데이트
-        UpdateHeartIcons(currentHearts);
+        if (yesChanceImage != null)
+            yesChanceImage.SetActive(hasHearts);
+            
+        if (noChanceImage != null)
+            noChanceImage.SetActive(!hasHearts);
+        
+        // 남은 하트 수 표시
+        if (chanceCountText != null)
+        {
+            chanceCountText.text = currentHearts.ToString();
+        }
         
         // 회복 시간 표시 업데이트
         UpdateRecoveryTimeDisplay();
-        
-        // 진행 바 업데이트
-        UpdateProgressSlider();
-    }
-    
-    /// <summary>
-    /// 하트 아이콘 업데이트
-    /// </summary>
-    private void UpdateHeartIcons(int currentHearts)
-    {
-        if (heartIconContainer == null || heartIconPrefab == null)
-            return;
-        
-        int maxHearts = GetMaxHearts();
-        int displayHearts = Mathf.Min(maxHearts, maxDisplayHearts);
-        
-        // 기존 아이콘 제거
-        for (int i = heartIconContainer.childCount - 1; i >= 0; i--)
-        {
-            DestroyImmediate(heartIconContainer.GetChild(i).gameObject);
-        }
-        
-        // 새 아이콘 생성
-        for (int i = 0; i < displayHearts; i++)
-        {
-            GameObject heartIcon = Instantiate(heartIconPrefab, heartIconContainer);
-            
-            // 하트 상태에 따라 표시 변경
-            bool isFilled = i < currentHearts;
-            UpdateHeartIconState(heartIcon, isFilled);
-        }
-        
-        // 최대 표시 개수를 초과하는 경우 "+" 표시
-        if (maxHearts > maxDisplayHearts)
-        {
-            // TODO: "+" 아이콘 또는 텍스트 추가
-        }
-    }
-    
-    /// <summary>
-    /// 개별 하트 아이콘 상태 업데이트
-    /// </summary>
-    private void UpdateHeartIconState(GameObject heartIcon, bool isFilled)
-    {
-        // Image 컴포넌트의 알파값 조정 또는 다른 스프라이트 사용
-        Image heartImage = heartIcon.GetComponent<Image>();
-        if (heartImage != null)
-        {
-            heartImage.color = isFilled ? Color.white : new Color(1f, 1f, 1f, 0.3f);
-        }
     }
     
     /// <summary>
@@ -176,7 +127,7 @@ public class HeartUI : MonoBehaviour
     /// </summary>
     private void UpdateRecoveryTimeDisplay()
     {
-        if (recoveryTimeText == null)
+        if (timerText == null)
             return;
         
         // 기존 코루틴 정지
@@ -203,7 +154,7 @@ public class HeartUI : MonoBehaviour
                 
                 if (playerData.heart >= maxHearts)
                 {
-                    recoveryTimeText.text = "FULL";
+                    timerText.text = "FULL";
                     yield break;
                 }
                 
@@ -212,18 +163,18 @@ public class HeartUI : MonoBehaviour
                 
                 if (timeUntilNext.TotalSeconds <= 0)
                 {
-                    recoveryTimeText.text = "Ready!";
+                    timerText.text = "Ready!";
                     // 하트 회복 체크 (HeartSystem이 있으면 호출)
                     CheckHeartRecovery();
                 }
                 else
                 {
-                    recoveryTimeText.text = $"{timeUntilNext.Minutes:D2}:{timeUntilNext.Seconds:D2}";
+                    timerText.text = $"{timeUntilNext.Minutes:D2}:{timeUntilNext.Seconds:D2}";
                 }
             }
             else
             {
-                recoveryTimeText.text = "--:--";
+                timerText.text = "--:--";
             }
             
             yield return new WaitForSeconds(1f);
@@ -281,48 +232,12 @@ public class HeartUI : MonoBehaviour
                 int maxHearts = GetMaxHearts();
                 if (playerData.heart < maxHearts)
                 {
-                    playerData.heart++;
-                    playerData.lastHeartRecoveryTime = currentTime;
-                    
-                    // 이벤트 발생
-                    PlayerDataManager.Instance.OnHeartChanged?.Invoke(playerData.heart);
-                    
-                    // 데이터 저장
-                    _ = PlayerDataManager.Instance.SavePlayerDataAsync();
+                    // PlayerDataManager의 RefillHeart 메서드를 사용하여 하트 추가
+                    // 이 메서드가 내부적으로 이벤트 발생과 데이터 저장을 처리함
+                    PlayerDataManager.Instance.RefillHeart(1);
                 }
             }
         }
-    }
-    
-    /// <summary>
-    /// 진행 바 업데이트
-    /// </summary>
-    private void UpdateProgressSlider()
-    {
-        if (heartProgressSlider == null)
-            return;
-        
-        if (!PlayerDataManager.Instance.IsDataLoaded)
-        {
-            heartProgressSlider.value = 0;
-            return;
-        }
-        
-        var playerData = PlayerDataManager.Instance.CurrentPlayerData;
-        int maxHearts = GetMaxHearts();
-        
-        if (playerData.heart >= maxHearts)
-        {
-            heartProgressSlider.value = 1f;
-            return;
-        }
-        
-        long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        long recoveryIntervalMilliseconds = 30 * 60 * 1000; // 30분
-        long timeSinceLastRecovery = currentTime - playerData.lastHeartRecoveryTime;
-        
-        float progress = (float)timeSinceLastRecovery / recoveryIntervalMilliseconds;
-        heartProgressSlider.value = Mathf.Clamp01(progress);
     }
     
     /// <summary>
@@ -345,12 +260,12 @@ public class HeartUI : MonoBehaviour
     }
     
     /// <summary>
-    /// 하트 추가 버튼 클릭 이벤트
+    /// 하트 구매 버튼 클릭 이벤트
     /// </summary>
-    private void OnAddHeartButtonClicked()
+    private void OnPurchaseButtonClicked()
     {
         // TODO: 하트 구매 또는 광고 시청 로직 구현
-        Debug.Log("[HeartUI] 하트 추가 버튼 클릭됨");
+        Debug.Log("[HeartUI] 하트 구매 버튼 클릭됨");
         
         // 임시로 하트 1개 추가 (테스트용)
         if (PlayerDataManager.Instance != null)
