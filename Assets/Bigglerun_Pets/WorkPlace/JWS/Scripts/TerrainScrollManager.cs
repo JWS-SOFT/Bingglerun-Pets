@@ -157,7 +157,27 @@ public class TerrainScrollManager : MonoBehaviour
         {
             Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
         }
-        tile.SetActive(state == 1);
+        //tile.SetActive(state == 1);
+
+        //이전 타일에 장애물이 있었으면 이 타일은 무조건 활성화
+        GameObject prevTile = GetTerrainByIndex(terrainIndex - 1);
+        bool forceEnable = false;
+        if (prevTile != null)
+        {
+            for (int i = 0; i < prevTile.transform.childCount; i++)
+            {
+                GameObject child = prevTile.transform.GetChild(i).gameObject;
+                if (child.CompareTag("Obstacle"))
+                {
+                    forceEnable = true;
+                    break;
+                }
+            }
+        }
+
+        bool active = (state == 1) || forceEnable;
+        tile.SetActive(active);
+
         if (state == 1 && first) SpawnItemOnTerrain(tile);
     }
 
