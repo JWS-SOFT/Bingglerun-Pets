@@ -14,6 +14,9 @@ public class ItemManager : MonoBehaviour
     private HashSet<string> unlockedDecorationIds = new HashSet<string>();
     private Dictionary<DecorationType, string> equippedDecorationIds = new Dictionary<DecorationType, string>();
 
+    private List<CharacterData> characterItemList;
+    private HashSet<string> unlockedCharacterIds = new HashSet<string>();
+
     //선택된 스타트 아이템
     [SerializeField] private ItemData selectedPreGameItem = null;
 
@@ -23,6 +26,7 @@ public class ItemManager : MonoBehaviour
     //읽기전용 변수
     public static IReadOnlyList<ItemData> AllUsableItems => Instance.usableItemList;
     public static IReadOnlyList<DecorationItemData> AllDecorationItems => Instance.decoItemList;
+    public static IReadOnlyList<CharacterData> AllCharacterItems => Instance.characterItemList;
 
     #region Singleton
     public static ItemManager Instance;
@@ -97,6 +101,17 @@ public class ItemManager : MonoBehaviour
         if (!string.IsNullOrEmpty(playerData.equippedShoes))
             equippedDecorationIds[DecorationType.Shoes] = playerData.equippedShoes;
 
+        // 캐릭터 아이템 동기화
+        unlockedCharacterIds.Clear();
+        if(playerData.unlockedCharacters != null)
+        {
+            foreach(var characterId in playerData.unlockedCharacters)
+            {
+                //Debug.Log($"해금된 캐릭터 불러옴 : {GetCharacterById(characterId)}");
+                unlockedCharacterIds.Add(characterId);
+            }
+        }
+
         // 선택된 시작 아이템 설정
         if (!string.IsNullOrEmpty(playerData.selectedPreGameItem))
         {
@@ -113,6 +128,7 @@ public class ItemManager : MonoBehaviour
     //아이템 유효성 검사
     public bool IsUsableItem(string itemId) => GetUsableItemById(itemId) != null;
     public bool IsDecorationItem(string itemId) => GetDecorationById(itemId) != null;
+    public bool IsCharacterItem(string itemId) => GetCharacterById(itemId) != null;
 
     //아이템 추가(상점에서 아이템 구매, 아이템 습득시 호출)
     public void AddUsableItems(string itemId, int amount = 1)
@@ -343,14 +359,33 @@ public class ItemManager : MonoBehaviour
     public bool IsUnlockedDecoration(string itemId)
     {
         return unlockedDecorationIds.Contains(itemId);
-    }    
+    }
+
+    // 캐릭터 해금
+    public void UnlockCharacter(string characterId)
+    {
+        unlockedCharacterIds.Add(characterId);
+
+        // PlayerDataManager에도 해금 상태 저장
+        if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)
+        {
+            PlayerDataManager.Instance.UnlockCharacter(characterId);
+        }
+    }
+
+    // 캐릭터 해금 여부
+    public bool IsUnlockCharacter(string characterId)
+    {
+        return unlockedCharacterIds.Contains(characterId);
+    }
 
     //가격 가져오기(상점, UI에서 사용)
     public int GetGoldPrice(string itemId)
     {
         var item = GetUsableItemById(itemId);
         var deco = GetDecorationById(itemId);
-        return item?.goldPrice ?? deco?.goldPrice ?? -1;
+        var character = GetCharacterById(itemId);
+        return item?.goldPrice ?? deco?.goldPrice ?? character?.goldPrice ?? -1;
     }
 
     //캐쉬 가격 가져오기(상점, UI에서 사용)
@@ -358,7 +393,8 @@ public class ItemManager : MonoBehaviour
     {
         var item = GetUsableItemById(itemId);
         var deco = GetDecorationById(itemId);
-        return item?.cashPrice ?? deco?.cashPrice ?? -1;
+        var character = GetCharacterById(itemId);
+        return item?.cashPrice ?? deco?.cashPrice ?? character?.cashPrice ?? -1;
     }
 
     //캐쉬 아이템 여부(상점? 쓸지 안쓸지 모름)
@@ -374,6 +410,12 @@ public class ItemManager : MonoBehaviour
     private DecorationItemData GetDecorationById(string itemId)
     {
         return decoItemList.Find(d => d.itemId == itemId);
+    }
+
+    //캐릭터 아이템 아이디로 찾기
+    private CharacterData GetCharacterById(string characterId)
+    {
+        return characterItemList.Find(c => c.characterId == characterId);
     }
 
     //아이템 효과 적용
@@ -395,6 +437,7 @@ public class ItemManager : MonoBehaviour
     {
         usableItemList = ItemLoader.LoadUsableItemData();
         decoItemList = ItemLoader.LoadDecorationItemData();
+        characterItemList = ItemLoader.LoadCharacterData();
 
         // 게임 매니저 초기화가 완료된 후 PlayerDataManager와 동기화
         if (PlayerDataManager.Instance != null && PlayerDataManager.Instance.IsDataLoaded)

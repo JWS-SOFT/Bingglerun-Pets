@@ -15,6 +15,7 @@ public class RankManager : MonoBehaviour
     private void OnEnable()
     {
         gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1);
+
         ResetRankBoard();
         RefreshLeaderboard();
     }
@@ -52,7 +53,16 @@ public class RankManager : MonoBehaviour
                     displayName = $"{displayName} ({allLeaderboardData[i].competitiveBestCharacter})";
                 }
 
-                bool iscurrentPlayer = PlayerDataManager.Instance.CurrentPlayerData.playerId == allLeaderboardData[i].playerId;
+                bool iscurrentPlayer = false;
+                if (PlayerDataManager.Instance?.CurrentPlayerData != null)
+                {
+                    string currentPlayerId = PlayerDataManager.Instance.CurrentPlayerData.playerId;
+                    string entryPlayerId = allLeaderboardData[i].playerId;
+                    
+                    // 기본 플레이어 ID 또는 캐릭터별 엔트리 ID 모두 확인
+                    iscurrentPlayer = entryPlayerId == currentPlayerId || 
+                                     entryPlayerId.StartsWith(currentPlayerId + "_");
+                }
 
                 RankingList rankList = Instantiate(prefabObject, rankListPosition.transform).transform.GetComponent<RankingList>();
                 rankList.SetRankList(allLeaderboardData[i].competitiveBestScore.ToString(), displayName, i, iscurrentPlayer);
@@ -72,9 +82,9 @@ public class RankManager : MonoBehaviour
 
     private void ResetRankBoard()
     {
-        foreach (GameObject gob in rankListPosition.transform)
+        foreach (Transform child in rankListPosition.transform)
         {
-            Destroy(gob);
+            Destroy(child.gameObject);
         }
     }
 }

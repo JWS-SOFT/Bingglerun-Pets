@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3245313162493396601}
   - component: {fileID: 421511972230858829}
   - component: {fileID: 8054717451114348862}
+  - component: {fileID: 1451375554834681667}
+  - component: {fileID: 3002908480228877933}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -47,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe65fc0f70bf0b4bba645570ebd502e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentPlayStage: 1
   LobbySceneName: LobbyScene
   GameSceneName: StoryGameScene01
 --- !u!114 &8054717451114348862
@@ -59,6 +62,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d5496be76aec82469dd5f45f066b121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1451375554834681667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819291236048537327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4c9209d11c2b24fa0b7ea866196881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3002908480228877933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819291236048537327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7af53d4e837d6c947a7b874892efda7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5253535681626554970
