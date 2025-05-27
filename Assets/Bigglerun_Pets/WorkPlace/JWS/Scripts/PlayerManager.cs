@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,10 +50,22 @@ public class PlayerManager : MonoBehaviour
         return Player_Transform != null;
     }
 
+    [Header ("구름설정")]
+    [SerializeField] private GameObject[] cloudPrefabs;
+    [SerializeField] private GameObject cloudSpawnPosition;
+    [SerializeField] private float cloudSpeed = 2f;
+    [SerializeField] private float spawnDistance = 5f;
+    [SerializeField] private float cloudSpacingY = 3f;
+    [SerializeField] private int maxCloudsOnScreen = 10;
+
+    private float highestCloudY = 0f;
+    private List<GameObject> activeClouds = new List<GameObject>();
+    private Queue<GameObject> cloudPool = new Queue<GameObject>();
+
+    [Header ("구름설정2")]
     //05.15 HJ 추가
     private PlayerController playerController;
     public PlayerController PlayerController => playerController;
-
     [SerializeField] private int maxLife = 3;
     private int currentLife = 0;
 
@@ -107,6 +120,7 @@ public class PlayerManager : MonoBehaviour
         //playerController = Player_Transform?.GetComponent<PlayerController>();
         playerController = FindFirstObjectByType<PlayerController>();
 
+        // InitializeCloud();
         InitializeLife();
         InitializeSkillCount();
         if (GameManager.Instance.StateMachine.CurrentState == GameState.CompetitionInGame)
@@ -129,6 +143,10 @@ public class PlayerManager : MonoBehaviour
         {
             isGameStartReady = true;
         }
+
+        //MoveClouds();
+        //CheckAndSpawnNewClouds();
+        //RecycleClouds();
     }
 
     public void SetPlayMode(bool mode)
@@ -161,7 +179,16 @@ public class PlayerManager : MonoBehaviour
         terrainScrollManager.StartTest(position);
     }
 
+    private void InitializeCloud()
+    {
+        highestCloudY = cloudSpawnPosition.transform.position.y;
 
+        // 최초 구름 생성
+        for (int i = 0; i < maxCloudsOnScreen; i++)
+        {
+            SpawnCloud(highestCloudY + i * cloudSpacingY);
+        }
+    }
 
     public static void ChangeFloor(int floor)
     {
@@ -234,7 +261,67 @@ public class PlayerManager : MonoBehaviour
         Debug.Log($"{Instance.playerData.currentCharacter} 현재 스킬 횟수: {Instance.CurrentSkillCount}");
     }
 
+   private void MoveClouds()
+    {
+        foreach (GameObject cloud in activeClouds)
+        {
+            if (cloud.activeInHierarchy)
+            {
+                cloud.transform.Translate(Vector3.right * cloudSpeed * Time.deltaTime);
 
+                // 반복 이동 (왼쪽 -> 오른쪽 무한 루프)
+                if (cloud.transform.position.x > 20f) // 임의의 우측 경계
+                {
+                    cloud.transform.position = new Vector3(-20f, cloud.transform.position.y, cloud.transform.position.z);
+                }
+            }
+        }
+    }
+
+    private void CheckAndSpawnNewClouds()
+    {
+        float playerY = Player_Transform.position.y;
+
+        if (playerY + spawnDistance > highestCloudY)
+        {
+            highestCloudY += cloudSpacingY;
+            SpawnCloud(highestCloudY);
+        }
+    }
+
+    private void SpawnCloud(float y)
+    {
+        GameObject prefab = cloudPrefabs[UnityEngine.Random.Range(0, cloudPrefabs.Length)];
+
+        GameObject cloud;
+        if (cloudPool.Count > 0)
+        {
+            cloud = cloudPool.Dequeue();
+            cloud.SetActive(true);
+        }
+        else
+        {
+            cloud = Instantiate(prefab);
+        }
+
+        float x = UnityEngine.Random.Range(-10f, 10f);
+        cloud.transform.position = new Vector3(x, y, 0f);
+        activeClouds.Add(cloud);
+    }
+
+    private void RecycleClouds()
+    {
+        for (int i = activeClouds.Count - 1; i >= 0; i--)
+        {
+            if (activeClouds[i].transform.position.y < Player_Transform.position.y - 10f)
+            {
+                GameObject cloud = activeClouds[i];
+                cloud.SetActive(false);
+                cloudPool.Enqueue(cloud);
+                activeClouds.RemoveAt(i);
+            }
+        }
+    }
 
 
     //05.17 HJ 추가 부분
