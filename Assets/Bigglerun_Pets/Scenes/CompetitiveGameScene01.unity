@@ -4077,6 +4077,12 @@ MonoBehaviour:
   timerSlider: {fileID: 1001876134}
   isGameStartReady: 0
   isBattleMode: 1
+  cloudPrefabs: []
+  cloudSpawnPosition: {fileID: 0}
+  cloudSpeed: 2
+  spawnDistance: 5
+  cloudSpacingY: 3
+  maxCloudsOnScreen: 10
   maxLife: 3
   maxSkillCount: 3
 --- !u!1 &1876773097
@@ -4612,6 +4618,10 @@ PrefabInstance:
     - target: {fileID: 509968566017760318, guid: 8890296afb151fb4584a96f794691ef2, type: 3}
       propertyPath: m_Name
       value: Background
+      objectReference: {fileID: 0}
+    - target: {fileID: 509968566017760318, guid: 8890296afb151fb4584a96f794691ef2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6379795801516004771, guid: 8890296afb151fb4584a96f794691ef2, type: 3}
       propertyPath: m_Pivot.x
