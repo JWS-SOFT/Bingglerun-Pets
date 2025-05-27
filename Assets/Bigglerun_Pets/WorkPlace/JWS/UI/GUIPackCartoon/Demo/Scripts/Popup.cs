@@ -27,7 +27,7 @@ namespace Ricimi
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Open"))
                 animator.Play("Close");
 
-            RemoveBackground();
+            //RemoveBackground();
             StartCoroutine(RunPopupDestroy());
         }
 
