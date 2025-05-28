@@ -79,14 +79,18 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    //05.21 HJ 수정
+    //05.27 HJ 수정
     //강아지(장애물 파괴)
     private void DestroyObstacles(float range)
     {
         // 전방 범위 내 장애물 제거 처리
         Debug.Log($"장애물 {range} 범위로 파괴!");
+
+        Transform playerTransform = PlayerManager.Player_Transform;
+        if (playerTransform == null) return;
     }
 
+    //05.21 HJ 수정
     //슈퍼점프(고양이)
     //애니메이션 등 추가 필요
     private void ApplyJump(float jumpForce)
