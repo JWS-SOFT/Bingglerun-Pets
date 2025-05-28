@@ -79,15 +79,19 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    //05.27 HJ 수정
+    //05.28 HJ 수정
     //강아지(장애물 파괴)
     private void DestroyObstacles(float range)
     {
         // 전방 범위 내 장애물 제거 처리
         Debug.Log($"장애물 {range} 범위로 파괴!");
 
-        Transform playerTransform = PlayerManager.Player_Transform;
-        if (playerTransform == null) return;
+        Vector2 playerTransform = PlayerManager.Instance.PlayerController.PlayerPosition;
+
+        GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+
+        GameObject nearestObstacle = null;
+        float nearestDistance = float.MaxValue;
     }
 
     //05.21 HJ 수정
