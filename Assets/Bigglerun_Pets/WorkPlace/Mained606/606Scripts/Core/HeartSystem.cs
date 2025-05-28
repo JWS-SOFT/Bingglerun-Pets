@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// 하트 시스템을 관리하는 클래스
@@ -33,6 +34,9 @@ public class HeartSystem : MonoBehaviour
     public event Action<int> OnHeartChanged;
     public event Action<int, int> OnHeartRecovered; // (현재 하트, 회복된 하트 수)
     public event Action<TimeSpan> OnNextRecoveryTimeUpdated;
+
+    private Coroutine recoveryTimerCoroutine;
+    private bool isTimerRunning = false;
 
     private void Start()
     {
@@ -375,5 +379,54 @@ public class HeartSystem : MonoBehaviour
         Debug.Log($"[HeartSystem] 다음 회복까지: {GetTimeUntilNextRecovery()}");
         Debug.Log($"[HeartSystem] 완전 회복까지: {GetTimeUntilFullRecovery()}");
         Debug.Log($"[HeartSystem] 현재 설정 - 회복간격: {heartRecoveryIntervalMinutes}분, 기본최대: {defaultMaxHearts}, 절대최대: {absoluteMaxHearts}");
+    }
+
+    // 씬 상태에 따라 타이머를 시작/정지하는 메서드
+    public void StartHeartRecoveryTimer()
+    {
+        if (isTimerRunning) return;
+        recoveryTimerCoroutine = StartCoroutine(HeartRecoveryTimerCoroutine());
+        isTimerRunning = true;
+    }
+    public void StopHeartRecoveryTimer()
+    {
+        if (recoveryTimerCoroutine != null)
+        {
+            StopCoroutine(recoveryTimerCoroutine);
+            recoveryTimerCoroutine = null;
+        }
+        isTimerRunning = false;
+    }
+
+    // 하트 회복 타이머 코루틴 (1초마다 남은 시간 이벤트 발행)
+    private IEnumerator HeartRecoveryTimerCoroutine()
+    {
+        while (true)
+        {
+            if (!PlayerDataManager.Instance.IsDataLoaded)
+            {
+                OnNextRecoveryTimeUpdated?.Invoke(TimeSpan.Zero);
+            }
+            else
+            {
+                var playerData = PlayerDataManager.Instance.CurrentPlayerData;
+                int maxHearts = GetMaxHearts();
+                if (playerData.heart >= maxHearts)
+                {
+                    OnNextRecoveryTimeUpdated?.Invoke(TimeSpan.Zero);
+                }
+                else
+                {
+                    TimeSpan timeUntilNext = GetTimeUntilNextRecovery();
+                    OnNextRecoveryTimeUpdated?.Invoke(timeUntilNext);
+                    // 회복 시간이 0 이하라면 즉시 회복 체크
+                    if (timeUntilNext.TotalSeconds <= 0)
+                    {
+                        CheckAndRecoverHearts();
+                    }
+                }
+            }
+            yield return new WaitForSeconds(1f);
+        }
     }
 } 
