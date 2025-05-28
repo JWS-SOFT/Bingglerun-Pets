@@ -59,7 +59,7 @@ namespace Ricimi
         public IEnumerator ExitPopup()
         {
             yield return new WaitForSeconds(0.5f);
-            this.gameObject.SetActive(false);
+            UIManager.Instance.TogglePopupUI();
         }
 
         private void AddBackground()

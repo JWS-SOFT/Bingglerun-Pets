@@ -389,7 +389,7 @@ public class UIManager : MonoBehaviour
         // 로그인 버튼 → GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
     }
 
-    public void TogglePopupUI(string uiName)
+    public void TogglePopupUI(string uiName = "")
     {
         Transform target = null;
         target = FindDirectChildByName(uiName);
