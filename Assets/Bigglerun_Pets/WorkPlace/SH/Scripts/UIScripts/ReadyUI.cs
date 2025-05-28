@@ -32,7 +32,7 @@ public class ReadyUI : MonoBehaviour
     //비활성화 될 때 게임 스테이트 변경
     private void OnDisable()
     {
-        GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+        //GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
     }
 
     private void OnToggleChanged(int changedIndex)
@@ -82,5 +82,15 @@ public class ReadyUI : MonoBehaviour
             toggle.isOn = false;
         }
         ItemManager.Instance.PreGameItemInit();
+    }
+
+    public void BackToLobby()
+    {
+        GameManager.Instance.StateMachine.ChangeState(GameState.Lobby);
+    }
+
+    public void GameStartButton()
+    {
+        GameManager.Instance.StateMachine.ChangeState(GameState.CompetitionInGame);
     }
 }

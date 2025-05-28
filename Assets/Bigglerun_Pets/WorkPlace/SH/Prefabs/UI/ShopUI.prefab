@@ -2229,9 +2229,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4814089096721989307}
   - {fileID: 5936563630097827858}
   - {fileID: 249696606391539215}
+  - {fileID: 4814089096721989307}
   - {fileID: 2574509349747383891}
   - {fileID: 8877370383106633660}
   - {fileID: 77411330606139698}
@@ -3272,7 +3272,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 346a5576b378f4850adeba47d6489ea5, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

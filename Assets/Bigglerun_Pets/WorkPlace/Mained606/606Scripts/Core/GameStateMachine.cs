@@ -44,6 +44,10 @@ public class GameStateMachine : MonoBehaviour
                 {
                     LeaderboardManager.Instance.InvalidateCache();
                 }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
+                }
                 break;
 
             case GameState.Lobby:
@@ -51,6 +55,11 @@ public class GameStateMachine : MonoBehaviour
                 // 로비 BGM 재생
                 PlayBGM(BGMType.Lobby);
                 // 로비 상태 - 리더보드 기능 자동 활성화 (IsInLobbyState에서 체크)
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.CheckAndRecoverHearts();
+                    HeartSystem.Instance.StartHeartRecoveryTimer();
+                }
                 break;
 
             // case GameState.ModeSelect:
@@ -69,6 +78,11 @@ public class GameStateMachine : MonoBehaviour
                     dataLoadedHandler = () => {
                         Debug.Log("[GameStateMachine] 플레이어 데이터 로드 완료 - UI 초기화 시작");
                         UIManager.Instance.ShowStoryStageSelectUI();
+                        if (HeartSystem.Instance != null)
+                        {
+                            HeartSystem.Instance.CheckAndRecoverHearts();
+                            HeartSystem.Instance.StartHeartRecoveryTimer();
+                        }
                         
                         // 이벤트 구독 해제
                         PlayerDataManager.Instance.OnDataLoaded -= dataLoadedHandler;
@@ -82,6 +96,11 @@ public class GameStateMachine : MonoBehaviour
                 {
                     // Firebase 인증이 없는 경우 기본 UI만 표시
                     UIManager.Instance.ShowStoryStageSelectUI();
+                    if (HeartSystem.Instance != null)
+                    {
+                        HeartSystem.Instance.CheckAndRecoverHearts();
+                        HeartSystem.Instance.StartHeartRecoveryTimer();
+                    }
                 }
                 
                 // 리더보드 캐시 무효화 (로비가 아닌 상태)
@@ -99,6 +118,10 @@ public class GameStateMachine : MonoBehaviour
                 {
                     LeaderboardManager.Instance.InvalidateCache();
                 }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
+                }
                 break;
 
             // 스토리 모드 인게임
@@ -111,6 +134,10 @@ public class GameStateMachine : MonoBehaviour
                 if (LeaderboardManager.Instance != null)
                 {
                     LeaderboardManager.Instance.InvalidateCache();
+                }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
                 }
                 break;
 
@@ -125,6 +152,10 @@ public class GameStateMachine : MonoBehaviour
                 {
                     LeaderboardManager.Instance.InvalidateCache();
                 }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
+                }
                 break;
 
             case GameState.Result:
@@ -135,6 +166,10 @@ public class GameStateMachine : MonoBehaviour
                 {
                     LeaderboardManager.Instance.InvalidateCache();
                 }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
+                }
                 break;
 
             case GameState.Loading:
@@ -143,6 +178,10 @@ public class GameStateMachine : MonoBehaviour
                 if (LeaderboardManager.Instance != null)
                 {
                     LeaderboardManager.Instance.InvalidateCache();
+                }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
                 }
                 break;
 
@@ -153,6 +192,10 @@ public class GameStateMachine : MonoBehaviour
                 if (LeaderboardManager.Instance != null)
                 {
                     LeaderboardManager.Instance.InvalidateCache();
+                }
+                if (HeartSystem.Instance != null)
+                {
+                    HeartSystem.Instance.StopHeartRecoveryTimer();
                 }
                 break;
         }
