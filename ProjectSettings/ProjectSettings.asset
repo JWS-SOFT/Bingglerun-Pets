@@ -778,7 +778,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Android: FIREBASE_AUTH;FIREBASE_DATABASE
+    Android: FIREBASE_AUTH;FIREBASE_DATABASE;FIREBASE_ENABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
