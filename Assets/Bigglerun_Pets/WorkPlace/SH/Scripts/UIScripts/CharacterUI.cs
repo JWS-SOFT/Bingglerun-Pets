@@ -28,14 +28,16 @@ public class CharacterUI : MonoBehaviour
         // 해당 캐릭터가 인덱스 몇번째인지 검사
         int index = characterNames.IndexOf(currentCharacter);
 
-        if (index >= 0 && index < toggleList.Count)
-        {
-            // 해당 인덱스의 토글을 On으로 설정하고, 나머지는 Off
-            for (int i = 0; i < toggleList.Count; i++)
-            {
-                toggleList[i].isOn = (i == index);
-            }
-        }
+        toggleList[index].isOn = true;
+
+        //if (index >= 0 && index < toggleList.Count)
+        //{
+        //    // 해당 인덱스의 토글을 On으로 설정하고, 나머지는 Off
+        //    for (int i = 0; i < toggleList.Count; i++)
+        //    {
+        //        toggleList[i].isOn = (i == index);
+        //    }
+        //}
     }
 
     private void Start()
@@ -49,16 +51,17 @@ public class CharacterUI : MonoBehaviour
 
     private void OnToggleChanged(int changedIndex)
     {
-        if (!toggleList[changedIndex].isOn)
-        {
-            toggleList[changedIndex].isOn = true;
-            // 다른 토글은 해제
-            for (int i = 0; i < toggleList.Count; i++)
-            {
-                if (i != changedIndex)
-                    toggleList[i].isOn = false;
-            }
-        }
+        //if (!toggleList[changedIndex].isOn)
+        //{
+        //    toggleList[changedIndex].isOn = true;
+        //    // 다른 토글은 해제
+        //    for (int i = 0; i < toggleList.Count; i++)
+        //    {
+        //        if (i != changedIndex)
+        //            toggleList[i].isOn = false;
+        //    }
+        //}
+        toggleList[changedIndex].isOn = !toggleList[changedIndex].isOn;
         SelectedCharacterName = characterNames[changedIndex];
         PlayerDataManager.Instance.SelectCharacter(SelectedCharacterName);
         Debug.Log($"현재 선택된 캐릭터 : {SelectedCharacterName}");
