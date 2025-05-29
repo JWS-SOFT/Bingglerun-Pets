@@ -86,11 +86,7 @@ public class TerrainScrollManager : MonoBehaviour
             SetTileActive(obj, spawnPattern[i], first);
 
             //초기 타일 생성 시에도 장애물 설치
-            if (i > 5)
-            {
-                SpawnObstacleOnTerrain(obj, i);
-            }
-
+            if (i > 5) SpawnObstacleOnTerrain(obj, i);
 
             if (i == 0)
                 SpawnPlayerOnTerrain(obj);
