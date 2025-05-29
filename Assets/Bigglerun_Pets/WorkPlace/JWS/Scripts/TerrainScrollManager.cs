@@ -85,7 +85,7 @@ public class TerrainScrollManager : MonoBehaviour
             bool first = i > 5;
             SetTileActive(obj, spawnPattern[i], first);
 
-            // ✅ [추가] 초기 타일 생성 시에도 장애물 설치
+            //초기 타일 생성 시에도 장애물 설치
             if (i > 5)
             {
                 SpawnObstacleOnTerrain(obj, i);
@@ -159,12 +159,23 @@ public class TerrainScrollManager : MonoBehaviour
     // 타일 활성/비활성
     private void SetTileActive(GameObject tile, int state, bool first)
     {
-        // 기존 장애물 제거
-        if (tile.transform.childCount > 1)
+        //// 기존 장애물 제거
+        //if (tile.transform.childCount > 1)
+        //{
+        //    Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
+        //}
+        ////tile.SetActive(state == 1);
+        ///
+
+        //기존 장애물 완전 제거
+        for (int i = tile.transform.childCount - 1; i >= 0; i--)
         {
-            Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
+            Transform child = tile.transform.GetChild(i);
+            if (child.CompareTag("Obstacle"))
+            {
+                Destroy(child.gameObject);
+            }
         }
-        //tile.SetActive(state == 1);
 
 
         //05.27 HJ 추가
