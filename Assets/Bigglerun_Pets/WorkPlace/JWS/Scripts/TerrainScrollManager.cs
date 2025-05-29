@@ -85,9 +85,6 @@ public class TerrainScrollManager : MonoBehaviour
             bool first = i > 5;
             SetTileActive(obj, spawnPattern[i], first);
 
-            //초기 타일 생성 시에도 장애물 설치
-            if (i > 5) SpawnObstacleOnTerrain(obj, i);
-
             if (i == 0)
                 SpawnPlayerOnTerrain(obj);
 
@@ -103,19 +100,19 @@ public class TerrainScrollManager : MonoBehaviour
     {
         if (!PlayerManager.Instance.isGameStartReady) return;
         if (PlayerManager.GetStageDistance() <= terrainDistance) return;
-        
+
         float delta = scrollSpeed * Time.deltaTime;
         terrainDistance += delta;
         PlayerManager.ChangeDistance(terrainDistance);
 
-        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= (terrainIndex -1)* terrainWidth;
+        bool isTerrainDistanceMax = PlayerManager.GetStageDistance() <= (terrainIndex - 1) * terrainWidth;
         foreach (var obj in terrainPool)
         {
             obj.transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
         }
 
         GameObject first = terrainPool.Peek();
-       if (!isTerrainDistanceMax && first.transform.position.x < -terrainWidth * 5)
+        if (!isTerrainDistanceMax && first.transform.position.x < -terrainWidth * 5)
         {
             terrainPool.Dequeue();
             float lastX = GetLastTerrainX();
@@ -155,23 +152,12 @@ public class TerrainScrollManager : MonoBehaviour
     // 타일 활성/비활성
     private void SetTileActive(GameObject tile, int state, bool first)
     {
-        //// 기존 장애물 제거
-        //if (tile.transform.childCount > 1)
-        //{
-        //    Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
-        //}
-        ////tile.SetActive(state == 1);
-        ///
-
-        //기존 장애물 완전 제거
-        for (int i = tile.transform.childCount - 1; i >= 0; i--)
+        // 기존 장애물 제거
+        if (tile.transform.childCount > 1)
         {
-            Transform child = tile.transform.GetChild(i);
-            if (child.CompareTag("Obstacle"))
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(tile.transform.GetChild(tile.transform.childCount - 1).gameObject);
         }
+        //tile.SetActive(state == 1);
 
 
         //05.27 HJ 추가
@@ -408,7 +394,7 @@ public class TerrainScrollManager : MonoBehaviour
         float x = terrain.transform.position.x;
         float y;
 
-        if (Random.Range(0,10) > 2)
+        if (Random.Range(0, 10) > 2)
         {
             // 타일 위에 생성
             y = terrain.transform.position.y + 1f; // 적절한 아이템 높이 조절
