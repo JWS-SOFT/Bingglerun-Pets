@@ -85,6 +85,9 @@ public class TerrainScrollManager : MonoBehaviour
             bool first = i > 5;
             SetTileActive(obj, spawnPattern[i], first);
 
+            if (i >= 5)
+                SpawnObstacleOnTerrain(obj, i);
+
             if (i == 0)
                 SpawnPlayerOnTerrain(obj);
 
