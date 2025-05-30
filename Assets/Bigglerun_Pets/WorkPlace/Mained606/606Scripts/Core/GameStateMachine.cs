@@ -1,17 +1,28 @@
 using UnityEngine;
 using System.Threading.Tasks;
+using System;
 
 /// <summary>
 /// 게임의 전체 상태 전환을 제어하는 클래스
 /// </summary>
 public class GameStateMachine : MonoBehaviour
 {
+    // 상태 변경 이벤트
+    public static event Action<GameState> OnStateChanged;
+    
     [SerializeField] private GameState currentState = GameState.None;
 
     public GameState CurrentState 
     { 
         get { return currentState; } 
-        private set { currentState = value; }
+        private set 
+        { 
+            if (currentState != value)
+            {
+                currentState = value;
+                OnStateChanged?.Invoke(currentState);
+            }
+        }
     }
 
     public void ChangeState(GameState newState)
