@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -88,6 +89,7 @@ public class SkillManager : MonoBehaviour
         Debug.Log($"장애물 {range} 범위로 파괴!");
 
         //짖기 이펙트, 사운드 추가
+        PlayerManager.Instance.PlayerController.Player_Animator.SetTrigger("Attack");
 
         Vector2 playerPosition = PlayerManager.Instance.PlayerController.PlayerPosition;
 
@@ -146,6 +148,7 @@ public class SkillManager : MonoBehaviour
         player.enabled = false;
         Vector2 start = player.transform.position;
         //슈퍼점프 애니메이션 활성화
+        PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Jump", true);
 
         while (elapsed < duration)
         {
@@ -165,6 +168,8 @@ public class SkillManager : MonoBehaviour
         }
 
         //슈퍼점프 애니메이션 비활성화
+        PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Jump", false);
+
         //y 위치 원복
         player.transform.position = start;
         player.enabled = true;
@@ -200,6 +205,7 @@ public class SkillManager : MonoBehaviour
 
         player.enabled = false;
         //구르기 애니메이션 활성화
+        PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Walk", true);
 
         while (elapsed < duration)
         {
@@ -214,6 +220,7 @@ public class SkillManager : MonoBehaviour
 
         //구르기 애니메이션 비활성화
         player.enabled = true;
+        PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Walk", false);
 
         if (terrain != null) terrain.ScrollSpeed = originalSpeed;
     }

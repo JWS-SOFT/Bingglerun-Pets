@@ -476,11 +476,8 @@ public class PlayerManager : MonoBehaviour
             if(child.gameObject.name == selectedCharacter.characterName)
             {
                 child.gameObject.SetActive(true);
+                playerController.Player_Animator = child.gameObject.GetComponent<Animator>();
                 Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + child.gameObject.name + " !!!!!!!!!!!!!!!!!!!!!");
-            }
-            else
-            {
-                child.gameObject.SetActive(false);
             }
         }
     }
