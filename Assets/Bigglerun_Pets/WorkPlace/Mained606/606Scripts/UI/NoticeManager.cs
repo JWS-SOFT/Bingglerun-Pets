@@ -149,17 +149,17 @@ public class NoticeManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("[NoticeManager] LobbyPopupUI 하위에서 NoticeUI를 찾을 수 없습니다.");
+                    Debug.LogWarning("[NoticeManager] LobbyPopupUI 하위에서 NoticeUI를 찾을 수 없습니다.");
                 }
             }
             else
             {
-                Debug.LogError("[NoticeManager] LobbyUI 하위에서 LobbyPopupUI를 찾을 수 없습니다.");
+                Debug.LogWarning("[NoticeManager] LobbyUI 하위에서 LobbyPopupUI를 찾을 수 없습니다.");
             }
         }
         else
         {
-            Debug.LogError("[NoticeManager] LobbyUI를 찾을 수 없습니다.");
+            Debug.LogWarning("[NoticeManager] LobbyUI를 찾을 수 없습니다.");
         }
 
         isWaitingForLobbyScene = false;
