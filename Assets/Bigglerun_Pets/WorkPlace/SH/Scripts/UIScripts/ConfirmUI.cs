@@ -32,7 +32,7 @@ public class ConfirmUI : MonoBehaviour
                 diamondPriceText.text = itemData.cashPrice.ToString();
                 break;
             case ItemType.Character:
-                itemNameText.text = characterItemData.characterId;
+                itemNameText.text = characterItemData.characterName;
                 goldPriceText.text = characterItemData.goldPrice.ToString();
                 diamondPriceText.text = characterItemData.cashPrice.ToString();
                 break;

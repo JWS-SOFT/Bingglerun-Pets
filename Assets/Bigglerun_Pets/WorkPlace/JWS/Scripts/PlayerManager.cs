@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -128,6 +129,7 @@ public class PlayerManager : MonoBehaviour
             ItemManager.Instance.UseSelectedPreGameItem();
         }
 
+        ApplySelectedCharacterToPlayer();
     }
 
     private void Update()
@@ -452,5 +454,34 @@ public class PlayerManager : MonoBehaviour
     public void SetPoisition()
     {
         playerController.PlayerPosition = playerController.transform.position;
+    }
+
+    //06.05 HJ 추가
+    public CharacterData GetSelectedCharacterData()
+    {
+        string currentCharacterId = PlayerDataManager.Instance.CurrentPlayerData.currentCharacter;
+        return ItemManager.AllCharacterItems.FirstOrDefault(c => c.characterId == currentCharacterId);
+    }
+
+    public void ApplySelectedCharacterToPlayer()
+    {
+        Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + Player_Transform.name + " !!!!!!!!!!!!!!!!!!!!!");
+
+        CharacterData selectedCharacter = GetSelectedCharacterData();
+
+        if (selectedCharacter == null) return;
+
+        foreach(Transform child in Player_Transform)
+        {
+            if(child.gameObject.name == selectedCharacter.characterName)
+            {
+                child.gameObject.SetActive(true);
+                Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + child.gameObject.name + " !!!!!!!!!!!!!!!!!!!!!");
+            }
+            else
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
     }
 }
