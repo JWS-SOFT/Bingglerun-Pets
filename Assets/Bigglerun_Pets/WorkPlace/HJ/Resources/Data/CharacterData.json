@@ -1,20 +1,23 @@
 [
   {
     "characterId": "dog",
+    "characterName": "Ginger",
     "goldPrice": "0",
     "cashPrice": "0",
-    "iconPath": "Icons/dog"
+    "iconPath": "Character/Cat_Ginger"
   },
   {
     "characterId": "cat",
-    "goldPrice": "0",
-    "cashPrice": "5",
-    "iconPath": "Icons/cat"
+    "characterName": "Grey",
+    "goldPrice": "50",
+    "cashPrice": "50",
+    "iconPath": "Character/Cat_Grey"
   },
   {
     "characterId": "hamster",
+    "characterName": "Grey White",
     "goldPrice": "1000",
     "cashPrice": "200",
-    "iconPath": "Icons/hamster"
+    "iconPath": "Character/Cat_Grey_White"
   }
 ]
