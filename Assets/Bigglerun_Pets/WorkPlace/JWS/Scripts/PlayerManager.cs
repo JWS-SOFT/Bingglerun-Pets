@@ -359,6 +359,9 @@ public class PlayerManager : MonoBehaviour
         // 이벤트 호출
         OnTakeDamage?.Invoke();
         currentLife--;
+        //
+        PlayerController.Player_Animator.SetTrigger("Damaged");
+
         // 별 감소도 함께 처리
         if (ScoreManager.Instance!=null ) ScoreManager.Instance.DecreaseStar();
         Debug.Log($"현재 생명력: {currentLife}");
@@ -366,6 +369,7 @@ public class PlayerManager : MonoBehaviour
         if(currentLife <= 0)
         {
             playerController.TriggerGameOver(); //게임 오버
+            //
         }
         else
         {
