@@ -9,8 +9,8 @@
   {
     "characterId": "cat",
     "characterName": "Grey",
-    "goldPrice": "0",
-    "cashPrice": "5",
+    "goldPrice": "50",
+    "cashPrice": "50",
     "iconPath": "Character/Cat_Grey"
   },
   {
