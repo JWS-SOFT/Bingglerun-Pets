@@ -359,7 +359,7 @@ public class PlayerManager : MonoBehaviour
         // 이벤트 호출
         OnTakeDamage?.Invoke();
         currentLife--;
-        //
+        
         PlayerController.Player_Animator.SetTrigger("Damaged");
 
         // 별 감소도 함께 처리

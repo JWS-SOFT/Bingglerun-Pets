@@ -49,7 +49,7 @@ public class SkillManager : MonoBehaviour
                     description = "굴러서 이동하며 무적이 됩니다.",
                     duration = 3f,
                     cooldown = 8f,
-                    power = 5f, // 속도나 거리
+                    power = 2f, // 속도나 거리
                     isInvincibleDuringSkill = true
                 };
                 break;
@@ -114,9 +114,9 @@ public class SkillManager : MonoBehaviour
 
         if(nearestObstacle != null)
         {
-            Destroy(nearestObstacle);
+            EffectManager.Instance.PlayEffect(EffectManager.Instance.effectPrefabs[0], nearestObstacle.transform);
 
-            //장애물 파괴 이펙트, 사운드 추가
+            Destroy(nearestObstacle, 0.4f);
         }
     }
 
@@ -147,8 +147,13 @@ public class SkillManager : MonoBehaviour
 
         player.enabled = false;
         Vector2 start = player.transform.position;
+
         //슈퍼점프 애니메이션 활성화
         PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Jump", true);
+        GameObject effect = EffectManager.Instance.PlayEffect(EffectManager.Instance.effectPrefabs[1], PlayerManager.Player_Transform.position);
+
+        Destroy(effect, 0.4f);
+
 
         while (elapsed < duration)
         {
