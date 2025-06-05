@@ -21,13 +21,17 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    public void PlayEffect(GameObject effectPrefab, Vector3 position)
+    public GameObject PlayEffect(GameObject effectPrefab, Vector3 position)
     {
         GameObject effect = Instantiate(effectPrefab, position, Quaternion.identity);
+
+        return effect;
     }
 
-    public void PlayEffect(GameObject effectPrefab, Transform transform)
+    public GameObject PlayEffect(GameObject effectPrefab, Transform transform)
     {
         GameObject effect = Instantiate(effectPrefab, transform.position, Quaternion.identity, transform);
+
+        return effect;
     }
 }
