@@ -114,9 +114,9 @@ public class SkillManager : MonoBehaviour
 
         if(nearestObstacle != null)
         {
-            Destroy(nearestObstacle);
+            EffectManager.Instance.PlayEffect(EffectManager.Instance.effectPrefabs[0], nearestObstacle.transform);
 
-            //장애물 파괴 이펙트, 사운드 추가
+            Destroy(nearestObstacle, 0.4f);
         }
     }
 
