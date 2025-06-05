@@ -19,6 +19,11 @@ public class PlayerController : MonoBehaviour
     private bool isGamemode = false;  // false 계단, true 횡런게임.
     private Rigidbody2D Rigidbody2D;
     private Animator player_Animator;
+    public Animator Player_Animator
+    {
+        get { return player_Animator; }
+        set { player_Animator = value; }
+    }
     [SerializeField] private GameObject gameOverUI, stageClear;
 
     //05.16 HJ 추가
@@ -30,7 +35,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         PlayerManager.Player_Transform = transform;
-        player_Animator = GetComponent<Animator>();
         player_Animator.SetBool("Walk", false);
         player_Animator.SetBool("Jump", false);
         //gameObject.SetActive(false);
