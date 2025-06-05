@@ -34,6 +34,8 @@ public class NoticeManager : MonoBehaviour
     private Button eventButton;
     private Button exitButton;
     private Transform noticeContent;
+    private Transform viewport;
+    private Transform content;
     private ScrollRect scrollRect;
     private GameObject noticeItemPrefab;
     private GameObject noticeUIObject;
@@ -172,12 +174,12 @@ public class NoticeManager : MonoBehaviour
         Debug.Log($"[NoticeManager] NoticeUI 찾음: {noticeUIObject.name}");
 
         // MenuTab 하위의 버튼들 찾기
-        Transform menuTab = noticeUIObject.transform.Find("MenuTab");
+        Transform menuTab = FindInactiveObject(noticeUIObject.transform, "MenuTab");
         if (menuTab != null)
         {
-            noticeButton = menuTab.Find("NoticeButton")?.GetComponent<Button>();
-            updateButton = menuTab.Find("UpdateButton")?.GetComponent<Button>();
-            eventButton = menuTab.Find("EventButton")?.GetComponent<Button>();
+            noticeButton = FindInactiveObject(menuTab, "NoticeButton")?.GetComponent<Button>();
+            updateButton = FindInactiveObject(menuTab, "UpdateButton")?.GetComponent<Button>();
+            eventButton = FindInactiveObject(menuTab, "EventButton")?.GetComponent<Button>();
             
             Debug.Log($"[NoticeManager] MenuTab 버튼 상태 - Notice: {noticeButton != null}, Update: {updateButton != null}, Event: {eventButton != null}");
         }
@@ -187,38 +189,97 @@ public class NoticeManager : MonoBehaviour
         }
 
         // ExitButton 찾기
-        exitButton = noticeUIObject.transform.Find("ExitButton")?.GetComponent<Button>();
+        exitButton = FindInactiveObject(noticeUIObject.transform, "ExitButton")?.GetComponent<Button>();
         if (exitButton == null)
         {
             Debug.LogError("[NoticeManager] ExitButton을 찾을 수 없습니다.");
         }
         
-        // OptionArea/NoticeTab 찾기
-        Transform optionArea = noticeUIObject.transform.Find("OptionArea");
+        // OptionArea/NoticeTab/Viewport/Content 찾기
+        Transform optionArea = FindInactiveObject(noticeUIObject.transform, "OptionArea");
         if (optionArea != null)
         {
             Debug.Log($"[NoticeManager] OptionArea 찾음: {optionArea.name}");
             
-            // NoticeTab을 Content로 사용
-            noticeContent = optionArea.Find("NoticeTab");
+            noticeContent = FindInactiveObject(optionArea, "NoticeTab");
             if (noticeContent != null)
             {
-                Debug.Log($"[NoticeManager] NoticeTab(Content) 찾음: {noticeContent.name}");
+                Debug.Log($"[NoticeManager] NoticeTab 찾음: {noticeContent.name}");
                 
-                // NoticeTab에 ScrollRect 추가 (없다면)
+                // ScrollRect 설정
                 scrollRect = noticeContent.GetComponent<ScrollRect>();
                 if (scrollRect == null)
                 {
                     Debug.Log("[NoticeManager] NoticeTab에 ScrollRect 컴포넌트 추가");
                     scrollRect = noticeContent.gameObject.AddComponent<ScrollRect>();
+                }
+                
+                // Viewport 찾기 및 설정
+                viewport = FindInactiveObject(noticeContent, "Viewport");
+                if (viewport != null)
+                {
+                    Debug.Log($"[NoticeManager] Viewport 찾음: {viewport.name}");
                     
-                    // ScrollRect 설정
-                    scrollRect.vertical = true;
-                    scrollRect.horizontal = false;
-                    scrollRect.content = noticeContent.GetComponent<RectTransform>();
+                    // Viewport RectTransform 설정
+                    RectTransform viewportRect = viewport.GetComponent<RectTransform>();
+                    if (viewportRect != null)
+                    {
+                        viewportRect.anchorMin = Vector2.zero;
+                        viewportRect.anchorMax = Vector2.one;
+                        viewportRect.sizeDelta = Vector2.zero;
+                        viewportRect.anchoredPosition = Vector2.zero;
+                    }
                     
-                    // Viewport 설정 (NoticeTab 자체를 viewport로 사용)
-                    scrollRect.viewport = noticeContent.GetComponent<RectTransform>();
+                    // Viewport에 Mask 컴포넌트 추가
+                    if (viewport.GetComponent<Mask>() == null)
+                    {
+                        Mask mask = viewport.gameObject.AddComponent<Mask>();
+                        mask.showMaskGraphic = false;
+                        
+                        // Mask를 위한 Image 컴포넌트 추가
+                        if (viewport.GetComponent<Image>() == null)
+                        {
+                            Image image = viewport.gameObject.AddComponent<Image>();
+                            image.color = Color.white;
+                        }
+                    }
+                    
+                    // Content 찾기 및 설정
+                    content = FindInactiveObject(viewport, "Content");
+                    if (content != null)
+                    {
+                        Debug.Log($"[NoticeManager] Content 찾음: {content.name}");
+                        
+                        // Content RectTransform 설정
+                        RectTransform contentRect = content.GetComponent<RectTransform>();
+                        if (contentRect != null)
+                        {
+                            contentRect.anchorMin = new Vector2(0, 1);
+                            contentRect.anchorMax = new Vector2(1, 1);
+                            contentRect.pivot = new Vector2(0.5f, 1);
+                            contentRect.anchoredPosition = Vector2.zero;
+                            contentRect.sizeDelta = new Vector2(0, 0); // 높이는 아이템 추가 시 조정됨
+                        }
+                        
+                        // ScrollRect 설정 완료
+                        scrollRect.vertical = true;
+                        scrollRect.horizontal = false;
+                        scrollRect.viewport = viewportRect;
+                        scrollRect.content = contentRect;
+                        scrollRect.movementType = ScrollRect.MovementType.Elastic;
+                        scrollRect.elasticity = 0.1f;
+                        scrollRect.inertia = true;
+                        scrollRect.decelerationRate = 0.135f;
+                        scrollRect.scrollSensitivity = 1f;
+                    }
+                    else
+                    {
+                        Debug.LogError("[NoticeManager] Viewport 아래에서 Content를 찾을 수 없습니다.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("[NoticeManager] NoticeTab 아래에서 Viewport를 찾을 수 없습니다.");
                 }
             }
             else
@@ -236,12 +297,41 @@ public class NoticeManager : MonoBehaviour
         if (updateButton == null) Debug.LogWarning("[NoticeManager] UpdateButton을 찾을 수 없습니다.");
         if (eventButton == null) Debug.LogWarning("[NoticeManager] EventButton을 찾을 수 없습니다.");
         if (exitButton == null) Debug.LogWarning("[NoticeManager] ExitButton을 찾을 수 없습니다.");
-        if (noticeContent == null) Debug.LogWarning("[NoticeManager] NoticeTab(Content)를 찾을 수 없습니다.");
+        if (noticeContent == null) Debug.LogWarning("[NoticeManager] NoticeTab을 찾을 수 없습니다.");
+        if (viewport == null) Debug.LogWarning("[NoticeManager] Viewport를 찾을 수 없습니다.");
+        if (content == null) Debug.LogWarning("[NoticeManager] Content를 찾을 수 없습니다.");
         if (scrollRect == null) Debug.LogWarning("[NoticeManager] ScrollRect를 설정할 수 없습니다.");
 
         // 모든 필수 컴포넌트가 있는지 확인
-        isUIBound = noticeContent != null && scrollRect != null;
+        isUIBound = noticeContent != null && viewport != null && content != null && scrollRect != null;
         Debug.Log($"[NoticeManager] UI 바인딩 상태: {isUIBound}");
+    }
+
+    // 비활성화된 오브젝트도 찾을 수 있는 헬퍼 메서드
+    private Transform FindInactiveObject(Transform parent, string name)
+    {
+        if (parent == null) return null;
+
+        // 먼저 직접 자식들 중에서 찾기
+        foreach (Transform child in parent)
+        {
+            if (child.name == name)
+            {
+                return child;
+            }
+        }
+
+        // 모든 자식들을 재귀적으로 검색
+        foreach (Transform child in parent)
+        {
+            Transform found = FindInactiveObject(child, name);
+            if (found != null)
+            {
+                return found;
+            }
+        }
+
+        return null;
     }
 
     private void HideNoticeUI()
@@ -267,6 +357,8 @@ public class NoticeManager : MonoBehaviour
         eventButton = null;
         exitButton = null;
         noticeContent = null;
+        viewport = null;
+        content = null;
         scrollRect = null;
         
         isUIBound = false;
@@ -393,9 +485,9 @@ public class NoticeManager : MonoBehaviour
 
     private void UpdateNoticeList()
     {
-        if (!isUIBound || noticeContent == null)
+        if (!isUIBound || content == null)
         {
-            Debug.LogError("[NoticeManager] UI가 바인딩되지 않았거나 noticeContent가 null입니다.");
+            Debug.LogError("[NoticeManager] UI가 바인딩되지 않았거나 content가 null입니다.");
             return;
         }
 
@@ -417,7 +509,7 @@ public class NoticeManager : MonoBehaviour
         {
             try
             {
-                GameObject item = Instantiate(noticeItemPrefab, noticeContent);
+                GameObject item = Instantiate(noticeItemPrefab, content);
                 if (item != null)
                 {
                     // NoticeItem 컴포넌트 가져오기
@@ -452,9 +544,9 @@ public class NoticeManager : MonoBehaviour
         }
 
         // Content 크기 조정
-        if (noticeContent != null)
+        if (content != null)
         {
-            RectTransform contentRect = noticeContent.GetComponent<RectTransform>();
+            RectTransform contentRect = content.GetComponent<RectTransform>();
             if (contentRect != null && spawnedItems.Count > 0)
             {
                 float totalHeight = 0;
