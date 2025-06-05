@@ -18,6 +18,7 @@ public enum CharacterType
 public class CharacterData
 {
     public string characterId;
+    public string characterName;
     public int goldPrice;
     public int cashPrice;
     public string iconPath;
