@@ -8005,23 +8005,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 2172845059379276663}
+      objectReference: {fileID: 9150376628166437406}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: TogglePopup
+      value: NicknameChange
       objectReference: {fileID: 0}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: UIController, Assembly-CSharp
+      value: NicknameChangeUI, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6997616387348933106, guid: b88383239bdc5384596108d581b5afba, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -8053,3 +8053,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1089498674629968903, guid: b88383239bdc5384596108d581b5afba, type: 3}
   m_PrefabInstance: {fileID: 9096372680275739663}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9150376628166437406 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 54155148456554001, guid: b88383239bdc5384596108d581b5afba, type: 3}
+  m_PrefabInstance: {fileID: 9096372680275739663}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5516db33196ac4a953cf1dccfd748a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
