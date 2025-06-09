@@ -28,9 +28,11 @@ public class EffectManager : MonoBehaviour
         return effect;
     }
 
-    public GameObject PlayEffect(GameObject effectPrefab, Transform transform)
+    public GameObject PlayEffect(GameObject effectPrefab, Transform transform, Vector3? offset = null)
     {
-        GameObject effect = Instantiate(effectPrefab, transform.position, Quaternion.identity, transform);
+        Vector3 finalOffset = offset ?? Vector3.zero;
+
+        GameObject effect = Instantiate(effectPrefab, transform.position + finalOffset, Quaternion.identity, transform);
 
         return effect;
     }

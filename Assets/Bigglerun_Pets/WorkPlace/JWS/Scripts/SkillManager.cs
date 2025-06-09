@@ -71,11 +71,11 @@ public class SkillManager : MonoBehaviour
                 break;
             case PlayerSkillType.CatSuperJumpInvincible:
                 ApplyJump(currentSkill.power);
-                SetInvincibility(currentSkill.duration);
+                SetInvincibility(currentSkill.duration + 0.5f);
                 break;
             case PlayerSkillType.HamsterRollInvincible:
                 StartRolling(currentSkill.power);
-                SetInvincibility(currentSkill.duration);
+                SetInvincibility(currentSkill.duration + 0.5f);
                 break;
         }
     }
@@ -211,6 +211,9 @@ public class SkillManager : MonoBehaviour
         player.enabled = false;
         //구르기 애니메이션 활성화
         PlayerManager.Instance.PlayerController.Player_Animator.SetBool("Walk", true);
+        GameObject effect = EffectManager.Instance.PlayEffect(EffectManager.Instance.effectPrefabs[2], PlayerManager.Player_Transform, new Vector3(-0.3f, -0.25f, 0));
+
+        Destroy(effect, duration);
 
         while (elapsed < duration)
         {
