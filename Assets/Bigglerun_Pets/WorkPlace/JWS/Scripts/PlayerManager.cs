@@ -469,7 +469,7 @@ public class PlayerManager : MonoBehaviour
 
     public void ApplySelectedCharacterToPlayer()
     {
-        Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + Player_Transform.name + " !!!!!!!!!!!!!!!!!!!!!");
+        //Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + Player_Transform.name + " !!!!!!!!!!!!!!!!!!!!!");
 
         CharacterData selectedCharacter = GetSelectedCharacterData();
 
@@ -481,7 +481,7 @@ public class PlayerManager : MonoBehaviour
             {
                 child.gameObject.SetActive(true);
                 playerController.Player_Animator = child.gameObject.GetComponent<Animator>();
-                Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + child.gameObject.name + " !!!!!!!!!!!!!!!!!!!!!");
+                //Debug.Log("!!!!!!!!!!!!!!!!!!!!! " + child.gameObject.name + " !!!!!!!!!!!!!!!!!!!!!");
             }
         }
     }

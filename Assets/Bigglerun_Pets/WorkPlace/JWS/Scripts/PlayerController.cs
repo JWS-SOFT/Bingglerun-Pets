@@ -35,22 +35,22 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         PlayerManager.Player_Transform = transform;
-        player_Animator.SetBool("Walk", false);
-        player_Animator.SetBool("Jump", false);
+        //player_Animator.SetBool("Walk", false);
+        //player_Animator.SetBool("Jump", false);
         //gameObject.SetActive(false);
         isGamemode = PlayerManager.PlayMode;
         jumpDuration = !isGamemode ? 0.25f : 0.5f; // ⬅ 총 이동에 걸릴 시간
         jumpHeight = !isGamemode ? 0.25f : 3f;    // ⬅ 점프 높이
         Rigidbody2D = GetComponent<Rigidbody2D>();
-        if (!isGamemode)
-        {
-            player_Animator.SetBool("Walk", false);
-            Rigidbody2D.Sleep();
-        }
-        else
-        {
-            player_Animator.SetBool("Walk", true);
-        }
+        //if (!isGamemode)
+        //{
+        //    player_Animator.SetBool("Walk", false);
+        //    Rigidbody2D.Sleep();
+        //}
+        //else
+        //{
+        //    player_Animator.SetBool("Walk", true);
+        //}
     }
 
     private void Update()
